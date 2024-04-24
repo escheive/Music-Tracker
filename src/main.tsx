@@ -4,14 +4,10 @@ import {
   createBrowserRouter,
   RouterProvider
 } from 'react-router-dom';
-import dotenv from 'dotenv';
-
 
 import './index.css';
 import Root from './routes/root';
 import ErrorPage from './error-page';
-
-dotenv.config(); // Load environment variabled
 
 // App routes
 const router = createBrowserRouter([

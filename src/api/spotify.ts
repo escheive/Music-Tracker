@@ -2,8 +2,8 @@ import axios from "axios";
 
 const spotifyAPI = axios.create({
   baseURL: 'https://api.spotify.com/v1/',
-  heaaders: {
-    Authorization: `Bearer ${process.env.REACT_APP_SPOTIFY_ACCESS_TOKEN}`,
+  headers: {
+    Authorization: `Bearer ${import.meta.env.REACT_APP_SPOTIFY_ACCESS_TOKEN}`,
   },
 });
 
