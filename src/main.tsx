@@ -11,6 +11,7 @@ import Contact from './routes/contacts';
 import ErrorPage from './error-page';
 
 import { AuthProvider } from './context/AuthProvider';
+import { UserContextProvider } from './context/UserProvider';
 
 // App routes
 const router = createBrowserRouter([
@@ -29,7 +30,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <UserContextProvider>
+        <RouterProvider router={router} />
+      </UserContextProvider>
     </AuthProvider>
   </React.StrictMode>,
 )
