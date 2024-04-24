@@ -1,4 +1,7 @@
+import { getToken } from "@/api/spotify";
+
 export default function Root() {
+  const { accessToken } = useAuthProvider();
 
   return (
     <>
