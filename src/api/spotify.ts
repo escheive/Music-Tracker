@@ -21,16 +21,26 @@ const useSpotifyAPI = (accessToken, refreshToken) => {
   };
 
   const getUsersTopItems = async () => {
+    const topArtistsUrl = `${apiUrl}/me/top/artists`;
+    const topTracksUrl = `${apiUrl}/me/top/tracks`;
+
     const options = {
       method: 'get',
-      url: `${apiUrl}/me/top/artists`,
+      url: topArtistsUrl,
       headers: {
         'Authorization': 'Bearer ' + accessToken,
       },
     }
+
     try {
-      const response = await axios(options);
-      return response.data;
+      const usersTopItems = {artists: null, tracks: null};
+      const topArtistsResponse = await axios(options);
+      options.url = topTracksUrl;
+      const topTracksResponse = await axios(options);
+      usersTopItems.artists = topArtistsResponse.data;
+      usersTopItems.tracks = topTracksResponse.data;
+
+      return usersTopItems;
     } catch (error) {
       if (error.response && error.response.status === 401) {
         // Refresh auth token
