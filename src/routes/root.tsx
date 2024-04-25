@@ -1,7 +1,9 @@
 import { useAuthContext } from "@/context/AuthProvider";
 import { useUserContext } from "@/context/UserProvider";
 import { useEffect } from "react";
-import axiosInstance from "@/api";
+// import spotifyInstance from '@api/spotify';
+// import { getProfile } from "@api/spotify";
+import useSpotifyAPI from "@/api/spotify";
 import axios from 'axios';
 import { generateRandomString } from "@/utils/helpers";
 
@@ -10,7 +12,8 @@ const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
 
 export default function Root() {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
-  const { profileData, storeProfileData } = useUserContext();
+  const { profileData, storeProfileData, topItems, storeTopItems } = useUserContext();
+  const spotify = useSpotifyAPI(accessToken);
 
   // Checks for tokens and stores them if not stored yet
   useEffect(() => {
@@ -19,26 +22,22 @@ export default function Root() {
     const refreshToken = params.get('refresh_token');
 
     if (accessToken && !profileData) {
-      const fetchProfile = async () => {
-        const profileOptions = {
-          method: 'get',
-          url: 'https://api.spotify.com/v1/me',
-          headers: {
-            'Authorization': 'Bearer ' + accessToken,
-          },
-        };
-  
-        const profileResponse = await axios(profileOptions);
-        storeProfileData(profileResponse.data);
-      }
+      const fetchProfileData = async () => {
+        try {
+          const profile = await spotify.getProfile();
+          storeProfileData(profile);
+        } catch (error) {
+          console.error('Error fetching profile data: ', error);
+        }    
+      };
 
-      fetchProfile();
+      fetchProfileData();
     }
 
     storeAccessToken(accessToken);
     storeRefreshToken(refreshToken);
 
-  }, [accessToken]);
+  }, [spotify, accessToken]);
 
 
   const handleLogin = async () => {
