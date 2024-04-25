@@ -13,7 +13,7 @@ const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
 export default function Root() {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
   const { profileData, storeProfileData, topItems, storeTopItems } = useUserContext();
-  const spotify = useSpotifyAPI(accessToken);
+  const spotify = useSpotifyAPI(accessToken, refreshToken);
 
   // Checks for tokens and stores them if not stored yet
   useEffect(() => {
@@ -34,6 +34,8 @@ export default function Root() {
           try {
             const profile = await spotify.getProfile();
             storeProfileData(profile);
+            const topItems = await spotify.getUsersTopItems();
+            storeTopItems(topItems);
           } catch (error) {
             console.error('Error fetching profile data: ', error);
           }    
@@ -45,11 +47,15 @@ export default function Root() {
     
   }, [spotify, accessToken]);
 
+  console.log(topItems)
+
   
   const handleLogin = async () => {
     const state = generateRandomString(16);
+    const scope = 'user-read-private user-read-email playlist-read-private user-follow-read user-top-read user-read-recently-played user-library-read user-read-currently-playing user-read-playback-state user-read-playback-position';
+
     try {
-      const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&response_type=code&scope=user-read-private%20user-read-email`;
+      const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&response_type=code&scope=${scope}`;
       window.location.href = authorizationUrl;
     } catch (error) {
       console.error('Error initiating login', error);
