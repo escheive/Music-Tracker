@@ -7,6 +7,8 @@ import useSpotifyAPI from "@/api/spotify";
 import axios from 'axios';
 import { generateRandomString } from "@/utils/helpers";
 
+import { Button } from "@chakra-ui/react";
+
 const clientId: string = import.meta.env.VITE_CLIENT_ID;
 const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
 
@@ -47,8 +49,6 @@ export default function Root() {
     
   }, [spotify, accessToken]);
 
-  console.log(topItems)
-
   
   const handleLogin = async () => {
     const state = generateRandomString(16);
@@ -67,6 +67,17 @@ export default function Root() {
     <>
       <div>
         <h1>Music Tracker</h1>
+        {!accessToken ? (
+          <Button
+            colorScheme='whatsapp'
+            size='md'
+            onClick={handleLogin}
+          >
+            Login
+          </Button>
+        ) : (
+          null
+        )}
         {profileData ? (
           <>
             <h1>{profileData.display_name}</h1>
@@ -78,11 +89,16 @@ export default function Root() {
             <a href={profileData.external_urls.spotify} target="blank">Open on Spotify</a>
           </>
         ) : null}
-        {!accessToken ? (
-          <button onClick={handleLogin}>Login</button>
-        ) : (
-          null
-        )}
+        {topItems ? (
+          <>
+          {topItems.artists.items.map((artist) => (
+            <p>{artist.name}</p>
+          ))}
+          {topItems.tracks.items.map((track) => (
+            <p>{track.name}</p>
+          ))}
+          </>
+        ) : null}
         
       </div>
     </>
