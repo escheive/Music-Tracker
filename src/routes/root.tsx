@@ -51,27 +51,28 @@ export default function Root() {
     }
   }
 
+
   return (
     <>
       <div>
         <h1>Music Tracker</h1>
-        <p>Access Token: {accessToken}</p>
-        <p>Refresh Token: {refreshToken}</p>
         {profileData ? (
           <>
+            <h1>{profileData.display_name}</h1>
             <p>Email: {profileData.email}</p>
-            <p>Name: {profileData.display_name}</p>
             <p>Country: {profileData.country}</p>
-            <p>HREF: {profileData.href}</p>
-            <p>ID: {profileData.id}</p>
             <p>Product: {profileData.product}</p>
             <p>Type: {profileData.type}</p>
-            <p>Uri: {profileData.uri}</p>
             <p>Followers: {profileData.followers.total}</p>
-            <p>External Urls: {profileData.external_urls.spotify}</p>
+            <a href={profileData.external_urls.spotify} target="blank">Open on Spotify</a>
           </>
         ) : null}
-        <button onClick={handleLogin}>Login</button>
+        {!accessToken ? (
+          <button onClick={handleLogin}>Login</button>
+        ) : (
+          null
+        )}
+        
       </div>
     </>
   );
