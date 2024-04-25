@@ -17,29 +17,35 @@ export default function Root() {
 
   // Checks for tokens and stores them if not stored yet
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
+    if (!accessToken) {
+      const params = new URLSearchParams(window.location.search);
+      const accessTokenFromParams = params.get('access_token');
+      const refreshTokenFromParams = params.get('refresh_token');
 
-    if (accessToken && !profileData) {
-      const fetchProfileData = async () => {
-        try {
-          const profile = await spotify.getProfile();
-          storeProfileData(profile);
-        } catch (error) {
-          console.error('Error fetching profile data: ', error);
-        }    
-      };
-
-      fetchProfileData();
+      if (accessTokenFromParams) {
+        storeAccessToken(accessTokenFromParams)
+      }
+      if (refreshTokenFromParams) {
+        storeRefreshToken(refreshTokenFromParams);
+      }
+    } else {
+      if (!profileData) {
+        const fetchProfileData = async () => {
+          try {
+            const profile = await spotify.getProfile();
+            storeProfileData(profile);
+          } catch (error) {
+            console.error('Error fetching profile data: ', error);
+          }    
+        };
+  
+        fetchProfileData();
+      }
     }
-
-    storeAccessToken(accessToken);
-    storeRefreshToken(refreshToken);
-
+    
   }, [spotify, accessToken]);
 
-
+  
   const handleLogin = async () => {
     const state = generateRandomString(16);
     try {

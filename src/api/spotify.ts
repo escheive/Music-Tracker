@@ -6,7 +6,7 @@ const useSpotifyAPI = (accessToken) => {
   const getProfile = async () => {
     const options = {
       method: 'get',
-      url: 'https://api.spotify.com/v1/me',
+      url: `${apiUrl}/me`,
       headers: {
         'Authorization': 'Bearer ' + accessToken,
       },
@@ -20,7 +20,24 @@ const useSpotifyAPI = (accessToken) => {
     }
   };
 
-  return { getProfile };
+  const getUsersTopItems = async () => {
+    const options = {
+      method: 'get',
+      url: `${apiUrl}/me/top/artists`,
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+      },
+    }
+    try {
+      const response = await axios(options);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching top items:', error);
+      throw error;
+    }
+  };
+
+  return { getProfile, getUsersTopItems };
 };
 
 export default useSpotifyAPI;
