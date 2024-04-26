@@ -67,13 +67,14 @@ const NavBar = () => {
     window.location.href='/'; // Redirects to home page
   }
 
+  // Function to login users
   const handleLogin = async () => {
-    const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email playlist-read-private user-follow-read user-top-read user-read-recently-played user-library-read user-read-currently-playing user-read-playback-state user-read-playback-position';
+    const state = generateRandomString(16); // Random 16 character string
+    const scope = 'user-read-private user-read-email playlist-read-private user-follow-read user-top-read user-read-recently-played user-library-read user-read-currently-playing user-read-playback-state user-read-playback-position'; // Scope of permissions requested from spotify
 
     try {
-      const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&response_type=code&scope=${scope}`;
-      window.location.href = authorizationUrl;
+      const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&response_type=code&scope=${scope}`; // Spotify auth url
+      window.location.href = authorizationUrl; // Navigate users to spotify auth url
     } catch (error) {
       console.error('Error initiating login', error);
     }

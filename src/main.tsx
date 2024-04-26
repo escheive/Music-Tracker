@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import './index.css';
-import Root from './routes/root';
+import Home from './routes/home';
 import Contact from './routes/contacts';
 import ErrorPage from './error-page';
 
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <NavBar />
-        <Root />
+        <Home />
       </>
     ),
     errorElement: <ErrorPage />
