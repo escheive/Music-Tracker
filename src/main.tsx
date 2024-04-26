@@ -6,6 +6,8 @@ import {
 } from 'react-router-dom';
 
 import './index.css';
+import { AppProvider } from './providers/app';
+import { AppRoutes } from './routes';
 import Home from './routes/home';
 import Contact from './routes/contacts';
 import ErrorPage from './error-page';
@@ -42,12 +44,22 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ChakraProvider>
-      <AuthProvider>
-        <UserContextProvider>
-          <RouterProvider router={router} />
-        </UserContextProvider>
-      </AuthProvider>
-    </ChakraProvider>
+    <AppProvider>
+      <AppRoutes />
+    </AppProvider>
   </React.StrictMode>,
 )
+
+// ReactDOM.createRoot(document.getElementById('root')!).render(
+//   <React.StrictMode>
+//     <ChakraProvider>
+//       <AuthProvider>
+//         <UserContextProvider>
+//           <RouterProvider router={router}>
+//           <AppRoutes />
+//           </RouterProvider>
+//         </UserContextProvider>
+//       </AuthProvider>
+//     </ChakraProvider>
+//   </React.StrictMode>,
+// )
