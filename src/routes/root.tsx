@@ -7,7 +7,7 @@ import useSpotifyAPI from "@/api/spotify";
 import axios from 'axios';
 import { generateRandomString } from "@/utils/helpers";
 
-import { Button } from "@chakra-ui/react";
+import { Box, Button, Heading } from "@chakra-ui/react";
 
 const clientId: string = import.meta.env.VITE_CLIENT_ID;
 const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
@@ -62,11 +62,10 @@ export default function Root() {
     }
   }
 
-
   return (
     <>
-      <div>
-        <h1>Music Tracker</h1>
+      <Box display='flex' justifyContent='center' alignItems='center'>
+        <Heading>Music Tracker</Heading>
         {!accessToken ? (
           <Button
             colorScheme='whatsapp'
@@ -80,7 +79,7 @@ export default function Root() {
         )}
         {profileData ? (
           <>
-            <h1>{profileData.display_name}</h1>
+            <Heading>{profileData.display_name}</Heading>
             <p>Email: {profileData.email}</p>
             <p>Country: {profileData.country}</p>
             <p>Product: {profileData.product}</p>
@@ -100,7 +99,7 @@ export default function Root() {
           </>
         ) : null}
         
-      </div>
+      </Box>
     </>
   );
 }

@@ -10,6 +10,8 @@ import Root from './routes/root';
 import Contact from './routes/contacts';
 import ErrorPage from './error-page';
 
+import NavBar from './components/nav/NavBar';
+
 import { ChakraProvider } from '@chakra-ui/react';
 import { AuthProvider } from './context/AuthProvider';
 import { UserContextProvider } from './context/UserProvider';
@@ -18,12 +20,22 @@ import { UserContextProvider } from './context/UserProvider';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: (
+      <>
+        <NavBar />
+        <Root />
+      </>
+    ),
     errorElement: <ErrorPage />
   },
   {
     path: "/contacts",
-    element: <Contact />,
+    element: (
+      <>
+        <NavBar />
+        <Contact />
+      </>
+    ),
     errorElement: <ErrorPage />,
   },
 ]);
