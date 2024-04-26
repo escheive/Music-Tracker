@@ -1,15 +1,25 @@
 import * as React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ChakraProvider, Spinner } from '@chakra-ui/react';
 import { UserContextProvider } from '@/context/UserProvider';
 import { AuthProvider } from '@/context/AuthProvider';
+import { commonRoutes } from '@/routes';
+import { publicRoutes } from '@/routes/public';
+import { protectedRoutes } from '@/routes/protected';
 
 
 type AppProviderProps = {
   children: React.ReactNode;
 };
 
+
 export const AppProvider = ({ children }: AppProviderProps) => {
+  const auth = { user: false }
+
+  const permittedRoutes = auth.user ? protectedRoutes : publicRoutes;
+
+  const router = createBrowserRouter([...commonRoutes, ...permittedRoutes])
+
   return (
     <React.Suspense
       fallback={
@@ -21,7 +31,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       <ChakraProvider>
         <AuthProvider>
           <UserContextProvider>
-            <Router>{children}</Router>
+            <RouterProvider router={router} />
           </UserContextProvider>
         </AuthProvider>
       </ChakraProvider>
