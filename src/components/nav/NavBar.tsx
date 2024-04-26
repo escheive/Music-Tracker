@@ -22,6 +22,11 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { useAuthContext } from '@/context/AuthProvider';
 import { useUserContext } from '@/context/UserProvider';
 
+import { generateRandomString } from '@/utils/helpers';
+
+const clientId: string = import.meta.env.VITE_CLIENT_ID;
+const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
+
 
 interface Props {
   children: React.ReactNode
@@ -55,9 +60,23 @@ const NavBar = () => {
   const { handleUserLogout } = useAuthContext();
   const { profileData } = useUserContext();
 
+  // Function to delete access token and redirect to home page
   const handleLogout = () => {
-    handleUserLogout();
-    window.location.href='/'
+    handleUserLogout(); // Deletes stored access token and refresh token
+    window.open('https://www.spotify.com/us/account/apps/', '_blank'); // Spotify link to remove connected apps
+    window.location.href='/'; // Redirects to home page
+  }
+
+  const handleLogin = async () => {
+    const state = generateRandomString(16);
+    const scope = 'user-read-private user-read-email playlist-read-private user-follow-read user-top-read user-read-recently-played user-library-read user-read-currently-playing user-read-playback-state user-read-playback-position';
+
+    try {
+      const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&response_type=code&scope=${scope}`;
+      window.location.href = authorizationUrl;
+    } catch (error) {
+      console.error('Error initiating login', error);
+    }
   }
 
   return (
@@ -95,7 +114,12 @@ const NavBar = () => {
               <MenuList>
                 <MenuItem>Settings</MenuItem>
                 <MenuDivider />
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                {profileData ? (
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                ) : (
+                  <MenuItem onClick={handleLogin}>Login</MenuItem>
+                )}
+                
               </MenuList>
             </Menu>
           </Flex>
