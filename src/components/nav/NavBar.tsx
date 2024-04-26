@@ -19,12 +19,14 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
+import { useAuthContext } from '@/context/AuthProvider';
 import { useUserContext } from '@/context/UserProvider';
 
 
 interface Props {
   children: React.ReactNode
 }
+
 
 const Links = ['Home', 'Projects', 'Team']
 
@@ -50,7 +52,13 @@ const NavLink = (props: Props) => {
 
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { handleUserLogout } = useAuthContext();
   const { profileData } = useUserContext();
+
+  const handleLogout = () => {
+    handleUserLogout();
+    window.location.href='/'
+  }
 
   return (
     <>
@@ -85,10 +93,9 @@ const NavBar = () => {
                 />
               </MenuButton>
               <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
+                <MenuItem>Settings</MenuItem>
                 <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </MenuList>
             </Menu>
           </Flex>
