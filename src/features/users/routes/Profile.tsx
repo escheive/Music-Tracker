@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import useSpotifyAPI from "@/api/spotify";
 import { generateRandomString } from "@/utils/helpers";
 
-import { Box, Button, Heading } from "@chakra-ui/react";
+import { Box, Button, Heading, Text } from "@chakra-ui/react";
 
 const clientId: string = import.meta.env.VITE_CLIENT_ID;
 const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
@@ -61,15 +61,16 @@ export const Profile = () => {
 
   return (
     <>
-      <Box display='flex' justifyContent='center' alignItems='center'>
+      <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
         <Heading>Music Tracker</Heading>
+        <Text>Track your spotify account and connect with friends, all in one place using the Spotify API. No need to register an account, simply link your spotify account and see a breakdown of your entire account. To connect with others, register an account and start searching for your friends.</Text>
         {!accessToken ? (
           <Button
             colorScheme='whatsapp'
             size='md'
             onClick={handleLogin}
           >
-            Login
+            Link Spotify
           </Button>
         ) : (
           null
