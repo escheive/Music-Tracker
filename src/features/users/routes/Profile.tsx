@@ -1,10 +1,7 @@
 import { useAuthContext } from "@/context/AuthProvider";
 import { useUserContext } from "@/context/UserProvider";
 import { useEffect } from "react";
-// import spotifyInstance from '@api/spotify';
-// import { getProfile } from "@api/spotify";
 import useSpotifyAPI from "@/api/spotify";
-import axios from 'axios';
 import { generateRandomString } from "@/utils/helpers";
 
 import { Box, Button, Heading } from "@chakra-ui/react";
@@ -12,7 +9,7 @@ import { Box, Button, Heading } from "@chakra-ui/react";
 const clientId: string = import.meta.env.VITE_CLIENT_ID;
 const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
 
-export default function Root() {
+export default function Profile() {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
   const { profileData, storeProfileData, topItems, storeTopItems } = useUserContext();
   const spotify = useSpotifyAPI(accessToken, refreshToken);

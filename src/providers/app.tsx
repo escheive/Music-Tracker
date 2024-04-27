@@ -6,6 +6,7 @@ import { AuthProvider } from '@/context/AuthProvider';
 import { commonRoutes } from '@/routes';
 import { publicRoutes } from '@/routes/public';
 import { protectedRoutes } from '@/routes/protected';
+import NavbarWrapper from '@/components/nav/NavBar';
 
 
 type AppProviderProps = {
@@ -18,7 +19,16 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 
   const permittedRoutes = auth.user ? protectedRoutes : publicRoutes;
 
-  const router = createBrowserRouter([...commonRoutes, ...permittedRoutes])
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <NavbarWrapper />,
+      children: [
+        ...commonRoutes, 
+        ...permittedRoutes,
+      ]
+    }
+  ])
 
   return (
     <React.Suspense

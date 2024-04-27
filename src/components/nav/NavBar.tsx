@@ -1,5 +1,5 @@
 'use client';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { Outlet, NavLink as RouterLink } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -142,4 +142,13 @@ const NavBar = () => {
   )
 }
 
-export default NavBar;
+const NavbarWrapper = () => {
+  return (
+    <>
+      <NavBar />
+      <Outlet />
+    </>
+  )
+}
+
+export default NavbarWrapper;
