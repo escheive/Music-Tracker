@@ -34,12 +34,11 @@ export const TopItemsList = ({ itemType, items }) => {
             {items.map((item, i) => (
               <Tr key={item.name} h='10%' w='100%'>
                 <Td fontSize={{base: '16', md: '18'}}>{i + 1}</Td>
-                <Td fontSize={{base: '16', md: '18'}}><Link href={`${item.href}access_token=${accessToken}`}>{item.name}</Link></Td>
+                <Td fontSize={{base: '16', md: '18'}}><Link href={item.external_urls.spotify} target='_blank'>{item.name}</Link></Td>
                 <Td>
                   <Image 
                     src={itemType==='Artists' ? item.images[0].url : item.album.images[0].url} 
                     boxSize={{base: '40px', md: '60px'}} 
-                    borderRadius='full' 
                     fallbackSrc='https://via.placeholder.com/150' 
                   />
                 </Td>
