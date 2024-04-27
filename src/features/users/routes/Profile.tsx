@@ -17,6 +17,8 @@ export const Profile = () => {
     setAdditionalItems(moreTopItems)
   }
 
+  console.log(profileData)
+
   // Checks for tokens and stores them if not stored yet
   useEffect(() => {
     if (!accessToken) {
@@ -74,7 +76,9 @@ export const Profile = () => {
                 <TopItemsList itemType='Tracks' items={topItems.tracks.items} additionalItems={additionalItems?.tracks.items} />
               </GridItem>
             </Grid>
-            <Link onClick={loadMoreItems} m={8}>Load More</Link>
+            {!additionalItems ? (
+              <Link onClick={loadMoreItems} m={8}>Load More</Link>
+            ) : null}
           </>
         ) : null}
         

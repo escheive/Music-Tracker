@@ -109,7 +109,7 @@ const NavBar = () => {
                 minW={0}>
                 <Avatar
                   size={'sm'}
-                  src={profileData ? profileData.images[0].url : null}
+                  src={profileData ? profileData.images[0]?.url : null}
                 />
               </MenuButton>
               <MenuList>
