@@ -18,8 +18,8 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
-import { useAuthContext } from '@/context/AuthProvider';
-import { useUserContext } from '@/context/UserProvider';
+import { useAuthContext } from '@/providers/AuthProvider';
+import { useUserContext } from '@/providers/UserProvider';
 
 import { generateRandomString } from '@/utils/helpers';
 

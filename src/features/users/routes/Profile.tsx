@@ -1,5 +1,5 @@
-import { useAuthContext } from "@/context/AuthProvider";
-import { useUserContext } from "@/context/UserProvider";
+import { useAuthContext } from "@/providers/AuthProvider";
+import { useUserContext } from "@/providers/UserProvider";
 import { useEffect } from "react";
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";

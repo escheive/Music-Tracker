@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ChakraProvider, Spinner } from '@chakra-ui/react';
-import { UserContextProvider } from '@/context/UserProvider';
-import { AuthProvider } from '@/context/AuthProvider';
+import { UserContextProvider } from '@/providers/UserProvider';
+import { AuthProvider } from '@/providers/AuthProvider';
 import { commonRoutes } from '@/routes';
 import { publicRoutes } from '@/routes/public';
 import { protectedRoutes } from '@/routes/protected';

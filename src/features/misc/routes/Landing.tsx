@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import { Box, Heading, Button, Text } from '@chakra-ui/react';
 import { generateRandomString } from '@/utils/helpers';
-import { useAuthContext } from '@/context/AuthProvider';
+import { useAuthContext } from '@/providers/AuthProvider';
 import { useEffect } from 'react';
 
 const clientId: string = import.meta.env.VITE_CLIENT_ID;

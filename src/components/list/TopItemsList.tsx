@@ -1,5 +1,5 @@
 
-import { useAuthContext } from '@/context/AuthProvider';
+import { useAuthContext } from '@/providers/AuthProvider';
 import {
   Table,
   Thead,
