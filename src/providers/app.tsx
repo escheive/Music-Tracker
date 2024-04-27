@@ -6,7 +6,7 @@ import { AuthProvider } from '@/context/AuthProvider';
 import { commonRoutes } from '@/routes';
 import { publicRoutes } from '@/routes/public';
 import { protectedRoutes } from '@/routes/protected';
-import NavbarWrapper from '@/components/nav/NavBar';
+import NavbarWrapper from '@/components/nav/NavbarWrapper';
 
 
 type AppProviderProps = {

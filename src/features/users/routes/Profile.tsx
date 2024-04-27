@@ -9,7 +9,7 @@ import { Box, Button, Heading } from "@chakra-ui/react";
 const clientId: string = import.meta.env.VITE_CLIENT_ID;
 const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
 
-export default function Profile() {
+export const Profile = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
   const { profileData, storeProfileData, topItems, storeTopItems } = useUserContext();
   const spotify = useSpotifyAPI(accessToken, refreshToken);
@@ -99,4 +99,4 @@ export default function Profile() {
       </Box>
     </>
   );
-}
+};

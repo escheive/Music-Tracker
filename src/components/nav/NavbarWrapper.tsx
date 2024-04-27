@@ -29,11 +29,12 @@ const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
 
 
 interface Props {
-  children: React.ReactNode
+  children: React.ReactNode,
+  to: any
 }
 
 
-const Links = ['Home', 'Projects', 'Team']
+const Links = ['Profile', 'Projects', 'Team']
 
 const NavLink = (props: Props) => {
   const { children, to } = props
@@ -95,7 +96,7 @@ const NavBar = () => {
             <Box>Logo</Box>
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
               {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+                <NavLink key={link} to={link}>{link}</NavLink>
               ))}
             </HStack>
           </HStack>
