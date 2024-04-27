@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
 
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, Text, Grid, GridItem } from "@chakra-ui/react";
 
 export const Profile = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
@@ -61,15 +61,14 @@ export const Profile = () => {
           </>
         ) : null}
         {topItems ? (
-          <>
-          <TopItemsList itemType='Artists' items={topItems.artists.items} />
-          {topItems.artists.items.map((artist) => (
-            <p>{artist.name}</p>
-          ))}
-          {topItems.tracks.items.map((track) => (
-            <p>{track.name}</p>
-          ))}
-          </>
+          <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
+            <GridItem w='100%' noOfLines={1}>
+              <TopItemsList itemType='Artists' items={topItems.artists.items} />
+            </GridItem>
+            <GridItem w='100%' noOfLines={1}>
+              <TopItemsList itemType='Tracks' items={topItems.tracks.items} />
+            </GridItem>
+          </Grid>
         ) : null}
         
       </Box>

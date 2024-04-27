@@ -1,4 +1,5 @@
 
+import { useAuthContext } from '@/context/AuthProvider';
 import {
   Table,
   Thead,
@@ -9,10 +10,12 @@ import {
   Td,
   TableCaption,
   TableContainer,
-  Image
+  Image,
+  Link
 } from '@chakra-ui/react';
 
 export const TopItemsList = ({ itemType, items }) => {
+  const { accessToken } = useAuthContext();
   console.log(items)
 
   return (
@@ -29,10 +32,17 @@ export const TopItemsList = ({ itemType, items }) => {
           </Thead>
           <Tbody>
             {items.map((item, i) => (
-              <Tr key={item.name} h='10%' w='100%' >
+              <Tr key={item.name} h='10%' w='100%'>
                 <Td fontSize={{base: '16', md: '18'}}>{i + 1}</Td>
-                <Td fontSize={{base: '16', md: '18'}}>{item.name}</Td>
-                <Td><Image src={item.images[0].url} boxSize={{base: '40px', md: '60px'}} borderRadius='full' fallbackSrc='https://via.placeholder.com/150' /></Td>
+                <Td fontSize={{base: '16', md: '18'}}><Link href={`${item.href}access_token=${accessToken}`}>{item.name}</Link></Td>
+                <Td>
+                  <Image 
+                    src={itemType==='Artists' ? item.images[0].url : item.album.images[0].url} 
+                    boxSize={{base: '40px', md: '60px'}} 
+                    borderRadius='full' 
+                    fallbackSrc='https://via.placeholder.com/150' 
+                  />
+                </Td>
               </Tr>
             ))}
           </Tbody>
