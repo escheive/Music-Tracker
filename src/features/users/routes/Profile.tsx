@@ -2,6 +2,7 @@ import { useAuthContext } from "@/context/AuthProvider";
 import { useUserContext } from "@/context/UserProvider";
 import { useEffect } from "react";
 import useSpotifyAPI from "@/api/spotify";
+import { TopItemsList } from "@/components/list/TopItemsList";
 
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
 
@@ -42,6 +43,8 @@ export const Profile = () => {
     
   }, [spotify, accessToken]);
 
+  console.log(topItems)
+
   return (
     <>
       <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
@@ -59,6 +62,7 @@ export const Profile = () => {
         ) : null}
         {topItems ? (
           <>
+          <TopItemsList itemType='Artists' items={topItems.artists.items} />
           {topItems.artists.items.map((artist) => (
             <p>{artist.name}</p>
           ))}
