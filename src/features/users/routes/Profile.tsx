@@ -1,15 +1,21 @@
 import { useAuthContext } from "@/providers/AuthProvider";
 import { useUserContext } from "@/providers/UserProvider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
 
-import { Box, Button, Heading, Text, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Button, Heading, Text, Grid, GridItem, Link } from "@chakra-ui/react";
 
 export const Profile = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
   const { profileData, storeProfileData, topItems, storeTopItems } = useUserContext();
-  const spotify = useSpotifyAPI(accessToken, refreshToken);
+  const spotify = useSpotifyAPI();
+  const [additionalItems, setAdditionalItems] = useState(null);
+
+  const loadMoreItems = async () => {
+    const moreTopItems = await spotify.fetchMoreTopItems();
+    setAdditionalItems(moreTopItems)
+  }
 
   // Checks for tokens and stores them if not stored yet
   useEffect(() => {
@@ -43,8 +49,6 @@ export const Profile = () => {
     
   }, [spotify, accessToken]);
 
-  console.log(topItems)
-
   return (
     <>
       <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
@@ -61,14 +65,17 @@ export const Profile = () => {
           </>
         ) : null}
         {topItems ? (
-          <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
-            <GridItem w='100%' noOfLines={1}>
-              <TopItemsList itemType='Artists' items={topItems.artists.items} />
-            </GridItem>
-            <GridItem w='100%' noOfLines={1}>
-              <TopItemsList itemType='Tracks' items={topItems.tracks.items} />
-            </GridItem>
-          </Grid>
+          <>
+            <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
+              <GridItem w='100%' noOfLines={1}>
+                <TopItemsList itemType='Artists' items={topItems.artists.items} additionalItems={additionalItems?.artists.items} />
+              </GridItem>
+              <GridItem w='100%' noOfLines={1}>
+                <TopItemsList itemType='Tracks' items={topItems.tracks.items} additionalItems={additionalItems?.tracks.items} />
+              </GridItem>
+            </Grid>
+            <Link onClick={loadMoreItems} m={8}>Load More</Link>
+          </>
         ) : null}
         
       </Box>

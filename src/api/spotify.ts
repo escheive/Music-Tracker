@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { useAuthContext } from '@/providers/AuthProvider';
 
-const useSpotifyAPI = (accessToken, storeAccessToken, refreshToken, storeRefreshToken) => {
+const useSpotifyAPI = () => {
+  const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
   const apiUrl = 'https://api.spotify.com/v1';
 
   const getProfile = async () => {
@@ -55,6 +57,37 @@ const useSpotifyAPI = (accessToken, storeAccessToken, refreshToken, storeRefresh
     }
   };
 
+  const fetchMoreTopItems = async () => {
+    const topArtistsUrl = `${apiUrl}/me/top/artists?limit=30&offset=20`;
+    const topTracksUrl = `${apiUrl}/me/top/tracks?limit=30&offset=20`;
+
+    const options = {
+      method: 'get',
+      url: topArtistsUrl,
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+      },
+    }
+
+    try {
+      const moreTopItems = {artists: null, tracks: null};
+      const topArtistsResponse = await axios(options);
+      options.url = topTracksUrl;
+      const topTracksResponse = await axios(options);
+      moreTopItems.artists = topArtistsResponse.data;
+      moreTopItems.tracks = topTracksResponse.data;
+
+      return moreTopItems;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        handleExpiredToken(getUsersTopItems);
+      } else {
+        console.error('Error fetching top items:', error.response.status);
+        throw error;
+      }
+    }
+  };
+
   const handleExpiredToken = async (callback) => {
     // Refresh auth token
     try {
@@ -74,16 +107,7 @@ const useSpotifyAPI = (accessToken, storeAccessToken, refreshToken, storeRefresh
     }
   }
 
-  return { getProfile, getUsersTopItems };
+  return { getProfile, getUsersTopItems, fetchMoreTopItems };
 };
 
 export default useSpotifyAPI;
-
-const refreshSpotifyAuthenticationToken = (callback) => {
-  const refreshBody = querystring.stringify({
-    grant_type: 'refresh_token',
-    refresh_token: refresh_token,
-  });
-
-  
-}

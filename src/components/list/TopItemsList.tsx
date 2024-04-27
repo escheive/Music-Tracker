@@ -15,15 +15,9 @@ import {
   Link,
   Box
 } from '@chakra-ui/react';
+import useSpotifyAPI from '@/api/spotify';
 
-export const TopItemsList = ({ itemType, items }) => {
-  const { accessToken } = useAuthContext();
-  const [additionalItems, setAdditionalItems] = useState();
-  console.log(items)
-
-  const loadMoreItems = () => {
-    
-  }
+export const TopItemsList = ({ itemType, items, additionalItems }) => {
 
   return (
     <>
@@ -51,7 +45,7 @@ export const TopItemsList = ({ itemType, items }) => {
                 </Td>
               </Tr>
             ))}
-            
+
             {additionalItems && additionalItems.map((item, i) => (
               <Tr key={item.name} h='10%' w='100%'>
                 <Td fontSize={{base: '16', md: '18'}}>{i + 21}</Td>
@@ -67,11 +61,6 @@ export const TopItemsList = ({ itemType, items }) => {
             ))}
           </Tbody>
           <Tfoot>
-            <Tr>
-              <Th></Th>
-              <Th><Link onClick={loadMoreItems}>Load More</Link></Th>
-              <Th></Th>
-            </Tr>
             <Tr>
               <Th fontSize={{base: '16', md: '18'}}>#</Th>
               <Th fontSize={{base: '16', md: '18'}}>{itemType}</Th>
