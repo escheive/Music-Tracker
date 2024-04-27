@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const useSpotifyAPI = (accessToken, refreshToken) => {
+const useSpotifyAPI = (accessToken, storeAccessToken, refreshToken, storeRefreshToken) => {
   const apiUrl = 'https://api.spotify.com/v1';
 
   const getProfile = async () => {
@@ -15,8 +15,12 @@ const useSpotifyAPI = (accessToken, refreshToken) => {
       const response = await axios(options);
       return response.data;
     } catch (error) {
-      console.error('Error fetching profile:', error);
-      throw error;
+      if (error.response && error.response.status === 401) {
+        handleExpiredToken(getUsersTopItems);
+      } else {
+        console.error('Error fetching top items:', error.response.status);
+        throw error;
+      }
     }
   };
 
@@ -43,35 +47,32 @@ const useSpotifyAPI = (accessToken, refreshToken) => {
       return usersTopItems;
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // Refresh auth token
-        try {
-          console.log('401 error')
-          // Hit backend route for refreshing access token
-          const refreshTokenResponse = await axios.get('http://localhost:3001/refresh_token', {
-            params: {
-              refresh_token: refreshToken
-            }
-          });
-          console.log(refreshTokenResponse)
-          // Grab new access token from response
-          const newAccessToken = refreshTokenResponse.data.access_token;
-          // Update header with new access token
-          options.headers.Authorization = 'Bearer ' + newAccessToken;
-
-          // Retry the function with refreshed token
-          const newResponse = await axios.get(`${apiUrl}/me/top/artists`);
-
-          console.log(newResponse.data)
-
-        } catch (error) {
-          console.error('Error refreshing access token: ', error)
-        }
+        handleExpiredToken(getUsersTopItems);
       } else {
         console.error('Error fetching top items:', error.response.status);
         throw error;
       }
     }
   };
+
+  const handleExpiredToken = async (callback) => {
+    // Refresh auth token
+    try {
+      console.log('401 error')
+      // Hit backend route for refreshing access token
+      const refreshTokenResponse = await axios.get('http://localhost:3001/refresh_token', {
+        params: {
+          refresh_token: refreshToken
+        }
+      });
+      // Grab new access token from response
+      const newAccessToken = refreshTokenResponse.data.access_token;
+      storeAccessToken(newAccessToken);
+      callback()
+    } catch (error) {
+      console.error('Error refreshing access token: ', error)
+    }
+  }
 
   return { getProfile, getUsersTopItems };
 };
