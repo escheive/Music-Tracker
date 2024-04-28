@@ -11,6 +11,7 @@ export const Profile = () => {
   const { profileData, storeProfileData, topItems, storeTopItems } = useUserContext();
   const spotify = useSpotifyAPI();
   const [additionalItems, setAdditionalItems] = useState(null);
+  const [showTopItems, setShowTopItems] = useState(true);
 
   const loadMoreItems = async () => {
     const moreTopItems = await spotify.fetchMoreTopItems();
@@ -51,6 +52,10 @@ export const Profile = () => {
     
   }, [spotify, accessToken]);
 
+  const handleShowTopItems = () => {
+    setShowTopItems(!showTopItems);
+  };
+
   return (
     <>
       <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
@@ -66,7 +71,8 @@ export const Profile = () => {
             <a href={profileData.external_urls.spotify} target="blank">Open on Spotify</a>
           </>
         ) : null}
-        {topItems ? (
+        <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
+        {topItems && showTopItems ? (
           <>
             <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
               <GridItem w='100%' noOfLines={1}>

@@ -19,12 +19,10 @@ import useSpotifyAPI from '@/api/spotify';
 
 export const TopItemsList = ({ itemType, items, additionalItems }) => {
 
-  console.log(items)
-
   return (
     <>
       <TableContainer whiteSpace='wrap'>
-        <Table variant='striped' colorScheme='teal'>
+        <Table variant='striped' colorScheme='alternatePurple'>
           <TableCaption placement='top'>Top {itemType}</TableCaption>
           <Thead>
             <Tr>

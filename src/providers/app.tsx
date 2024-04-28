@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { ChakraProvider, Spinner } from '@chakra-ui/react';
+import { ChakraProvider, Spinner, extendTheme } from '@chakra-ui/react';
 import { UserContextProvider } from '@/providers/UserProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { commonRoutes } from '@/routes';
@@ -30,6 +30,23 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     }
   ])
 
+  const theme = extendTheme({
+    colors: {
+      alternatePurple: {
+        50: '#ffe5fe',
+        100: '#f8b5fd',
+        200: '#ee84f9',
+        300: '#e254f7',
+        400: '#d226f5',
+        500: '#b112dc',
+        600: '#850cab',
+        700: '#5b077a',
+        800: '#35024a',
+        900: '#16001c',
+      }
+    },
+  })
+
   return (
     <React.Suspense
       fallback={
@@ -38,7 +55,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         </div>
       }
     >       
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <AuthProvider>
           <UserContextProvider>
             <RouterProvider router={router} />
