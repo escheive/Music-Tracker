@@ -5,6 +5,8 @@ type UserContextType = {
   storeProfileData: (profileData: {}) => void;
   topItems: {} | null;
   storeTopItems: (topItems: {}) => void;
+  recentlyPlayed: {} | null;
+  storeRecentlyPlayed: (recentlyPlayed: {}) => void;
 };
 
 
@@ -13,6 +15,8 @@ const UserContext = createContext<UserContextType>({
   storeProfileData: (profileData: any) => {},
   topItems: null,
   storeTopItems: (topItems: any) => {},
+  recentlyPlayed: null,
+  storeRecentlyPlayed: (recentlyPlayed: any) => {},
 });
 
 export const useUserContext = () => {
@@ -26,6 +30,7 @@ export const useUserContext = () => {
 const UserContextProvider = ({ children }: any) => {
   const [profileData, setProfileData] = useState(null);
   const [topItems, setTopItems] = useState(null);
+  const [recentlyPlayed, setRecentlyPlayed] = useState(null);
 
   const storeProfileData = (profileData: any) => {
     setProfileData(profileData);
@@ -35,12 +40,18 @@ const UserContextProvider = ({ children }: any) => {
     setTopItems(topItems);
   };
 
+  const storeRecentlyPlayed =(recentlyPlayed: any) => {
+    setRecentlyPlayed(recentlyPlayed);
+  };
+
   return (
     <UserContext.Provider value={{ 
       profileData, 
       storeProfileData,
       topItems,
-      storeTopItems
+      storeTopItems,
+      recentlyPlayed,
+      storeRecentlyPlayed,
     }}>
       {children}
     </UserContext.Provider>

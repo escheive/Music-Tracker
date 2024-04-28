@@ -3,22 +3,22 @@ import { useUserContext } from "@/providers/UserProvider";
 import { useEffect, useState } from "react";
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
+import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
 import { Box, Button, Heading, Text, Grid, GridItem, Link } from "@chakra-ui/react";
 
 export const Profile = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
-  const { profileData, storeProfileData, topItems, storeTopItems } = useUserContext();
+  const { profileData, storeProfileData, topItems, storeTopItems, recentlyPlayed, storeRecentlyPlayed } = useUserContext();
   const spotify = useSpotifyAPI();
   const [additionalItems, setAdditionalItems] = useState(null);
   const [showTopItems, setShowTopItems] = useState(true);
+  const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
 
   const loadMoreItems = async () => {
     const moreTopItems = await spotify.fetchMoreTopItems();
     setAdditionalItems(moreTopItems)
   }
-
-  console.log(profileData)
 
   // Checks for tokens and stores them if not stored yet
   useEffect(() => {
@@ -37,10 +37,12 @@ export const Profile = () => {
       if (!profileData) {
         const fetchProfileData = async () => {
           try {
-            const profile = await spotify.getProfile();
-            storeProfileData(profile);
-            const topItems = await spotify.getUsersTopItems();
-            storeTopItems(topItems);
+            const fetchedProfile = await spotify.getProfile();
+            storeProfileData(fetchedProfile);
+            const fetchedRecentlyPlayed = await spotify.getUsersRecentlyPlayed();
+            storeRecentlyPlayed(fetchedRecentlyPlayed);
+            const fetchedTopItems = await spotify.getUsersTopItems();
+            storeTopItems(fetchedTopItems);
           } catch (error) {
             console.error('Error fetching profile data: ', error);
           }    
@@ -71,7 +73,13 @@ export const Profile = () => {
             <a href={profileData.external_urls.spotify} target="blank">Open on Spotify</a>
           </>
         ) : null}
+
+        {recentlyPlayed && showRecentlyPlayed ? (
+          <RecentlyPlayedList recentlyPlayed={recentlyPlayed.items} />
+        ) : null}
+
         <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
+
         {topItems && showTopItems ? (
           <>
             <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>

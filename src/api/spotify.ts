@@ -17,14 +17,27 @@ const useSpotifyAPI = () => {
       const response = await axios(options);
       return response.data;
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        handleExpiredToken(getUsersTopItems);
-      } else {
-        console.error('Error fetching top items:', error.response.status);
-        throw error;
-      }
+      handleError(error, getProfile)
     }
   };
+
+  const getUsersRecentlyPlayed = async () => {
+    const recentlyPlayedUrl = `${apiUrl}/me/player/recently-played?limit=50`;
+    const options = {
+      method: 'get',
+      url: recentlyPlayedUrl,
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+      },
+    }
+
+    try {
+      const usersRecentlyPlayed = await axios(options);
+      return usersRecentlyPlayed.data;
+    } catch (error) {
+      handleError(error, getUsersRecentlyPlayed)
+    }
+  }
 
   const getUsersTopItems = async () => {
     const topArtistsUrl = `${apiUrl}/me/top/artists`;
@@ -48,12 +61,7 @@ const useSpotifyAPI = () => {
 
       return usersTopItems;
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        handleExpiredToken(getUsersTopItems);
-      } else {
-        console.error('Error fetching top items:', error.response.status);
-        throw error;
-      }
+      handleError(error, getUsersTopItems)
     }
   };
 
@@ -79,14 +87,17 @@ const useSpotifyAPI = () => {
 
       return moreTopItems;
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        handleExpiredToken(getUsersTopItems);
-      } else {
-        console.error('Error fetching top items:', error.response.status);
-        throw error;
-      }
+      handleError(error, fetchMoreTopItems)
     }
   };
+
+  const handleError = (error, callback) => {
+    if (error.response && error.response.status === 401) {
+      handleExpiredToken(callback);
+    } else {
+      console.error('Error fetching data from spotify api: ,', error.response);
+    }
+  }
 
   const handleExpiredToken = async (callback) => {
     // Refresh auth token
@@ -107,7 +118,7 @@ const useSpotifyAPI = () => {
     }
   }
 
-  return { getProfile, getUsersTopItems, fetchMoreTopItems };
+  return { getProfile, getUsersTopItems, fetchMoreTopItems, getUsersRecentlyPlayed };
 };
 
 export default useSpotifyAPI;

@@ -21,7 +21,7 @@ export const TopItemsList = ({ itemType, items, additionalItems }) => {
 
   return (
     <>
-      <TableContainer whiteSpace='wrap'>
+      <TableContainer whiteSpace='wrap' height='100vh' overflowY='auto'>
         <Table variant='striped' colorScheme='alternatePurple'>
           <TableCaption placement='top'>Top {itemType}</TableCaption>
           <Thead>
