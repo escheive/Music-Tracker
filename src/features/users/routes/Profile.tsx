@@ -52,10 +52,14 @@ export const Profile = () => {
       }
     }
     
-  }, [spotify, accessToken]);
+  }, [accessToken]);
 
   const handleShowTopItems = () => {
     setShowTopItems(!showTopItems);
+  };
+
+  const handleShowRecentlyPlayed = () => {
+    setShowRecentlyPlayed(!showRecentlyPlayed);
   };
 
   return (
@@ -74,14 +78,21 @@ export const Profile = () => {
           </>
         ) : null}
 
+        
+        <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
+
         {recentlyPlayed && showRecentlyPlayed ? (
-          <RecentlyPlayedList recentlyPlayed={recentlyPlayed.items} />
+          <>
+            <Heading>Recently Played Tracks</Heading>
+            <RecentlyPlayedList recentlyPlayed={recentlyPlayed.items} />
+          </>
         ) : null}
 
         <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
 
         {topItems && showTopItems ? (
           <>
+            <Heading>Top Artists And Tracks</Heading>
             <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
               <GridItem w='100%' noOfLines={1}>
                 <TopItemsList itemType='Artists' items={topItems.artists.items} additionalItems={additionalItems?.artists.items} />

@@ -1,11 +1,15 @@
 import axios from 'axios';
 import { useAuthContext } from '@/providers/AuthProvider';
 
+const MAX_RETRIES = 3;
+let retryCount = 0;
+
+
 const useSpotifyAPI = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
   const apiUrl = 'https://api.spotify.com/v1';
 
-  const getProfile = async () => {
+  const getProfile = async (newAccessToken = null) => {
     const options = {
       method: 'get',
       url: `${apiUrl}/me`,
@@ -93,28 +97,37 @@ const useSpotifyAPI = () => {
 
   const handleError = (error, callback) => {
     if (error.response && error.response.status === 401) {
-      handleExpiredToken(callback);
+      handleExpiredToken()
+        .then((newAccessToken) => {
+          retryCount = 0;
+          callback()
+        })
     } else {
       console.error('Error fetching data from spotify api: ,', error.response);
     }
   }
 
-  const handleExpiredToken = async (callback) => {
-    // Refresh auth token
-    try {
-      console.log('401 error')
-      // Hit backend route for refreshing access token
-      const refreshTokenResponse = await axios.get('http://localhost:3001/refresh_token', {
-        params: {
-          refresh_token: refreshToken
-        }
-      });
-      // Grab new access token from response
-      const newAccessToken = refreshTokenResponse.data.access_token;
-      storeAccessToken(newAccessToken);
-      callback()
-    } catch (error) {
-      console.error('Error refreshing access token: ', error)
+  const handleExpiredToken = async () => {
+    if (retryCount < MAX_RETRIES) {
+      retryCount++;
+      console.log(`Retrying to refresh access token, attempt: ${retryCount}`);
+      // Refresh auth token
+      try {
+        console.error('401 error');
+        // Hit backend route for refreshing access token
+        const refreshTokenResponse = await axios.get('http://localhost:3001/refresh_token', {
+          params: {
+            refresh_token: refreshToken
+          }
+        });
+        // Grab new access token from response
+        const newAccessToken = refreshTokenResponse.data.access_token;
+        storeAccessToken(newAccessToken);
+      } catch (error) {
+        console.error('Error refreshing access token: ', error)
+      }
+    } else {
+      console.error('Max retry attempts reached to refresh access token.');
     }
   }
 
