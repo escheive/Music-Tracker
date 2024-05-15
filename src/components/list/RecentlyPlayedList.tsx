@@ -33,22 +33,26 @@ export const RecentlyPlayedList = ({ recentlyPlayed }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {recentlyPlayed.map((item, i) => (
-              <Tr key={item.name} h='10%' w='100%'>
-                <Td fontSize={{base: '16', md: '18'}}>{i + 1}</Td>
-                <Td fontSize={{base: '16', md: '18'}}><Link href={item.track.external_urls?.spotify} target='_blank'>{item.track.name}</Link></Td>
-                <Td fontSize={{base: '16', md: '18'}}><Link href={item.track.artists[0]?.external_urls?.spotify} target='_blank'>{item.track.artists[0]?.name}</Link></Td>
-                <Td>
-                  <Link href={item.track.album.external_urls?.spotify} target='_blank'>
-                    <Image 
-                      src={item.track.album?.images[0]?.url} 
-                      boxSize={{base: '40px', md: '60px'}} 
-                      fallbackSrc='https://via.placeholder.com/150' 
-                    />
-                  </Link>
-                </Td>
-              </Tr>
-            ))}
+            {recentlyPlayed.map((item, i) => {
+              const dateListened = new Date(item.played_at).toLocaleString();
+
+              return (
+                <Tr key={`recently played ${item.name, i}`} h='10%' w='100%'>
+                  <Td fontSize={{base: '16', md: '18'}}>{dateListened}</Td>
+                  <Td fontSize={{base: '16', md: '18'}}><Link href={item.track.external_urls?.spotify} target='_blank'>{item.track.name}</Link></Td>
+                  <Td fontSize={{base: '16', md: '18'}}><Link href={item.track.artists[0]?.external_urls?.spotify} target='_blank'>{item.track.artists[0]?.name}</Link></Td>
+                  <Td>
+                    <Link href={item.track.album.external_urls?.spotify} target='_blank'>
+                      <Image 
+                        src={item.track.album?.images[0]?.url} 
+                        boxSize={{base: '40px', md: '60px'}} 
+                        fallbackSrc='https://via.placeholder.com/150' 
+                      />
+                    </Link>
+                  </Td>
+                </Tr>
+              )
+            })}
           </Tbody>
         </Table>
       </TableContainer>

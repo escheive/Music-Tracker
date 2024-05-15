@@ -6,6 +6,9 @@ type AuthContextType = {
   refreshToken: string;
   storeRefreshToken: (refreshToken: string) => void;
   handleUserLogout: () => void;
+  session: any;
+  setSession: (session: any) => void;
+  
 };
 
 
@@ -15,6 +18,9 @@ const AuthContext = createContext<AuthContextType>({
   refreshToken: '',
   storeRefreshToken: (_refreshToken: string) => {},
   handleUserLogout: () => {},
+  session: null,
+  setSession: (session: any) => {},
+  
 });
 
 export const useAuthContext = () => {
@@ -28,6 +34,7 @@ export const useAuthContext = () => {
 const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState('');
   const [refreshToken, setRefreshToken] = useState('');
+  const [session, setSession] = useState(null);
 
   const storeAccessToken = (token) => {
     setAccessToken(token);
@@ -47,7 +54,9 @@ const AuthProvider = ({ children }) => {
     storeAccessToken, 
     refreshToken, 
     storeRefreshToken,
-    handleUserLogout
+    handleUserLogout,
+    session,
+    setSession
   }
 
   return (

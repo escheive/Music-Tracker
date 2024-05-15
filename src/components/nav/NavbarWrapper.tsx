@@ -1,5 +1,5 @@
 'use client';
-import { Outlet, NavLink as RouterLink } from 'react-router-dom';
+import { Outlet, NavLink as RouterLink, redirect, useNavigate } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -59,6 +59,7 @@ const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { handleUserLogout } = useAuthContext();
   const { profileData } = useUserContext();
+  const navigate = useNavigate();
 
   // Function to delete access token and redirect to home page
   const handleLogout = () => {
@@ -67,18 +68,30 @@ const NavBar = () => {
     window.location.href='/'; // Redirects to home page
   }
 
-  // Function to login users
+  // Function to navigate to login page
   const handleLogin = async () => {
-    const state = generateRandomString(16); // Random 16 character string
-    const scope = 'user-read-private user-read-email playlist-read-private user-follow-read user-top-read user-read-recently-played user-library-read user-read-currently-playing user-read-playback-state user-read-playback-position'; // Scope of permissions requested from spotify
-
-    try {
-      const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&response_type=code&scope=${scope}`; // Spotify auth url
-      window.location.href = authorizationUrl; // Navigate users to spotify auth url
-    } catch (error) {
-      console.error('Error initiating login', error);
-    }
+    navigate('/auth/login');
   }
+
+  // // Function to delete access token and redirect to home page
+  // const handleLogout = () => {
+  //   handleUserLogout(); // Deletes stored access token and refresh token
+  //   window.open('https://www.spotify.com/us/account/apps/', '_blank'); // Spotify link to remove connected apps
+  //   window.location.href='/'; // Redirects to home page
+  // }
+
+  // // Function to login users
+  // const handleLogin = async () => {
+  //   const state = generateRandomString(16); // Random 16 character string
+  //   const scope = 'user-read-private user-read-email playlist-read-private user-follow-read user-top-read user-read-recently-played user-library-read user-read-currently-playing user-read-playback-state user-read-playback-position'; // Scope of permissions requested from spotify
+
+  //   try {
+  //     const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&response_type=code&scope=${scope}`; // Spotify auth url
+  //     window.location.href = authorizationUrl; // Navigate users to spotify auth url
+  //   } catch (error) {
+  //     console.error('Error initiating login', error);
+  //   }
+  // }
 
   return (
     <>
@@ -120,6 +133,11 @@ const NavBar = () => {
                 ) : (
                   <MenuItem onClick={handleLogin}>Login</MenuItem>
                 )}
+                {/* {profileData ? (
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                ) : (
+                  <MenuItem onClick={handleLogin}>Login</MenuItem>
+                )} */}
                 
               </MenuList>
             </Menu>

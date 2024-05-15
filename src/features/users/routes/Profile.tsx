@@ -62,6 +62,8 @@ export const Profile = () => {
     setShowRecentlyPlayed(!showRecentlyPlayed);
   };
 
+  console.log(recentlyPlayed)
+
   return (
     <>
       <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>

@@ -1,12 +1,11 @@
 // import { Switch } from '@headlessui/react';
-import * as React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, redirect } from 'react-router-dom';
 import * as z from 'zod';
 
 import { Button, Input, Select, Switch, Text } from '@chakra-ui/react';
 
-// import { useTeams } from '@/features/teams';
-// import { useAuth } from '@/lib/auth';
+import supabase from '@/api/supabase';
 
 const schema = z
   .object({
@@ -14,22 +13,13 @@ const schema = z
     firstName: z.string().min(1, 'Required'),
     lastName: z.string().min(1, 'Required'),
     password: z.string().min(1, 'Required'),
-  })
-  .and(
-    z
-      .object({
-        teamId: z.string().min(1, 'Required'),
-      })
-      .or(z.object({ teamName: z.string().min(1, 'Required') }))
-  );
+  });
 
 type RegisterValues = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  teamId?: string;
-  teamName?: string;
 };
 
 type RegisterFormProps = {
@@ -37,42 +27,84 @@ type RegisterFormProps = {
 };
 
 export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
-  // const { register, isRegistering } = useAuth();
-  const [register, isRegistering] = React.useState();
-  const [chooseTeam, setChooseTeam] = React.useState(false);
+  const [values, setValues] = useState<RegisterValues>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
 
-  // const teamsQuery = useTeams({
-  //   config: {
-  //     enabled: chooseTeam,
-  //   },
-  // });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      // Validate form data using Zod schema
+      schema.parse(values);
+
+      // Call supabase API to register the user
+      const { data, error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+      })
+
+      if (error) {
+        throw error;
+      }
+
+      onSuccess: () => {
+        redirect('/')
+      }
+    } catch (error) {
+      console.error('Error registering user:', error.message);
+    }
+  };
 
   return (
     <div>
-          <>
-            <Text>First Name</Text>
-            <Input
-              type="text"
-            />
-            <Text>Last Name</Text>
-            <Input
-              type="text"
-            />
-            <Text>Email Address</Text>
-            <Input
-              type="email"
-            />
-            <Text>Password</Text>
-            <Input
-              type="password"
-            />
+      <form onSubmit={handleSubmit}>
+        <Text>First Name</Text>
+        <Input
+          type='text'
+          name='firstName'
+          value={values.firstName}
+          onChange={handleChange}
+        />
+        <Text>Last Name</Text>
+        <Input
+          type="text"
+          name='lastName'
+          value={values.lastName}
+          onChange={handleChange}
+        />
+        <Text>Email Address</Text>
+        <Input
+          type="email"
+          name='email'
+          value={values.email}
+          onChange={handleChange}
+        />
+        <Text>Password</Text>
+        <Input
+          type="password"
+          name='password'
+          value={values.password}
+          onChange={handleChange}
+        />
 
-            <div>
-              <Button type="submit" className="w-full">
-                Register
-              </Button>
-            </div>
-          </>
+        <div>
+          <Button type="submit">
+            Register
+          </Button>
+        </div>
+      </form>
       <div className="mt-2 flex items-center justify-end">
         <div className="text-sm">
           <Link to="../login" className="font-medium text-blue-600 hover:text-blue-500">
