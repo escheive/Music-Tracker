@@ -1,6 +1,8 @@
 import { useAuthContext } from "@/providers/AuthProvider";
 import { useUserContext } from "@/providers/UserProvider";
 import { useEffect, useState } from "react";
+import MoodChart from "@/components/chart/MoodChart";
+
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
@@ -79,6 +81,8 @@ export const Profile = () => {
             <a href={profileData.external_urls.spotify} target="blank">Open on Spotify</a>
           </>
         ) : null}
+
+        <MoodChart data={[1,2,3,4]} />
 
         
         <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
