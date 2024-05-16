@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useAuthContext } from '@/providers/AuthProvider';
+import { useState } from 'react';
 
 const MAX_RETRIES = 3;
 let retryCount = 0;
@@ -7,6 +8,7 @@ let retryCount = 0;
 
 const useSpotifyAPI = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
+
   const apiUrl = 'https://api.spotify.com/v1';
 
   const getProfile = async (newAccessToken = null) => {
@@ -95,13 +97,11 @@ const useSpotifyAPI = () => {
     }
   };
 
-  const handleError = (error, callback) => {
+  const handleError = async (error, callback) => {
     if (error.response && error.response.status === 401) {
-      handleExpiredToken()
-        .then((newAccessToken) => {
-          retryCount = 0;
-          callback()
-        })
+      await handleExpiredToken()
+      retryCount = 0;
+      // callback()
     } else {
       console.error('Error fetching data from spotify api: ,', error.response);
     }
@@ -117,12 +117,15 @@ const useSpotifyAPI = () => {
         // Hit backend route for refreshing access token
         const refreshTokenResponse = await axios.get('http://localhost:3001/refresh_token', {
           params: {
-            refresh_token: refreshToken
-          }
+            refresh_token: refreshToken,
+            cache: "no-cache"
+          },
         });
+        console.log('new access token', refreshTokenResponse.data.access_token)
         // Grab new access token from response
         const newAccessToken = refreshTokenResponse.data.access_token;
         storeAccessToken(newAccessToken);
+        return newAccessToken;
       } catch (error) {
         console.error('Error refreshing access token: ', error)
       }

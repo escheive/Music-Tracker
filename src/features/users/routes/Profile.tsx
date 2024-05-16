@@ -16,6 +16,7 @@ export const Profile = () => {
   const [additionalItems, setAdditionalItems] = useState(null);
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
+  const [popularityNumbers, setPopularityNumbers] = useState([]);
 
   const loadMoreItems = async () => {
     const moreTopItems = await spotify.fetchMoreTopItems();
@@ -43,6 +44,8 @@ export const Profile = () => {
             storeProfileData(fetchedProfile);
             const fetchedRecentlyPlayed = await spotify.getUsersRecentlyPlayed();
             storeRecentlyPlayed(fetchedRecentlyPlayed);
+            const numbers = await fetchedRecentlyPlayed.items.map(item => item.track.popularity);
+            setPopularityNumbers(numbers);
             const fetchedTopItems = await spotify.getUsersTopItems();
             storeTopItems(fetchedTopItems);
           } catch (error) {
@@ -64,8 +67,6 @@ export const Profile = () => {
     setShowRecentlyPlayed(!showRecentlyPlayed);
   };
 
-  console.log(recentlyPlayed)
-
   return (
     <>
       <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
@@ -82,9 +83,8 @@ export const Profile = () => {
           </>
         ) : null}
 
-        <MoodChart data={[1,2,3,4]} />
-
-        
+        <MoodChart title='Popularity' data={popularityNumbers} />
+ 
         <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
 
         {recentlyPlayed && showRecentlyPlayed ? (
