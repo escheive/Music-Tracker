@@ -1,7 +1,7 @@
 import { useAuthContext } from "@/providers/AuthProvider";
 import { useUserContext } from "@/providers/UserProvider";
 import { useEffect, useState } from "react";
-import MoodChart from "@/components/chart/MoodChart";
+import PopularityChart from "@/components/chart/PopularityChart";
 
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
@@ -83,7 +83,7 @@ export const Profile = () => {
           </>
         ) : null}
 
-        <MoodChart title='Popularity' data={popularityNumbers} />
+        <PopularityChart title='Popularity' data={popularityNumbers} />
  
         <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
 

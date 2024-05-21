@@ -18,8 +18,6 @@ import {
 
 export const RecentlyPlayedList = ({ recentlyPlayed }) => {
 
-  console.log(recentlyPlayed)
-
   return (
     <>
       <TableContainer whiteSpace='wrap' height='100vh' overflowY='auto'>
