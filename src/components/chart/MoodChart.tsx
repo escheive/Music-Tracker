@@ -83,19 +83,6 @@ const MoodChart = ({
       .attr('stroke-width', 2)
       .attr('d', concatenatedPath);
 
-    svg.append('g')
-      .attr('transform', `translate(${centerX}, ${centerY})`)
-      .selectAll('circle')
-      .data(categories)
-      .enter()
-      .append('circle')
-      .attr('cx', (d, i) => radius * Math.cos(angleScale(i - 1)))
-      .attr('cy', (d, i) => radius * Math.sin(angleScale(i - 1)))
-      .attr('r', 5)
-      .attr('fill', 'white')
-      .attr('stroke', (d, i) => colorScale(i))
-      .attr('stroke-width', 2);
-
     // Add category labels
     svg.append('g')
       .attr('transform', `translate(${centerX}, ${centerY})`)
@@ -103,11 +90,11 @@ const MoodChart = ({
       .data(categories)
       .enter()
       .append('text')
-      .attr('x', (d, i) => (radius + 10) * Math.cos(angleScale(i - 1)))
+      .text(d => d)
+      .attr('x', (d, i) => (radius + 30) * Math.cos(angleScale(i - 1)))
       .attr('y', (d, i) => (radius + 10) * Math.sin(angleScale(i - 1)))
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
-      .text(d => d)
       .style('font-size', '12px')
       .style('font-weight', 'bold');
 
