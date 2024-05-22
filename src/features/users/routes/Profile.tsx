@@ -2,12 +2,21 @@ import { useAuthContext } from "@/providers/AuthProvider";
 import { useUserContext } from "@/providers/UserProvider";
 import { useEffect, useState } from "react";
 import PopularityChart from "@/components/chart/PopularityChart";
+import MoodChart from "@/components/chart/MoodChart";
 
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
 import { Box, Button, Heading, Text, Grid, GridItem, Link } from "@chakra-ui/react";
+
+const mood = [
+  { Happiness: 80, Sadness: 30, Energetic: 60, Calm: 20 },
+  { Happiness: 70, Sadness: 40, Energetic: 50, Calm: 100 },
+  { Happiness: 50, Sadness: 10, Energetic: 90, Calm: 10 },
+]
+
+const moodCategories = ['Happiness', 'Energetic', 'Sadness', 'Calm']
 
 export const Profile = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
@@ -84,6 +93,7 @@ export const Profile = () => {
         ) : null}
 
         <PopularityChart title='Popularity' data={popularityNumbers} />
+        <MoodChart data={mood} categories={moodCategories} />
  
         <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
 
