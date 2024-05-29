@@ -26,6 +26,7 @@ export const Profile = () => {
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
   const [popularityNumbers, setPopularityNumbers] = useState([]);
+  const [audioFeatures, setAudioFeatures] = useState([]);
 
   const loadMoreItems = async () => {
     const moreTopItems = await spotify.fetchMoreTopItems();
@@ -51,12 +52,19 @@ export const Profile = () => {
           try {
             const fetchedProfile = await spotify.getProfile();
             storeProfileData(fetchedProfile);
+
             const fetchedRecentlyPlayed = await spotify.getUsersRecentlyPlayed();
             storeRecentlyPlayed(fetchedRecentlyPlayed);
+
             const numbers = await fetchedRecentlyPlayed.items.map(item => item.track.popularity);
             setPopularityNumbers(numbers);
+
             const fetchedTopItems = await spotify.getUsersTopItems();
             storeTopItems(fetchedTopItems);
+
+            const recentlyPlayedTrackIds = await fetchedRecentlyPlayed.items.map((recent) => recent.track.id)
+            const fetchedAudioFeatures = await spotify.fetchAudioFeatures(recentlyPlayedTrackIds)
+            setAudioFeatures(fetchedAudioFeatures.audio_features);
           } catch (error) {
             console.error('Error fetching profile data: ', error);
           }    
@@ -93,7 +101,7 @@ export const Profile = () => {
         ) : null}
 
         <PopularityChart title='Popularity' data={popularityNumbers} />
-        <MoodChart data={mood} categories={moodCategories} />
+        <MoodChart data={audioFeatures} categories={moodCategories} />
  
         <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
 

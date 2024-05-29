@@ -97,6 +97,28 @@ const useSpotifyAPI = () => {
     }
   };
 
+  const fetchAudioFeatures = async (trackIds) => {
+    // Map the track IDs to form a comma-separated string
+    const trackIdsString = trackIds.join(',');
+
+    const audioFeaturesUrl = `${apiUrl}/audio-features?ids=${trackIdsString}`;
+
+    const options = {
+      method: 'get',
+      url: audioFeaturesUrl,
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+      },
+    }
+
+    try {
+      const audioFeaturesResponse = await axios(options);
+      return audioFeaturesResponse.data;
+    } catch (error) {
+      handleError(error, fetchMoreTopItems)
+    }
+  }
+
   const handleError = async (error, callback) => {
     if (error.response && error.response.status === 401) {
       await handleExpiredToken()
@@ -134,7 +156,7 @@ const useSpotifyAPI = () => {
     }
   }
 
-  return { getProfile, getUsersTopItems, fetchMoreTopItems, getUsersRecentlyPlayed };
+  return { getProfile, getUsersTopItems, fetchMoreTopItems, getUsersRecentlyPlayed, fetchAudioFeatures };
 };
 
 export default useSpotifyAPI;
