@@ -5,6 +5,7 @@ import { InfoOutlineIcon } from '@chakra-ui/icons';
 
 const LineChart = ({
   title,
+  description,
   data,
   width = 640,
   height = 400,
@@ -85,7 +86,7 @@ const LineChart = ({
     <>
       <Flex flexDirection='row' justifyContent='center' alignItems='center'>
         <Heading>{title ? title : null}</Heading>
-        <Tooltip hasArrow label='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.' fontSize='md'>
+        <Tooltip hasArrow label={description} fontSize='md'>
           <InfoOutlineIcon boxSize={6} />
         </Tooltip>
       </Flex>

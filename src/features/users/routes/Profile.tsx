@@ -3,6 +3,7 @@ import { useUserContext } from "@/providers/UserProvider";
 import { useEffect, useState } from "react";
 import PopularityChart from "@/components/chart/PopularityChart";
 import MoodChart from "@/components/chart/MoodChart";
+import LineChart from "@/components/chart/LineChart";
 
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
@@ -119,8 +120,20 @@ export const Profile = () => {
 
         {recentlyPlayed ? (
           <>
-            <PopularityChart title='Popularity' data={popularityNumbers} />
-            <MoodChart data={recentlyPlayed} categories={moodCategories} />
+            <LineChart 
+              title='Popularity' 
+              description='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.'
+              data={popularityNumbers} 
+            />
+            <MoodChart 
+              data={recentlyPlayed} 
+              categories={moodCategories} 
+            />
+            <LineChart 
+              title='Mood Over Time' 
+              data={popularityNumbers} 
+              description='Mood over time'
+            />
             
             {showRecentlyPlayed ? (
               <>
