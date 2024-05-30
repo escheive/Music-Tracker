@@ -18,6 +18,19 @@ const mood = [
 
 const moodCategories = ['Happiness', 'Energetic', 'Sadness', 'Calm']
 
+const fetchAndCombineRecentlyPlayedSongs = async (spotify) => {
+  const recentlyPlayed = await spotify.getUsersRecentlyPlayed();
+  const recentlyPlayedTrackIds = recentlyPlayed.items.map(track => track.track.id);
+  const recentlyPlayedAudioFeatures = await spotify.fetchAudioFeatures(recentlyPlayedTrackIds);
+
+  const combinedData = recentlyPlayed.items.map(track => {
+    const features = recentlyPlayedAudioFeatures.audio_features.find(feature => feature.id === track.track.id);
+    return { ...track.track, ...features };
+  });
+
+  return combinedData;
+}
+
 export const Profile = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
   const { profileData, storeProfileData, topItems, storeTopItems, recentlyPlayed, storeRecentlyPlayed } = useUserContext();
@@ -53,18 +66,20 @@ export const Profile = () => {
             const fetchedProfile = await spotify.getProfile();
             storeProfileData(fetchedProfile);
 
-            const fetchedRecentlyPlayed = await spotify.getUsersRecentlyPlayed();
+            // const fetchedRecentlyPlayed = await spotify.getUsersRecentlyPlayed();
+            const fetchedRecentlyPlayed = await fetchAndCombineRecentlyPlayedSongs(spotify);
             storeRecentlyPlayed(fetchedRecentlyPlayed);
 
-            const numbers = await fetchedRecentlyPlayed.items.map(item => item.track.popularity);
+            const numbers = await fetchedRecentlyPlayed.map(item => item.popularity);
             setPopularityNumbers(numbers);
 
             const fetchedTopItems = await spotify.getUsersTopItems();
             storeTopItems(fetchedTopItems);
 
-            const recentlyPlayedTrackIds = await fetchedRecentlyPlayed.items.map((recent) => recent.track.id)
-            const fetchedAudioFeatures = await spotify.fetchAudioFeatures(recentlyPlayedTrackIds)
-            setAudioFeatures(fetchedAudioFeatures.audio_features);
+            // const recentlyPlayedTrackIds = await fetchedRecentlyPlayed.items.map((recent) => recent.track.id)
+            // const fetchedAudioFeatures = await spotify.fetchAudioFeatures(recentlyPlayedTrackIds)
+            // setAudioFeatures(fetchedAudioFeatures.audio_features);
+
           } catch (error) {
             console.error('Error fetching profile data: ', error);
           }    
@@ -99,16 +114,20 @@ export const Profile = () => {
             <a href={profileData.external_urls.spotify} target="blank">Open on Spotify</a>
           </>
         ) : null}
-
-        <PopularityChart title='Popularity' data={popularityNumbers} />
-        <MoodChart data={audioFeatures} categories={moodCategories} />
  
         <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
 
-        {recentlyPlayed && showRecentlyPlayed ? (
+        {recentlyPlayed ? (
           <>
-            <Heading>Recently Played Tracks</Heading>
-            <RecentlyPlayedList recentlyPlayed={recentlyPlayed.items} />
+            <PopularityChart title='Popularity' data={popularityNumbers} />
+            <MoodChart data={recentlyPlayed} categories={moodCategories} />
+            
+            {showRecentlyPlayed ? (
+              <>
+                <Heading>Recently Played Tracks</Heading>
+                <RecentlyPlayedList recentlyPlayed={recentlyPlayed} />
+              </>
+            ) : null}
           </>
         ) : null}
 

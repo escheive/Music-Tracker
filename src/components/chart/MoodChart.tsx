@@ -13,6 +13,7 @@ const MoodChart = ({
   maxScale = 100, // Maximum scale value for data normalization
 }) => {
   const svgRef = useRef();
+  console.log(data)
 
   useEffect(() => {
     drawChart();
@@ -50,6 +51,7 @@ const MoodChart = ({
       const tempoWeight = 0.2;
       const acousticnessWeight = 0.4;
       const valenceWeight = 0.2;
+      const tempoBreakpoint = 100;
 
       // Normalize loudness to a 0-1 scale (assuming loudness ranges from -60 to 0 dB)
       const normalizedLoudness = (loudness + 60) / 60;
@@ -79,16 +81,14 @@ const MoodChart = ({
       
       // Calculate calm and energetic scores
       calmScore = (acousticness * acousticnessWeight) + ((100 - tempo) / 100 * tempoWeight) + ((60 + loudness) / 120 * loudnessWeight);
+
       energeticScore = (energy * energyWeight) + (tempo / 100 * tempoWeight) + (normalizedLoudness * loudnessWeight) + (valence * valenceWeight);
 
       // Adjust energetic/calm based on tempo
-      const tempoBreakpoint = 100;
       if (tempo >= tempoBreakpoint) {
         energeticScore += (tempo - tempoBreakpoint) / 200; // Adjust as needed
-        energeticScore = Math.min(1, energeticScore); // Cap at 1
       } else {
         calmScore += (tempoBreakpoint - tempo) / 200; // Adjust as needed
-        calmScore = Math.min(1, calmScore); // Cap at 1
       }
 
       // Ensure calmScore and energeticScore are within the 0-1 range
@@ -99,7 +99,6 @@ const MoodChart = ({
     };
     
     const averageData = () => {
-      const numSamples = data.length;
       const scores = { Happiness: 0, Sadness: 0, Calm: 0, Energetic: 0 };
     
       data.forEach(feature => {

@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 
 export const RecentlyPlayedList = ({ recentlyPlayed }) => {
+  console.log(recentlyPlayed)
 
   return (
     <>
@@ -37,12 +38,12 @@ export const RecentlyPlayedList = ({ recentlyPlayed }) => {
               return (
                 <Tr key={`recently played ${item.name, i}`} h='10%' w='100%'>
                   <Td fontSize={{base: '16', md: '18'}}>{dateListened}</Td>
-                  <Td fontSize={{base: '16', md: '18'}}><Link href={item.track.external_urls?.spotify} target='_blank'>{item.track.name}</Link></Td>
-                  <Td fontSize={{base: '16', md: '18'}}><Link href={item.track.artists[0]?.external_urls?.spotify} target='_blank'>{item.track.artists[0]?.name}</Link></Td>
+                  <Td fontSize={{base: '16', md: '18'}}><Link href={item.external_urls?.spotify} target='_blank'>{item.name}</Link></Td>
+                  <Td fontSize={{base: '16', md: '18'}}><Link href={item.artists[0]?.external_urls?.spotify} target='_blank'>{item.artists[0]?.name}</Link></Td>
                   <Td>
-                    <Link href={item.track.album.external_urls?.spotify} target='_blank'>
+                    <Link href={item.album.external_urls?.spotify} target='_blank'>
                       <Image 
-                        src={item.track.album?.images[0]?.url} 
+                        src={item.album?.images[0]?.url} 
                         boxSize={{base: '40px', md: '60px'}} 
                         fallbackSrc='https://via.placeholder.com/150' 
                       />
