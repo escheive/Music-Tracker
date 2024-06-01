@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react';
 
 export const RecentlyPlayedList = ({ recentlyPlayed }) => {
-  console.log(recentlyPlayed)
 
   return (
     <>

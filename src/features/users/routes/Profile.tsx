@@ -2,22 +2,15 @@ import { useAuthContext } from "@/providers/AuthProvider";
 import { useUserContext } from "@/providers/UserProvider";
 import { useEffect, useState } from "react";
 import PopularityChart from "@/components/chart/PopularityChart";
-import MoodChart from "@/components/chart/MoodChart";
+import RadarChart from "@/components/chart/RadarChart";
 import LineChart from "@/components/chart/LineChart";
+import MoodCharts from "../components/MoodCharts";
 
 import useSpotifyAPI from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
 import { Box, Button, Heading, Text, Grid, GridItem, Link } from "@chakra-ui/react";
-
-const mood = [
-  { Happiness: 80, Sadness: 30, Energetic: 60, Calm: 20 },
-  { Happiness: 70, Sadness: 40, Energetic: 50, Calm: 100 },
-  { Happiness: 50, Sadness: 10, Energetic: 90, Calm: 10 },
-]
-
-const moodCategories = ['Happiness', 'Energetic', 'Sadness', 'Calm']
 
 const fetchAndCombineRecentlyPlayedSongs = async (spotify) => {
   const recentlyPlayed = await spotify.getUsersRecentlyPlayed();
@@ -77,10 +70,6 @@ export const Profile = () => {
             const fetchedTopItems = await spotify.getUsersTopItems();
             storeTopItems(fetchedTopItems);
 
-            // const recentlyPlayedTrackIds = await fetchedRecentlyPlayed.items.map((recent) => recent.track.id)
-            // const fetchedAudioFeatures = await spotify.fetchAudioFeatures(recentlyPlayedTrackIds)
-            // setAudioFeatures(fetchedAudioFeatures.audio_features);
-
           } catch (error) {
             console.error('Error fetching profile data: ', error);
           }    
@@ -125,14 +114,9 @@ export const Profile = () => {
               description='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.'
               data={popularityNumbers} 
             />
-            <MoodChart 
-              data={recentlyPlayed} 
-              categories={moodCategories} 
-            />
-            <LineChart 
-              title='Mood Over Time' 
-              data={popularityNumbers} 
-              description='Mood over time'
+            <MoodCharts
+              recentlyPlayed={recentlyPlayed} 
+              popularityNumbers={popularityNumbers}
             />
             
             {showRecentlyPlayed ? (
