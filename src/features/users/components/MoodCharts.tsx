@@ -5,7 +5,16 @@ import LineChart from '@/components/chart/LineChart';
 import { Box } from '@chakra-ui/react';
 
 const MOOD_CATEGORIES = ['Happiness', 'Energetic', 'Sadness', 'Calm']
-const MAX_SCALE=100;
+const MAX_SCALE=50;
+
+// Function to normalize values to a number between 0-1
+const normalize = (value, max, min) => {
+  if (min === max) {
+    return 0;
+  }
+  const clampedValue = Math.max(min, Math.min(value, max));
+  return (clampedValue - min) / (max - min);
+}
 
 const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
   const svgRef = useRef();
@@ -24,15 +33,22 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
     const { acousticness, energy, loudness, speechiness, tempo, valence } = feature;
     
     // Define the weight influence of each audio feature
-    const energyWeight = 0.4;
-    const loudnessWeight = 0.3;
-    const tempoWeight = 0.2;
-    const acousticnessWeight = 0.4;
-    const valenceWeight = 0.2;
-    const tempoBreakpoint = 100;
+    const energyHappySadWeight = 0.25;
+    const loudnessHappySadWeight = 0.25;
+    const valenceHappySadWeight = 0.5;
+
+    // Weights for calm and energy
+    const energyCalmWeight = 0.4
+    const loudnessCalmWeight = 0.3
+    const tempoCalmWeight = 0.2;
+    const acousticnessCalmWeight = 0.1;
+
+    const tempoCalmBreakpoint = 90;
+    const tempoEnergeticBreakpoint = 120;
 
     // Normalize loudness to a 0-1 scale (assuming loudness ranges from -60 to 0 dB)
     const normalizedLoudness = (loudness + 60) / 60;
+    const normalizedTempo = normalize(tempo, 1, 0);
     
     let happyScore = 0;
     let sadScore = 0;
@@ -40,38 +56,72 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
     let energeticScore = 0;
 
     if (valence > 0.7) {
-      happyScore = 0.5 + 0.5 * ((valence - 0.7) / 0.3); // Scale 0.7-1.0 to 0.5-1.0
+      happyScore += valence * valenceHappySadWeight; // Scale 0.7-1.0 to 0-0.5
     } else if (valence < 0.3) {
-      sadScore = 0.5 + 0.5 * ((0.3 - valence) / 0.3); // Scale 0.0-0.3 to 0.5-1.0
+      sadScore += (1 - valence) * valenceHappySadWeight; // Scale 0.0-0.3 to 0-0.5
     } else {
       // If valence is between 0.3 and 0.7, interpolate between happy and sad
-      happyScore = (valence - 0.3) / 0.4; // Scale 0.3-0.7 to 0.0-1.0
-      sadScore = (0.7 - valence) / 0.4; // Scale 0.3-0.7 to 0.0-1.0
+      happyScore += valence * valenceHappySadWeight; // Scale 0.3-0.7 to 0.0-0.5
+      sadScore += (1 - valence) * valenceHappySadWeight; // Scale 0.3-0.7 to 0.0-0.5
     }
 
     // Incorporate energy and loudness into the scores
-    happyScore += energyWeight * energy + loudnessWeight * normalizedLoudness;
-    sadScore -= energyWeight * energy + loudnessWeight * normalizedLoudness;
+    if (energy > 0.7) {
+      happyScore += energy * energyHappySadWeight; // 0.0-0.25
+      energeticScore += energy * energyCalmWeight; // 0-0.4
+    } else if (energy < 0.3) {
+      sadScore += (1 - energy) * energyHappySadWeight; // 0.0-0.25
+      calmScore += (1 - energy) * energyCalmWeight; // 0-0.4
+    } else {
+      happyScore += energy * energyHappySadWeight; // 0.0-0.25
+      sadScore += (1 - energy) * energyHappySadWeight; // 0.0-0.25
+      energeticScore += energy * energyCalmWeight; // 0-0.4
+      calmScore += (1 - energy) * energyCalmWeight; // 0-0.4
+    }
+
+    // Incorporate energy and loudness into the scores
+    if (normalizedLoudness > 0.7) {
+      happyScore += normalizedLoudness * loudnessHappySadWeight; // 0-0.1
+      energeticScore += normalizedLoudness * loudnessCalmWeight; // 0-0.3
+    } else if (normalizedLoudness < 0.3) {
+      sadScore += (1 - normalizedLoudness) * loudnessHappySadWeight; // 0-0.1
+      calmScore += (1 - normalizedLoudness) * loudnessCalmWeight; // 0-0.3
+    } else {
+      happyScore += normalizedLoudness * loudnessHappySadWeight;
+      sadScore += (1 - normalizedLoudness) * loudnessHappySadWeight;
+      energeticScore += normalizedLoudness * loudnessCalmWeight; // 0-0.3
+      calmScore += (1 - normalizedLoudness) * loudnessCalmWeight; // 0-0.3
+    }
 
     // Ensure scores are within the 0-1 range
     happyScore = Math.min(1, Math.max(0, happyScore));
     sadScore = Math.min(1, Math.max(0, sadScore));
     
-    // Calculate calm and energetic scores
-    calmScore = (acousticness * acousticnessWeight) + ((100 - tempo) / 100 * tempoWeight) + ((60 + loudness) / 120 * loudnessWeight);
-
-    energeticScore = (energy * energyWeight) + (tempo / 100 * tempoWeight) + (normalizedLoudness * loudnessWeight) + (valence * valenceWeight);
-
-    // Adjust energetic/calm based on tempo
-    if (tempo >= tempoBreakpoint) {
-      energeticScore += (tempo - tempoBreakpoint) / 200; // Adjust as needed
+    // Calculate calm and energetic scores for tempo
+    if (tempo > tempoEnergeticBreakpoint) {
+      energeticScore += normalizedTempo * tempoCalmWeight; // 0-0.2
+    } else if (tempo < tempoCalmBreakpoint) {
+      calmScore += (1 - normalizedTempo) * tempoCalmWeight; // 0-0.2
     } else {
-      calmScore += (tempoBreakpoint - tempo) / 200; // Adjust as needed
+      // If tempo is between 90 and 120, interpolate for both scores
+      energeticScore += normalizedTempo * tempoCalmWeight; // 0-0.2
+      calmScore += (1 - normalizedTempo) * tempoCalmWeight; // 0-0.2
+    }
+
+    if (acousticness > 0.7) {
+      calmScore += acousticness * acousticnessCalmWeight; // 0-0.1
+    } else if (acousticness < 0.3) {
+      energeticScore += (1 - acousticness) * acousticnessCalmWeight; // 0-0.1
+    } else {
+      calmScore += acousticness * acousticnessCalmWeight; // Scale 0.3-0.7 to 0.0-0.1
+      energeticScore += (1 - acousticness) * acousticnessCalmWeight; // Scale 0.3-0.7 to 0.0-0.1
     }
 
     // Ensure calmScore and energeticScore are within the 0-1 range
     calmScore = Math.min(1, Math.max(0, calmScore));
     energeticScore = Math.min(1, Math.max(0, energeticScore));
+
+    console.log(feature.name, 'loud', normalizedLoudness, 'valence', feature.valence, 'tempo', feature.tempo, 'energy', feature.energy, { happyScore, sadScore, calmScore, energeticScore })
   
     return { happyScore, sadScore, calmScore, energeticScore };
   };
@@ -90,8 +140,12 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
     return scores;
   };
 
-  
   let averagedData = normalizeData(averageData());
+
+
+
+  console.log(averagedData)
+  console.log(popularityNumbers)
 
   return (
     <Box>
