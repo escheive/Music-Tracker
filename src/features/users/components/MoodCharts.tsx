@@ -120,8 +120,6 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
     // Ensure calmScore and energeticScore are within the 0-1 range
     calmScore = Math.min(1, Math.max(0, calmScore));
     energeticScore = Math.min(1, Math.max(0, energeticScore));
-
-    console.log(feature.name, 'loud', normalizedLoudness, 'valence', feature.valence, 'tempo', feature.tempo, 'energy', feature.energy, { happyScore, sadScore, calmScore, energeticScore })
   
     return { happyScore, sadScore, calmScore, energeticScore };
   };

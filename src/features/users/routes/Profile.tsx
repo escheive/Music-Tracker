@@ -19,7 +19,7 @@ const fetchAndCombineRecentlyPlayedSongs = async (spotify) => {
 
   const combinedData = recentlyPlayed.items.map(track => {
     const features = recentlyPlayedAudioFeatures.audio_features.find(feature => feature.id === track.track.id);
-    return { ...track.track, ...features };
+    return { played_at: track.played_at, ...track.track, ...features };
   });
 
   return combinedData;
