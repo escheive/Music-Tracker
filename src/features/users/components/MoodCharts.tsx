@@ -126,6 +126,7 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
 
   const averageData = () => {
     const scores = { Happiness: 0, Sadness: 0, Calm: 0, Energetic: 0 };
+    const dailyScores = {};
   
     recentlyPlayed.forEach(feature => {
       const { happyScore, sadScore, calmScore, energeticScore } = calculateScores(feature);
@@ -133,24 +134,54 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
       scores.Sadness += sadScore;
       scores.Calm += calmScore;
       scores.Energetic += energeticScore;
+
+      // Extract the date part from played_at
+      const date = feature.played_at.split('T')[0];
+
+      // Initialize the daily score object if it doesn't exist
+      if (!dailyScores[date]) {
+        dailyScores[date] = { Happiness: 0, Sadness: 0, Calm: 0, Energetic: 0, count: 0 };
+      }
+
+      // Add to daily scores
+      dailyScores[date].Happiness += happyScore;
+      dailyScores[date].Sadness += sadScore;
+      dailyScores[date].Calm += calmScore;
+      dailyScores[date].Energetic += energeticScore;
+      dailyScores[date].count += 1;
     });
+
+    // Convert daily scores object to an array
+    const dailyScoresArray = Object.entries(dailyScores).map(([date, scores]) => {
+      return {
+        date,
+        Happiness: scores.Happiness / scores.count,
+        Sadness: scores.Sadness / scores.count,
+        Calm: scores.Calm / scores.count,
+        Energetic: scores.Energetic / scores.count,
+      };
+    });
+    console.log(scores, dailyScoresArray)
+
+    return { totalMoodScores: scores, dailyMoodScores: dailyScoresArray };
   
-    return scores;
+    // return scores;
   };
 
-  let averagedData = normalizeData(averageData());
-
-
-
-  console.log(averagedData)
-  console.log(popularityNumbers)
+  const { totalMoodScores, dailyMoodScores } = averageData();
+  const normalizedTotalMoodScores = normalizeData(totalMoodScores);
+  // const averagedData = normalizeData(averageData());
 
   return (
     <Box>
       <RadarChart 
-        data={averagedData} 
+        data={normalizedTotalMoodScores} 
         categories={MOOD_CATEGORIES}
       />
+      {/* <RadarChart 
+        data={averagedData} 
+        categories={MOOD_CATEGORIES}
+      /> */}
       <LineChart 
         title='Mood Over Time'
         data={popularityNumbers}
