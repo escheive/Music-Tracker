@@ -151,6 +151,38 @@ const LineChart = ({
         .attr('y2', y(average))
         .attr('stroke', 'currentColor')
         .attr('stroke-dasharray', '5,5');
+    } else {
+      // Legend
+      const legend = svg.append('g')
+        .attr('transform', `translate(${width - marginRight - 100}, ${marginTop})`);
+
+      legend.append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('fill', 'blue');
+
+      legend.append('text')
+        .attr('x', 15)
+        .attr('y', 10)
+        .text('Happiness')
+        .style('font-size', '12px')
+        .attr('alignment-baseline', 'middle');
+
+      legend.append('rect')
+        .attr('x', 0)
+        .attr('y', 20)
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('fill', 'red');
+
+      legend.append('text')
+        .attr('x', 15)
+        .attr('y', 30)
+        .text('Energy')
+        .style('font-size', '12px')
+        .attr('alignment-baseline', 'middle');
     }
   };
 

@@ -16,7 +16,7 @@ const normalize = (value, max, min) => {
   return (clampedValue - min) / (max - min);
 }
 
-const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
+const MoodCharts = ({recentlyPlayed}) => {
   const svgRef = useRef();
 
   const normalizeData = (d) => {
@@ -33,15 +33,20 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
     const { acousticness, energy, loudness, speechiness, tempo, valence } = feature;
     
     // Define the weight influence of each audio feature
-    const energyHappySadWeight = 0.25;
-    const loudnessHappySadWeight = 0.25;
+    const energyHappySadWeight = 0.5;
     const valenceHappySadWeight = 0.5;
+    // const energyHappySadWeight = 0.25;
+    // const loudnessHappySadWeight = 0.25;
+    // const valenceHappySadWeight = 0.5;
 
     // Weights for calm and energy
-    const energyCalmWeight = 0.4
-    const loudnessCalmWeight = 0.3
-    const tempoCalmWeight = 0.2;
+    const energyCalmWeight = 0.5
+    const tempoCalmWeight = 0.4;
     const acousticnessCalmWeight = 0.1;
+    // const energyCalmWeight = 0.4
+    // const loudnessCalmWeight = 0.3
+    // const tempoCalmWeight = 0.2;
+    // const acousticnessCalmWeight = 0.1;
 
     const tempoCalmBreakpoint = 90;
     const tempoEnergeticBreakpoint = 120;
@@ -80,18 +85,18 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
     }
 
     // Incorporate energy and loudness into the scores
-    if (normalizedLoudness > 0.7) {
-      happyScore += normalizedLoudness * loudnessHappySadWeight; // 0-0.1
-      energeticScore += normalizedLoudness * loudnessCalmWeight; // 0-0.3
-    } else if (normalizedLoudness < 0.3) {
-      sadScore += (1 - normalizedLoudness) * loudnessHappySadWeight; // 0-0.1
-      calmScore += (1 - normalizedLoudness) * loudnessCalmWeight; // 0-0.3
-    } else {
-      happyScore += normalizedLoudness * loudnessHappySadWeight;
-      sadScore += (1 - normalizedLoudness) * loudnessHappySadWeight;
-      energeticScore += normalizedLoudness * loudnessCalmWeight; // 0-0.3
-      calmScore += (1 - normalizedLoudness) * loudnessCalmWeight; // 0-0.3
-    }
+    // if (normalizedLoudness > 0.7) {
+    //   happyScore += normalizedLoudness * loudnessHappySadWeight; // 0-0.1
+    //   energeticScore += normalizedLoudness * loudnessCalmWeight; // 0-0.3
+    // } else if (normalizedLoudness < 0.3) {
+    //   sadScore += (1 - normalizedLoudness) * loudnessHappySadWeight; // 0-0.1
+    //   calmScore += (1 - normalizedLoudness) * loudnessCalmWeight; // 0-0.3
+    // } else {
+    //   happyScore += normalizedLoudness * loudnessHappySadWeight;
+    //   sadScore += (1 - normalizedLoudness) * loudnessHappySadWeight;
+    //   energeticScore += normalizedLoudness * loudnessCalmWeight; // 0-0.3
+    //   calmScore += (1 - normalizedLoudness) * loudnessCalmWeight; // 0-0.3
+    // }
 
     // Ensure scores are within the 0-1 range
     happyScore = Math.min(1, Math.max(0, happyScore));
@@ -120,6 +125,9 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
     // Ensure calmScore and energeticScore are within the 0-1 range
     calmScore = Math.min(1, Math.max(0, calmScore));
     energeticScore = Math.min(1, Math.max(0, energeticScore));
+
+    console.log(feature.name, 'valence', valence, 'tempo', tempo, 'energy', energy, 'acoustic', acousticness)
+    console.log(feature.name, 'happy', happyScore, 'sad', sadScore, 'calm', calmScore, 'energy', energeticScore)
   
     return { happyScore, sadScore, calmScore, energeticScore };
   };
@@ -180,7 +188,7 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
       <LineChart 
         title='Mood Over Time'
         data={dailyMoodScores}
-        description='Mood over time'
+        description='A display of your mood over the past 10 days.'
       />
     </Box>
   );
