@@ -144,10 +144,8 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
       }
 
       // Add to daily scores
-      dailyScores[date].Happiness += happyScore;
-      dailyScores[date].Sadness += sadScore;
-      dailyScores[date].Calm += calmScore;
-      dailyScores[date].Energetic += energeticScore;
+      dailyScores[date].Happiness += (happyScore - sadScore);
+      dailyScores[date].Energetic += (energeticScore - calmScore);
       dailyScores[date].count += 1;
     });
 
@@ -156,8 +154,6 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
       return {
         date,
         Happiness: scores.Happiness / scores.count,
-        Sadness: scores.Sadness / scores.count,
-        Calm: scores.Calm / scores.count,
         Energetic: scores.Energetic / scores.count,
       };
     });
@@ -167,7 +163,7 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
   
     // return scores;
   };
-
+325024
   const { totalMoodScores, dailyMoodScores } = averageData();
   const normalizedTotalMoodScores = normalizeData(totalMoodScores);
   // const averagedData = normalizeData(averageData());
@@ -184,7 +180,7 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
       /> */}
       <LineChart 
         title='Mood Over Time'
-        data={popularityNumbers}
+        data={dailyMoodScores}
         description='Mood over time'
       />
     </Box>
