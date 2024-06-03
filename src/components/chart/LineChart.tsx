@@ -7,7 +7,7 @@ const LineChart = ({
   title,
   description,
   data,
-  width = 640,
+  width = 720,
   height = 400,
   marginTop = 20,
   marginRight = 20,
@@ -18,10 +18,8 @@ const LineChart = ({
 
   const isObjectData = typeof data[0] === 'object';
 
-  // Calculate total sum and average of the data
-  const total = data.reduce((acc, d) => acc + (isObjectData ? d.Happiness : d), 0);
-  const average = total / data.length;
-  console.log(data)
+  const total = data.reduce((acc, d) => acc + d, 0);
+  const average = isObjectData ? 0 : total / data.length;
 
   useEffect(() => {
     drawChart();
@@ -34,10 +32,19 @@ const LineChart = ({
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000); // Calculate date 30 days ago
+
     const x = isObjectData 
       ? d3.scaleTime()
-          .domain(d3.extent(data, d => new Date(d.date)))
-          .range([marginLeft, width - marginRight])
+        .domain([thirtyDaysAgo, now]) // Set domain from 30 days ago to today
+        .range([marginLeft, width - marginRight])
+      // ? d3.scaleTime()
+      //   .domain([
+      //     d3.timeDay.offset(d3.min(data, d => new Date(d.date)), -29), // Start date 30 days ago
+      //     d3.timeDay.offset(d3.max(data, d => new Date(d.date)), 1) // End date is max date + 1 day
+      //   ])
+      //   .range([marginLeft, width - marginRight])
       : d3.scaleLinear()
           .domain([0, data.length])
           .range([marginLeft, width - marginRight]);
@@ -47,7 +54,7 @@ const LineChart = ({
       .range([height - marginBottom, marginTop]);
 
     const xAxis = isObjectData 
-      ? d3.axisBottom(x).ticks(d3.timeDay.every(1))
+      ? d3.axisBottom(x).ticks(10).tickFormat(d3.timeFormat('%m/%d')).tickPadding(10)
       : d3.axisBottom(x).ticks(data.length-1);
     const yAxis = d3.axisLeft(y);
 
@@ -135,14 +142,16 @@ const LineChart = ({
         .attr('stroke-width', 1.5);
     }
 
-    // Draw dashed line for mean
-    svg.append('line')
-      .attr('x1', marginLeft)
-      .attr('y1', y(average))
-      .attr('x2', width - marginRight)
-      .attr('y2', y(average))
-      .attr('stroke', 'currentColor')
-      .attr('stroke-dasharray', '5,5');
+    if (!isObjectData) {
+      // Draw dashed line for mean
+      svg.append('line')
+        .attr('x1', marginLeft)
+        .attr('y1', y(average))
+        .attr('x2', width - marginRight)
+        .attr('y2', y(average))
+        .attr('stroke', 'currentColor')
+        .attr('stroke-dasharray', '5,5');
+    }
   };
 
   return (
@@ -153,7 +162,7 @@ const LineChart = ({
           <InfoOutlineIcon boxSize={6} />
         </Tooltip>
       </Flex>
-      <Heading>{average ? average.toFixed(2) : null}</Heading>
+      <Heading textAlign='center'>{average ? average.toFixed(2) : null}</Heading>
       <svg ref={svgRef} width={width} height={height}></svg>
     </>
   );

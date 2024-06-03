@@ -157,7 +157,6 @@ const MoodCharts = ({recentlyPlayed, popularityNumbers}) => {
         Energetic: scores.Energetic / scores.count,
       };
     });
-    console.log(scores, dailyScoresArray)
 
     return { totalMoodScores: scores, dailyMoodScores: dailyScoresArray };
   
