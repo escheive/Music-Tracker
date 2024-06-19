@@ -1,9 +1,123 @@
 import axios from 'axios';
 import { useAuthContext } from '@/providers/AuthProvider';
 import { useState } from 'react';
+import useSWR from 'swr';
+import { fetchWithToken } from '@/features/auth/api/spotify';
 
 const MAX_RETRIES = 3;
 let retryCount = 0;
+const API_URL = 'https://api.spotify.com/v1'
+
+export const audioFeaturesMiddleware = (useSWRNext) => {
+  return (key, fetcher, config) => {
+
+    // Next middleware or the useSWR hook if no more middlewares
+    const swr = useSWRNext(key, fetcher, config)
+
+    const trackIds = swr.items.map(track => track.track.id);
+    // Map the track IDs to form a comma-separated string
+    const trackIdsString = trackIds?.join(',');
+
+    // Return after hook runs
+    return swr;
+  }
+}
+
+export const fetchRecentlyPlayedSongs = () => {
+  const { data: recentlyPlayedSongs } = useSWR(
+    `${API_URL}/me/player/recently-played?limit=50`,
+    fetchWithToken
+  )
+
+  const trackIds = recentlyPlayedSongs?.items.map(track => track.track.id);
+  // Map the track IDs to form a comma-separated string
+  const trackIdsString = trackIds?.join(',');
+
+  const { data: audioFeatures } = useSWR(() => trackIdsString ? `${API_URL}/audio-features?ids=$` + trackIdsString : [],
+    fetchWithToken
+  )
+
+  let combinedSongs = [];
+
+  if (recentlyPlayedSongs && audioFeatures) {
+    combinedSongs = recentlyPlayedSongs?.items.map(track => {
+      const features = audioFeatures?.audio_features.find(feature => feature?.id === track.track.id);
+      return { played_at: track.played_at, ...track.track, ...features };
+    });
+  }
+
+  return {
+    recentlyPlayedSongs: combinedSongs
+  }
+}
+
+export const useSpotifyUser = () => {
+  const { data, mutate, error } = useSWR(
+    `${API_URL}/me`,
+    fetchWithToken,
+  )
+
+  return { 
+    user: data, 
+    userMutate: mutate, 
+    loggedOut: error?.status === 401,
+  };
+}
+
+// const trackIds = recentlyPlayed.items.map(track => track.track.id);
+//   // Map the track IDs to form a comma-separated string
+//   const trackIdsString = trackIds.join(',');
+// const combinedSongs = recentlyPlayed && audioFeatures ? recentlyPlayed.items.map(track => {
+//   const features = audioFeatures.audio_features.find(feature => feature.id === track.track.id);
+//   return { played_at: track.played_at, ...track.track, ...features };
+// }) : [];
+
+
+export const useSpotifyRecentlyPlayed = () => {
+  const { data, mutate, isLoading, error } = useSWR(
+    `${API_URL}/me/player/recently-played?limit=50`,
+    fetchWithToken
+  )
+
+  return { 
+    recentlyPlayed: data,
+    recentlyPlayedMutate: mutate,
+    recentlyPlayedIsLoading: isLoading, 
+    recentlyPlayedError: error,
+  };
+}
+
+// export const useSpotifyRecentlyPlayed = () => {
+//   const { data, mutate, isLoading, error } = useSWR(
+//     `${API_URL}/me/player/recently-played?limit=50`,
+//     fetchWithToken,
+//   )
+
+//   return { 
+//     recentlyPlayed: data,
+//     recentlyPlayedMutate: mutate,
+//     recentlyPlayedIsLoading: isLoading, 
+//     recentlyPlayedError: error,
+//   };
+// }
+
+export const useSpotifyAudioFeatures = (trackIds) => {
+  // Map the track IDs to form a comma-separated string
+  const trackIdsString = trackIds.join(',');
+
+  const { data, mutate, isLoading, error } = useSWR(
+    trackIds.length ? `${API_URL}/audio-features?ids=${trackIdsString}` : null,
+    fetchWithToken,
+  )
+
+  return { 
+    audioFeatures: data, 
+    audioFeaturesMutate: mutate,
+    audioFeaturesIsLoading: isLoading,
+    audioFeaturesError: error
+  };
+}
+
 
 
 const useSpotifyAPI = () => {
@@ -12,6 +126,7 @@ const useSpotifyAPI = () => {
   const apiUrl = 'https://api.spotify.com/v1';
 
   const getProfile = async (newAccessToken = null) => {
+
     const options = {
       method: 'get',
       url: `${apiUrl}/me`,

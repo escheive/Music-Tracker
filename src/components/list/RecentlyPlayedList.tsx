@@ -16,7 +16,7 @@ import {
   Box
 } from '@chakra-ui/react';
 
-export const RecentlyPlayedList = ({ recentlyPlayed }) => {
+export const RecentlyPlayedList = ({ recentlyPlayedSongs }) => {
 
   return (
     <>
@@ -31,7 +31,7 @@ export const RecentlyPlayedList = ({ recentlyPlayed }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {recentlyPlayed.map((item, i) => {
+            {recentlyPlayedSongs.map((item, i) => {
               const dateListened = new Date(item.played_at).toLocaleString();
 
               return (

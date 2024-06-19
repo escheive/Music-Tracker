@@ -16,7 +16,7 @@ const normalize = (value, max, min) => {
   return (clampedValue - min) / (max - min);
 }
 
-const MoodCharts = ({recentlyPlayed}) => {
+const MoodCharts = ({ recentlyPlayedSongs }) => {
   const svgRef = useRef();
 
   const normalizeData = (d) => {
@@ -126,8 +126,8 @@ const MoodCharts = ({recentlyPlayed}) => {
     calmScore = Math.min(1, Math.max(0, calmScore));
     energeticScore = Math.min(1, Math.max(0, energeticScore));
 
-    console.log(feature.name, 'valence', valence, 'tempo', tempo, 'energy', energy, 'acoustic', acousticness)
-    console.log(feature.name, 'happy', happyScore, 'sad', sadScore, 'calm', calmScore, 'energy', energeticScore)
+    // console.log(feature.name, 'valence', valence, 'tempo', tempo, 'energy', energy, 'acoustic', acousticness)
+    // console.log(feature.name, 'happy', happyScore, 'sad', sadScore, 'calm', calmScore, 'energy', energeticScore)
   
     return { happyScore, sadScore, calmScore, energeticScore };
   };
@@ -136,25 +136,29 @@ const MoodCharts = ({recentlyPlayed}) => {
     const scores = { Happiness: 0, Sadness: 0, Calm: 0, Energetic: 0 };
     const dailyScores = {};
   
-    recentlyPlayed.forEach(feature => {
-      const { happyScore, sadScore, calmScore, energeticScore } = calculateScores(feature);
-      scores.Happiness += happyScore;
-      scores.Sadness += sadScore;
-      scores.Calm += calmScore;
-      scores.Energetic += energeticScore;
+    recentlyPlayedSongs.forEach(feature => {
+      if (!feature.tempo) {
+        
+      } else {
+        const { happyScore, sadScore, calmScore, energeticScore } = calculateScores(feature);
+        scores.Happiness += happyScore;
+        scores.Sadness += sadScore;
+        scores.Calm += calmScore;
+        scores.Energetic += energeticScore;
 
-      // Extract the date part from played_at
-      const date = feature.played_at.split('T')[0];
+        // Extract the date part from played_at
+        const date = feature.played_at.split('T')[0];
 
-      // Initialize the daily score object if it doesn't exist
-      if (!dailyScores[date]) {
-        dailyScores[date] = { Happiness: 0, Sadness: 0, Calm: 0, Energetic: 0, count: 0 };
+        // Initialize the daily score object if it doesn't exist
+        if (!dailyScores[date]) {
+          dailyScores[date] = { Happiness: 0, Sadness: 0, Calm: 0, Energetic: 0, count: 0 };
+        }
+
+        // Add to daily scores
+        dailyScores[date].Happiness += (happyScore - sadScore);
+        dailyScores[date].Energetic += (energeticScore - calmScore);
+        dailyScores[date].count += 1;
       }
-
-      // Add to daily scores
-      dailyScores[date].Happiness += (happyScore - sadScore);
-      dailyScores[date].Energetic += (energeticScore - calmScore);
-      dailyScores[date].count += 1;
     });
 
     // Convert daily scores object to an array
@@ -181,10 +185,6 @@ const MoodCharts = ({recentlyPlayed}) => {
         data={normalizedTotalMoodScores} 
         categories={MOOD_CATEGORIES}
       />
-      {/* <RadarChart 
-        data={averagedData} 
-        categories={MOOD_CATEGORIES}
-      /> */}
       <LineChart 
         title='Mood Over Time'
         data={dailyMoodScores}
