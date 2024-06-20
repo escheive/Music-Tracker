@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { Heading } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 
 type LayoutProps = {
   children: React.ReactNode;
