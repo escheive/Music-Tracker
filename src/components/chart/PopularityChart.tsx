@@ -1,9 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { Box, Flex, Heading, Tooltip } from '@chakra-ui/react';
+import { Flex, Heading, Tooltip } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 
-const PopularityChart = ({
+interface PopularityChartProps {
+  title: string;
+  description: string;
+  data: any;
+  width?: number;
+  height?: number;
+  marginTop?: number;
+  marginRight?: number;
+  marginBottom?: number;
+  marginLeft?: number;
+}
+
+const PopularityChart: React.FC<PopularityChartProps> = ({
   title,
   data,
   width = 640,
@@ -13,9 +25,9 @@ const PopularityChart = ({
   marginBottom = 40,
   marginLeft = 40 
 }) => {
-  const svgRef = useRef();
+  const svgRef = useRef<SVGSVGElement>(null);
   // Calculate total sum of the data
-  const total = data.reduce((acc, number) => acc + number, 0);
+  const total = data.reduce((acc: number, number: number) => acc + number, 0);
 
   // Calculate average of the data
   const average = total / data.length;
@@ -48,8 +60,8 @@ const PopularityChart = ({
       .call(yAxis);
 
     const line = d3.line()
-      .x((d, i) => x(i + 1))
-      .y(d => y(d));
+      .x((_d, i) => x(i + 1))
+      .y((d: any) => y(d));
 
     // Path between each data point
     svg.append('path')
@@ -64,8 +76,8 @@ const PopularityChart = ({
       .data(data)
       .enter()
       .append('circle')
-      .attr('cx', (d, i) => x(i + 1))
-      .attr('cy', d => y(d))
+      .attr('cx', (_d, i) => x(i + 1))
+      .attr('cy', (d: any) => y(d))
       .attr('r', 2.5)
       .attr('fill', 'white')
       .attr('stroke', 'currentColor')

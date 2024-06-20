@@ -8,14 +8,14 @@ const MAX_SCALE=50;
 interface NormalizeProps {
   value: number;
   max: number;
-  min: number
+  min: number;
 }
 
-interface DailyScoresProps {
+interface DailyScores {
   [key: string]: {
-    Happiness: number;
-    Sadness: number; 
-    Calm: number; 
+    Happiness: number; 
+    Sadness: number;
+    Calm: number;
     Energetic: number;
     count: number;
   }
@@ -58,7 +58,7 @@ const MoodCharts = ({ recentlyPlayedSongs }: any) => {
     const tempoEnergeticBreakpoint = 120;
 
     // Normalize loudness to a 0-1 scale (assuming loudness ranges from -60 to 0 dB)
-    const normalizedTempo = normalize({ value: tempo, max: 1, min: 0 });
+    const normalizedTempo = normalize({value: tempo, max: 1, min: 0});
     
     let happyScore = 0;
     let sadScore = 0;
@@ -122,7 +122,7 @@ const MoodCharts = ({ recentlyPlayedSongs }: any) => {
 
   const averageData = () => {
     const scores = { Happiness: 0, Sadness: 0, Calm: 0, Energetic: 0 };
-    const dailyScores: DailyScoresProps = {};
+    const dailyScores: DailyScores = {};
   
     recentlyPlayedSongs.forEach((feature: any) => {
       if (!feature.tempo) {

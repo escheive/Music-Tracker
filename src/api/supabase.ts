@@ -7,6 +7,6 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default supabase;
 
-export const storeTokensInSupabase = async (userId, accessToken, refreshToken, expiresIn) => {
+// export const storeTokensInSupabase = async (userId: any, accessToken: any, refreshToken: any, expiresIn: any) => {
 
-}
+// }

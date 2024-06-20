@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 type AuthContextType = {
   accessToken: string;
@@ -8,7 +8,10 @@ type AuthContextType = {
   handleUserLogout: () => void;
   session: any;
   setSession: (session: any) => void;
-  
+};
+
+type AuthProviderProps = {
+  children: React.ReactNode;
 };
 
 
@@ -19,8 +22,7 @@ const AuthContext = createContext<AuthContextType>({
   storeRefreshToken: (_refreshToken: string) => {},
   handleUserLogout: () => {},
   session: null,
-  setSession: (session: any) => {},
-  
+  setSession: (session: any) => {session},
 });
 
 export const useAuthContext = () => {
@@ -31,16 +33,16 @@ export const useAuthContext = () => {
   return context;
 };
 
-const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }: AuthProviderProps) => {
   const [accessToken, setAccessToken] = useState('');
   const [refreshToken, setRefreshToken] = useState('');
   const [session, setSession] = useState(null);
 
-  const storeAccessToken = (token) => {
+  const storeAccessToken = (token: string) => {
     setAccessToken(token);
   };
 
-  const storeRefreshToken = (token) => {
+  const storeRefreshToken = (token: string) => {
     setRefreshToken(token);
   };
 

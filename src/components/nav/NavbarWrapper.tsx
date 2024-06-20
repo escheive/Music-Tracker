@@ -1,5 +1,5 @@
 'use client';
-import { Outlet, NavLink as RouterLink, redirect, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -19,12 +19,7 @@ import {
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
 import { useAuthContext } from '@/providers/AuthProvider';
-import { useUserContext } from '@/providers/UserProvider';
-
-import { generateRandomString } from '@/utils/helpers';
-
-const clientId: string = import.meta.env.VITE_CLIENT_ID;
-const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
+import { useProfileContext } from '@/providers/ProfileProvider';
 
 
 interface Props {
@@ -33,7 +28,7 @@ interface Props {
 }
 
 
-const Links = ['Profile', 'Projects', 'Team']
+const Links = ['Profile', 'Mood', 'Projects', 'Team']
 
 const NavLink = (props: Props) => {
   const { children, to } = props
@@ -58,7 +53,7 @@ const NavLink = (props: Props) => {
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { handleUserLogout } = useAuthContext();
-  const { profileData } = useUserContext();
+  const { user } = useProfileContext();
   const navigate = useNavigate();
 
   // Function to delete access token and redirect to home page
@@ -72,26 +67,6 @@ const NavBar = () => {
   const handleLogin = async () => {
     navigate('/auth/login');
   }
-
-  // // Function to delete access token and redirect to home page
-  // const handleLogout = () => {
-  //   handleUserLogout(); // Deletes stored access token and refresh token
-  //   window.open('https://www.spotify.com/us/account/apps/', '_blank'); // Spotify link to remove connected apps
-  //   window.location.href='/'; // Redirects to home page
-  // }
-
-  // // Function to login users
-  // const handleLogin = async () => {
-  //   const state = generateRandomString(16); // Random 16 character string
-  //   const scope = 'user-read-private user-read-email playlist-read-private user-follow-read user-top-read user-read-recently-played user-library-read user-read-currently-playing user-read-playback-state user-read-playback-position'; // Scope of permissions requested from spotify
-
-  //   try {
-  //     const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&response_type=code&scope=${scope}`; // Spotify auth url
-  //     window.location.href = authorizationUrl; // Navigate users to spotify auth url
-  //   } catch (error) {
-  //     console.error('Error initiating login', error);
-  //   }
-  // }
 
   return (
     <>
@@ -122,13 +97,13 @@ const NavBar = () => {
                 minW={0}>
                 <Avatar
                   size={'sm'}
-                  src={profileData ? profileData.images[0]?.url : null}
+                  src={user ? user.images[0]?.url : undefined}
                 />
               </MenuButton>
               <MenuList>
                 <MenuItem>Settings</MenuItem>
                 <MenuDivider />
-                {profileData ? (
+                {user ? (
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 ) : (
                   <MenuItem onClick={handleLogin}>Login</MenuItem>

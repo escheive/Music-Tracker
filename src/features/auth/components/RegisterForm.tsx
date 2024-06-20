@@ -1,9 +1,9 @@
 // import { Switch } from '@headlessui/react';
 import React, { useState } from 'react';
-import { Link, redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as z from 'zod';
 
-import { Button, Input, Select, Switch, Text } from '@chakra-ui/react';
+import { Button, Input, Text } from '@chakra-ui/react';
 
 import supabase from '@/api/supabase';
 
@@ -50,7 +50,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
       schema.parse(values);
 
       // Call supabase API to register the user
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
       })
@@ -59,10 +59,8 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         throw error;
       }
 
-      onSuccess: () => {
-        redirect('/')
-      }
-    } catch (error) {
+      onSuccess();
+    } catch (error: any) {
       console.error('Error registering user:', error.message);
     }
   };

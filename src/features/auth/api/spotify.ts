@@ -1,26 +1,26 @@
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
 
-const generateRandomString = (length) => {
+const generateRandomString = (length: number) => {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const values = crypto.getRandomValues(new Uint8Array(length));
   return values.reduce((acc, x) => acc + possible[x % possible.length], "");
 }
 
-const sha256 = async (plain) => {
+const sha256 = async (plain: any) => {
   const encoder = new TextEncoder()
   const data = encoder.encode(plain)
   return window.crypto.subtle.digest('SHA-256', data)
 }
 
-const base64encode = (input) => {
+const base64encode = (input: any) => {
   return btoa(String.fromCharCode(...new Uint8Array(input)))
     .replace(/=/g, '')
     .replace(/\+/g, '-')
     .replace(/\//g, '_');
 }
 
-async function fetchJSON(input, init) {
+async function fetchJSON(input: any, init: any) {
   const response = await fetch(input, init)
   const body = await response.json()
   if (!response.ok) {
@@ -30,7 +30,9 @@ async function fetchJSON(input, init) {
 }
 
 class ErrorResponse extends Error {
-  constructor(response, body) {
+  status: any;
+  body: any;
+  constructor(response: any, body: any) {
     super(response.statusText)
     this.status = response.status
     this.body = body
@@ -67,9 +69,11 @@ export async function completeLogin() {
 
   const params = new URLSearchParams(location.search);
   let code = params.get('code');
+  const errorParam = params.get('error');
 
-  if (params.has('error')) {
-    throw new Error(params.get('error'))
+
+  if (errorParam !== null) {
+    throw new Error(errorParam)
   } else if (!params.has('state')) {
     throw new Error('State missing from response')
   } else if (params.get('state') !== state) {
@@ -91,7 +95,7 @@ export const logout = () => {
   window.localStorage.removeItem('tokenSet')
 }
 
-export const fetchWithToken = async (input) => {
+export const fetchWithToken = async (input: any) => {
   const accessToken = await getAccessToken()
 
   if (!accessToken) {
@@ -103,7 +107,7 @@ export const fetchWithToken = async (input) => {
   })
 }
 
-const createAccessToken = async (params) => {
+const createAccessToken = async (params: any) => {
   const response = await fetchJSON('https://accounts.spotify.com/api/token', {
     method: 'POST',
     headers: {
@@ -121,9 +125,14 @@ const createAccessToken = async (params) => {
 }
 
 const getAccessToken = async () => {
-  let tokenSet = JSON.parse(localStorage.getItem('tokenSet'))
+  let tokenSetString = localStorage.getItem('tokenSet');
+  let tokenSet;
 
-  if (!tokenSet) return
+  if (tokenSetString !== null) {
+    tokenSet = JSON.parse(tokenSetString);
+  } else {
+    return
+  }
 
   if (tokenSet.expires_at < Date.now()) {
     tokenSet = await createAccessToken({

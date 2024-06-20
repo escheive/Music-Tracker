@@ -1,22 +1,17 @@
 'use client';
-import React, { useState } from 'react';
-import { useAuthContext } from '@/providers/AuthProvider';
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Image,
-  Link,
-  Box
+  Link
 } from '@chakra-ui/react';
 
-export const RecentlyPlayedList = ({ recentlyPlayedSongs }) => {
+export const RecentlyPlayedList = ({ recentlyPlayedSongs }: any) => {
 
   return (
     <>
@@ -31,7 +26,7 @@ export const RecentlyPlayedList = ({ recentlyPlayedSongs }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {recentlyPlayedSongs.map((item, i) => {
+            {recentlyPlayedSongs.map((item: any, i: number) => {
               const dateListened = new Date(item.played_at).toLocaleString();
 
               return (
