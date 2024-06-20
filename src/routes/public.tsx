@@ -8,8 +8,4 @@ export const publicRoutes = [
     path: '/auth/*',
     element: <AuthRoutes />,
   },
-  {
-    path: '/mood',
-    element: <Mood />,
-  },
 ];

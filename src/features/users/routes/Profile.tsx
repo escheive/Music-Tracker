@@ -22,7 +22,6 @@ export const Profile = () => {
     topItemsLoading,
     popularityNumbers, 
   } = useProfileContext();
-
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
 
@@ -40,21 +39,24 @@ export const Profile = () => {
     setShowRecentlyPlayed(!showRecentlyPlayed);
   };
 
+  if (!user) {
+    return (
+      <Heading>Please connect your Spotify to see your profile</Heading>
+    )
+  }
+
   return (
     <>
       <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
         <Heading>Music Tracker</Heading>
-        {user ? (
-          <>
-            <Heading>{user.display_name}</Heading>
-            <p>Email: {user.email}</p>
-            <p>Country: {user.country}</p>
-            <p>Product: {user.product}</p>
-            <p>Type: {user.type}</p>
-            <p>Followers: {user.followers.total}</p>
-            <a href={user.external_urls.spotify} target="blank">Open on Spotify</a>
-          </>
-        ) : null}
+        <Heading>{user.display_name}</Heading>
+        <p>Email: {user.email}</p>
+        <p>Country: {user.country}</p>
+        <p>Product: {user.product}</p>
+        <p>Type: {user.type}</p>
+        <p>Followers: {user.followers.total}</p>
+        <a href={user.external_urls.spotify} target="blank">Open on Spotify</a>
+
 
         {!recentlyPlayedSongsIsLoading ? (
           <>

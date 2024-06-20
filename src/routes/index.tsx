@@ -7,8 +7,8 @@ export const commonRoutes = [
     path: '/', 
     element: <Landing /> 
   },
-  {
-    path:'/profile',
-    element: <Profile />
-  }
+  // {
+  //   path:'/profile',
+  //   element: <Profile />
+  // }
 ];

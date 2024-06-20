@@ -7,12 +7,13 @@ import { commonRoutes } from '@/routes';
 import { publicRoutes } from '@/routes/public';
 import { protectedRoutes } from '@/routes/protected';
 import NavbarWrapper from '@/components/nav/NavbarWrapper';
+import { useSpotifyUser } from '@/api/spotify';
 
 
 export const AppProvider = () => {
-  const auth = { user: false }
+  const { user } = useSpotifyUser();
 
-  const permittedRoutes = auth.user ? protectedRoutes : publicRoutes;
+  const permittedRoutes = user ? protectedRoutes : publicRoutes;
 
   const router = createBrowserRouter([
     {

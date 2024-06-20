@@ -17,7 +17,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { useProfileContext } from '@/providers/ProfileProvider';
+import { useSpotifyUser } from '@/api/spotify';
 
 
 interface Props {
@@ -25,8 +25,7 @@ interface Props {
   to: any
 }
 
-
-const Links = ['Profile', 'Mood', 'Projects', 'Team']
+const Links = ['Profile', 'Mood']
 
 const NavLink = (props: Props) => {
   const { children, to } = props
@@ -50,7 +49,7 @@ const NavLink = (props: Props) => {
 
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user } = useProfileContext();
+  const { user } = useSpotifyUser();
   const navigate = useNavigate();
 
   // Function to delete access token and redirect to home page
@@ -79,9 +78,10 @@ const NavBar = () => {
           <HStack spacing={8} alignItems={'center'}>
             <NavLink to='/'>Logo</NavLink>
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
-              {Links.map((link) => (
+              {user ? 
+              Links.map((link) => (
                 <NavLink key={link} to={link}>{link}</NavLink>
-              ))}
+              )) : null }
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
