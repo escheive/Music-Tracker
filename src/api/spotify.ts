@@ -33,9 +33,9 @@ export const useRecentlyPlayedSongs = () => {
   }
 
   return {
-    recentlyPlayedSongs: combinedSongs,
-    recentlyPlayedSongsIsLoading: !recentlyPlayedSongs || !audioFeatures,
-    recentlyPlayedSongsError: recentlyPlayedSongsError || audioFeaturesError,
+    data: combinedSongs,
+    isLoading: !recentlyPlayedSongs || !audioFeatures,
+    error: recentlyPlayedSongsError || audioFeaturesError,
   }
 }
 

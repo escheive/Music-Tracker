@@ -1,13 +1,7 @@
-import { useAuthContext } from "@/providers/AuthProvider";
-import { useUserContext } from "@/providers/UserProvider";
+import { useProfileContext } from "@/providers/ProfileProvider";
 import { useEffect, useState } from "react";
-import PopularityChart from "@/components/chart/PopularityChart";
-import RadarChart from "@/components/chart/RadarChart";
 import LineChart from "@/components/chart/LineChart";
-import MoodCharts from "../components/MoodCharts";
-import useSWR from 'swr';
 
-import useSpotifyAPI, { useRecentlyPlayedSongs, useUsersTopItems, useSpotifyUser } from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
@@ -17,34 +11,44 @@ import { useNavigate } from "react-router-dom";
 
 
 export const Profile = () => {
-
   const navigate = useNavigate();
+  const { 
+    user,
+    userMutate,
+    loggedOut,
+    recentlyPlayedSongs,
+    recentlyPlayedSongsIsLoading,
+    recentlyPlayedSongsError,
+    topItems,
+    topItemsLoading,
+    topItemsError,
+    popularityNumbers, 
+  } = useProfileContext();
 
-  const spotify = useSpotifyAPI();
   const [additionalItems, setAdditionalItems] = useState(null);
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
-  let popularityNumbers = [];
-  const { user, userMutate, loggedOut } = useSpotifyUser();
-  const { recentlyPlayedSongs, recentlyPlayedSongsIsLoading, recentlyPlayedSongsError } = useRecentlyPlayedSongs();
-  const { data: topItems, isLoading: topItemsLoading, error: topItemsError} = useUsersTopItems();
+  // let popularityNumbers = [];
+  // const { user, userMutate, loggedOut } = useSpotifyUser();
+  // const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsIsLoading, error: recentlyPlayedSongsError } = useRecentlyPlayedSongs();
+  // const { data: topItems, isLoading: topItemsLoading, error: topItemsError} = useUsersTopItems();
 
-  if (recentlyPlayedSongsError) return <div>Error loading data</div>;
-  if (!recentlyPlayedSongsIsLoading) {
-    popularityNumbers = recentlyPlayedSongs.map(item => item.popularity)
-  }
+  // if (recentlyPlayedSongsError) return <div>Error loading data</div>;
+  // if (!recentlyPlayedSongsIsLoading) {
+  //   popularityNumbers = recentlyPlayedSongs.map(item => item.popularity)
+  // }
+
+  // useEffect(() => {
+  //   if (loggedOut) {
+  //     userMutate(null, false).then(() => navigate('/'))
+  //   }
+  // }, [loggedOut, userMutate])
 
   useEffect(() => {
     if (loggedOut) {
-      userMutate(null, false).then(() => navigate('/'))
+      userMutate(null, false).then(() => navigate('/'));
     }
-  }, [loggedOut, userMutate])
-
-  const loadMoreItems = async () => {
-    const moreTopItems = await spotify.fetchMoreTopItems();
-    setAdditionalItems(moreTopItems)
-  }
-
+  }, [loggedOut, userMutate]);
 
   const handleShowTopItems = () => {
     setShowTopItems(!showTopItems);
@@ -77,9 +81,6 @@ export const Profile = () => {
               description='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.'
               data={popularityNumbers} 
             />
-            <MoodCharts
-              recentlyPlayedSongs={recentlyPlayedSongs} 
-            />
 
             <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
             
@@ -105,9 +106,6 @@ export const Profile = () => {
                 <TopItemsList itemType='Tracks' items={topItems.tracks.items} additionalItems={additionalItems?.tracks.items} />
               </GridItem>
             </Grid>
-            {!additionalItems ? (
-              <Link onClick={loadMoreItems} m={8}>Load More</Link>
-            ) : null}
           </>
         ) : null}
 
