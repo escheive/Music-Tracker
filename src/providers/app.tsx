@@ -9,12 +9,7 @@ import { protectedRoutes } from '@/routes/protected';
 import NavbarWrapper from '@/components/nav/NavbarWrapper';
 
 
-type AppProviderProps = {
-  children: React.ReactNode;
-};
-
-
-export const AppProvider = ({ children }: AppProviderProps) => {
+export const AppProvider = () => {
   const auth = { user: false }
 
   const permittedRoutes = auth.user ? protectedRoutes : publicRoutes;

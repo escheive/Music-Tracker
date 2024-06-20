@@ -1,17 +1,8 @@
-import { useAuthContext } from "@/providers/AuthProvider";
 import { useProfileContext } from "@/providers/ProfileProvider";
-import { useEffect, useState } from "react";
-import PopularityChart from "@/components/chart/PopularityChart";
-import RadarChart from "@/components/chart/RadarChart";
-import LineChart from "@/components/chart/LineChart";
+import { useEffect } from "react";
 import MoodCharts from "../components/MoodCharts";
-import useSWR from 'swr';
 
-import useSpotifyAPI, { useRecentlyPlayedSongs, useUsersTopItems, useSpotifyUser } from "@/api/spotify";
-import { TopItemsList } from "@/components/list/TopItemsList";
-import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
-
-import { Box, Button, Heading, Text, Grid, GridItem, Link, Flex } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -24,11 +15,6 @@ export const Mood = () => {
     loggedOut,
     recentlyPlayedSongs,
     recentlyPlayedSongsIsLoading,
-    recentlyPlayedSongsError,
-    topItems,
-    topItemsLoading,
-    topItemsError,
-    popularityNumbers, 
   } = useProfileContext();
 
   useEffect(() => {

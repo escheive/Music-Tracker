@@ -1,5 +1,5 @@
 'use client';
-import { Outlet, NavLink as RouterLink, redirect, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -20,11 +20,6 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
 import { useAuthContext } from '@/providers/AuthProvider';
 import { useProfileContext } from '@/providers/ProfileProvider';
-
-import { generateRandomString } from '@/utils/helpers';
-
-const clientId: string = import.meta.env.VITE_CLIENT_ID;
-const redirectUri: string = import.meta.env.VITE_REDIRECT_URI;
 
 
 interface Props {
@@ -102,7 +97,7 @@ const NavBar = () => {
                 minW={0}>
                 <Avatar
                   size={'sm'}
-                  src={user ? user.images[0]?.url : null}
+                  src={user ? user.images[0]?.url : undefined}
                 />
               </MenuButton>
               <MenuList>

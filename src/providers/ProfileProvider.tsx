@@ -1,12 +1,58 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
-import { useNavigate } from 'react-router-dom';
-import useSpotifyAPI, { useRecentlyPlayedSongs, useUsersTopItems, useSpotifyUser } from "@/api/spotify";
+import { createContext, useContext } from 'react';
+import { useRecentlyPlayedSongs, useUsersTopItems, useSpotifyUser } from "@/api/spotify";
 
-// const ProfileContext = createContext();
+type ProfileContextType = {
+  user: UserProps | null,
+  userMutate: any,
+  loggedOut: any,
+  recentlyPlayedSongs: any,
+  recentlyPlayedSongsIsLoading: any,
+  recentlyPlayedSongsError: any,
+  topItems: any,
+  topItemsLoading: any,
+  topItemsError: any,
+  popularityNumbers: any,
+};
 
+interface UserProps {
+  country: string;
+  display_name: string;
+  email: string;
+  explicit_content: {};
+  external_urls: {
+    spotify: string
+  };
+  followers: {
+    total: string
+  };
+  href: string;
+  id: string;
+  images: [
+    {
+      url: string
+    }
+  ];
+  product: string;
+  type: string;
+  uri: string;
+}
 
-const ProfileContext = createContext({});
+type ProfileProviderProps = {
+  children: React.ReactNode;
+};
+
+const ProfileContext = createContext<ProfileContextType>({
+  user: null,
+  userMutate: null,
+  loggedOut: null,
+  recentlyPlayedSongs: null,
+  recentlyPlayedSongsIsLoading: null,
+  recentlyPlayedSongsError: null,
+  topItems: null,
+  topItemsLoading: null,
+  topItemsError: null,
+  popularityNumbers: null,
+});
 
 export const useProfileContext = () => {
   const context = useContext(ProfileContext);
@@ -16,11 +62,7 @@ export const useProfileContext = () => {
   return context;
 };
 
-export const ProfileProvider = ({ children }) => {
-  const spotify = useSpotifyAPI();
-  const [additionalItems, setAdditionalItems] = useState(null);
-  const [showTopItems, setShowTopItems] = useState(true);
-  const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
+export const ProfileProvider = ({ children }: ProfileProviderProps) => {
   const { user, userMutate, loggedOut } = useSpotifyUser();
 
   const { data: recentlyPlayedSongs, error: recentlyPlayedSongsError, isLoading: recentlyPlayedSongsIsLoading } = useRecentlyPlayedSongs();
@@ -28,7 +70,7 @@ export const ProfileProvider = ({ children }) => {
 
   let popularityNumbers = [];
   if (!recentlyPlayedSongsIsLoading) {
-    popularityNumbers = recentlyPlayedSongs.map(item => item.popularity);
+    popularityNumbers = recentlyPlayedSongs.map((item: any) => item.popularity);
   }
 
   return (

@@ -1,11 +1,10 @@
-import { Link, redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as z from 'zod';
 
 import { Button, Text, Input } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import supabase from '@/api/supabase';
-import { useAuthContext } from '@/providers/AuthProvider';
 
 const schema = z.object({
   email: z.string().min(1, 'Required'),
@@ -19,7 +18,6 @@ type LoginValues = {
 
 
 export const LoginForm = () => {
-  const { session, setSession } = useAuthContext();
   const [values, setValues] = useState<LoginValues>({
     email: '',
     password: '',
@@ -41,7 +39,7 @@ export const LoginForm = () => {
       schema.parse(values);
 
       // Call supabase API to register the user
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       })
@@ -53,7 +51,7 @@ export const LoginForm = () => {
       if (data.session) {
 
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error registering user:', error.message);
     }
   };

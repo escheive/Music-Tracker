@@ -1,14 +1,28 @@
-import React, { useEffect, useRef } from 'react';
-import * as d3 from 'd3';
 import RadarChart from '@/components/chart/RadarChart';
 import LineChart from '@/components/chart/LineChart';
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 
 const MOOD_CATEGORIES = ['Happiness', 'Energetic', 'Sadness', 'Calm']
 const MAX_SCALE=50;
 
+interface NormalizeProps {
+  value: number;
+  max: number;
+  min: number;
+}
+
+interface DailyScores {
+  [key: string]: {
+    Happiness: number; 
+    Sadness: number;
+    Calm: number;
+    Energetic: number;
+    count: number;
+  }
+}
+
 // Function to normalize values to a number between 0-1
-const normalize = (value, max, min) => {
+const normalize = ({value, max, min}: NormalizeProps) => {
   if (min === max) {
     return 0;
   }
@@ -16,10 +30,9 @@ const normalize = (value, max, min) => {
   return (clampedValue - min) / (max - min);
 }
 
-const MoodCharts = ({ recentlyPlayedSongs }) => {
-  const svgRef = useRef();
+const MoodCharts = ({ recentlyPlayedSongs }: any) => {
 
-  const normalizeData = (d) => {
+  const normalizeData = (d: any) => {
     const normalized = MOOD_CATEGORIES.map(category => d[category] / MAX_SCALE);
     const maxValue = Math.max(...normalized);
     if (maxValue > 1) {
@@ -29,31 +42,23 @@ const MoodCharts = ({ recentlyPlayedSongs }) => {
     return normalized;
   };
 
-  const calculateScores = (feature) => {
-    const { acousticness, energy, loudness, speechiness, tempo, valence } = feature;
+  const calculateScores = (feature: any) => {
+    const { acousticness, energy, tempo, valence } = feature;
     
     // Define the weight influence of each audio feature
     const energyHappySadWeight = 0.5;
     const valenceHappySadWeight = 0.5;
-    // const energyHappySadWeight = 0.25;
-    // const loudnessHappySadWeight = 0.25;
-    // const valenceHappySadWeight = 0.5;
 
     // Weights for calm and energy
     const energyCalmWeight = 0.5
     const tempoCalmWeight = 0.4;
     const acousticnessCalmWeight = 0.1;
-    // const energyCalmWeight = 0.4
-    // const loudnessCalmWeight = 0.3
-    // const tempoCalmWeight = 0.2;
-    // const acousticnessCalmWeight = 0.1;
 
     const tempoCalmBreakpoint = 90;
     const tempoEnergeticBreakpoint = 120;
 
     // Normalize loudness to a 0-1 scale (assuming loudness ranges from -60 to 0 dB)
-    const normalizedLoudness = (loudness + 60) / 60;
-    const normalizedTempo = normalize(tempo, 1, 0);
+    const normalizedTempo = normalize({value: tempo, max: 1, min: 0});
     
     let happyScore = 0;
     let sadScore = 0;
@@ -84,20 +89,6 @@ const MoodCharts = ({ recentlyPlayedSongs }) => {
       calmScore += (1 - energy) * energyCalmWeight; // 0-0.4
     }
 
-    // Incorporate energy and loudness into the scores
-    // if (normalizedLoudness > 0.7) {
-    //   happyScore += normalizedLoudness * loudnessHappySadWeight; // 0-0.1
-    //   energeticScore += normalizedLoudness * loudnessCalmWeight; // 0-0.3
-    // } else if (normalizedLoudness < 0.3) {
-    //   sadScore += (1 - normalizedLoudness) * loudnessHappySadWeight; // 0-0.1
-    //   calmScore += (1 - normalizedLoudness) * loudnessCalmWeight; // 0-0.3
-    // } else {
-    //   happyScore += normalizedLoudness * loudnessHappySadWeight;
-    //   sadScore += (1 - normalizedLoudness) * loudnessHappySadWeight;
-    //   energeticScore += normalizedLoudness * loudnessCalmWeight; // 0-0.3
-    //   calmScore += (1 - normalizedLoudness) * loudnessCalmWeight; // 0-0.3
-    // }
-
     // Ensure scores are within the 0-1 range
     happyScore = Math.min(1, Math.max(0, happyScore));
     sadScore = Math.min(1, Math.max(0, sadScore));
@@ -125,18 +116,15 @@ const MoodCharts = ({ recentlyPlayedSongs }) => {
     // Ensure calmScore and energeticScore are within the 0-1 range
     calmScore = Math.min(1, Math.max(0, calmScore));
     energeticScore = Math.min(1, Math.max(0, energeticScore));
-
-    // console.log(feature.name, 'valence', valence, 'tempo', tempo, 'energy', energy, 'acoustic', acousticness)
-    // console.log(feature.name, 'happy', happyScore, 'sad', sadScore, 'calm', calmScore, 'energy', energeticScore)
   
     return { happyScore, sadScore, calmScore, energeticScore };
   };
 
   const averageData = () => {
     const scores = { Happiness: 0, Sadness: 0, Calm: 0, Energetic: 0 };
-    const dailyScores = {};
+    const dailyScores: DailyScores = {};
   
-    recentlyPlayedSongs.forEach(feature => {
+    recentlyPlayedSongs.forEach((feature: any) => {
       if (!feature.tempo) {
         
       } else {

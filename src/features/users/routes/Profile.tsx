@@ -5,7 +5,7 @@ import LineChart from "@/components/chart/LineChart";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
-import { Box, Button, Heading, Text, Grid, GridItem, Link, Flex } from "@chakra-ui/react";
+import { Box, Heading, Grid, GridItem, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -18,31 +18,13 @@ export const Profile = () => {
     loggedOut,
     recentlyPlayedSongs,
     recentlyPlayedSongsIsLoading,
-    recentlyPlayedSongsError,
     topItems,
     topItemsLoading,
-    topItemsError,
     popularityNumbers, 
   } = useProfileContext();
 
-  const [additionalItems, setAdditionalItems] = useState(null);
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
-  // let popularityNumbers = [];
-  // const { user, userMutate, loggedOut } = useSpotifyUser();
-  // const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsIsLoading, error: recentlyPlayedSongsError } = useRecentlyPlayedSongs();
-  // const { data: topItems, isLoading: topItemsLoading, error: topItemsError} = useUsersTopItems();
-
-  // if (recentlyPlayedSongsError) return <div>Error loading data</div>;
-  // if (!recentlyPlayedSongsIsLoading) {
-  //   popularityNumbers = recentlyPlayedSongs.map(item => item.popularity)
-  // }
-
-  // useEffect(() => {
-  //   if (loggedOut) {
-  //     userMutate(null, false).then(() => navigate('/'))
-  //   }
-  // }, [loggedOut, userMutate])
 
   useEffect(() => {
     if (loggedOut) {
@@ -100,10 +82,10 @@ export const Profile = () => {
             <Heading>Top Artists And Tracks</Heading>
             <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
               <GridItem w='100%' noOfLines={1}>
-                <TopItemsList itemType='Artists' items={topItems.artists.items} additionalItems={additionalItems?.artists.items} />
+                <TopItemsList itemType='Artists' items={topItems.artists.items} />
               </GridItem>
               <GridItem w='100%' noOfLines={1}>
-                <TopItemsList itemType='Tracks' items={topItems.tracks.items} additionalItems={additionalItems?.tracks.items} />
+                <TopItemsList itemType='Tracks' items={topItems.tracks.items} />
               </GridItem>
             </Grid>
           </>
