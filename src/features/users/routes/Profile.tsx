@@ -7,13 +7,11 @@ import LineChart from "@/components/chart/LineChart";
 import MoodCharts from "../components/MoodCharts";
 import useSWR from 'swr';
 
-import useSpotifyAPI, { useSpotifyRecentlyPlayed, useSpotifyUser } from "@/api/spotify";
+import useSpotifyAPI, { fetchRecentlyPlayedSongs, useUsersTopItems, useSpotifyUser } from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
 import { Box, Button, Heading, Text, Grid, GridItem, Link } from "@chakra-ui/react";
-import { fetchWithToken } from "@/features/auth/api/spotify";
-import { fetchRecentlyPlayedSongs } from "@/api/spotify";
 import { useNavigate } from "react-router-dom";
 
 const fetchAndCombineRecentlyPlayedSongs = async (spotify) => {
@@ -32,7 +30,7 @@ const fetchAndCombineRecentlyPlayedSongs = async (spotify) => {
 export const Profile = () => {
   const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
   const navigate = useNavigate();
-  const { profileData, storeProfileData, topItems, storeTopItems,  storeRecentlyPlayed } = useUserContext();
+  const { profileData, storeProfileData, storeRecentlyPlayed } = useUserContext();
   const spotify = useSpotifyAPI();
   const [additionalItems, setAdditionalItems] = useState(null);
   const [showTopItems, setShowTopItems] = useState(true);
@@ -40,6 +38,8 @@ export const Profile = () => {
   let popularityNumbers = [];
   const { user, userMutate, loggedOut } = useSpotifyUser();
   const { recentlyPlayedSongs, recentlyPlayedSongsIsLoading, recentlyPlayedSongsError } = fetchRecentlyPlayedSongs();
+  const { data: topItems, isLoading: topItemsLoading, error: topItemsError} = useUsersTopItems();
+  console.log(topItems)
 
   if (recentlyPlayedSongsError) return <div>Error loading data</div>;
   if (!recentlyPlayedSongsIsLoading) {
@@ -109,7 +109,7 @@ export const Profile = () => {
 
         <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
 
-        {topItems && showTopItems ? (
+        {!topItemsLoading && showTopItems ? (
           <>
             <Heading>Top Artists And Tracks</Heading>
             <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>

@@ -8,20 +8,6 @@ const MAX_RETRIES = 3;
 let retryCount = 0;
 const API_URL = 'https://api.spotify.com/v1'
 
-export const audioFeaturesMiddleware = (useSWRNext) => {
-  return (key, fetcher, config) => {
-
-    // Next middleware or the useSWR hook if no more middlewares
-    const swr = useSWRNext(key, fetcher, config)
-
-    const trackIds = swr.items.map(track => track.track.id);
-    // Map the track IDs to form a comma-separated string
-    const trackIdsString = trackIds?.join(',');
-
-    // Return after hook runs
-    return swr;
-  }
-}
 
 export const fetchRecentlyPlayedSongs = () => {
   let combinedSongs = [];
@@ -63,6 +49,23 @@ export const useSpotifyUser = () => {
     user: data, 
     userMutate: mutate, 
     loggedOut: error?.status === 401,
+  };
+}
+
+export const useUsersTopItems = () => {
+  const { data: artists, isLoading: topArtistsLoading, error: topArtistsError } = useSWR(
+    `${API_URL}/me/top/artists`,
+    fetchWithToken
+  )
+  const { data: tracks, isLoading: topTracksLoading, error: topTracksError } = useSWR(
+    `${API_URL}/me/top/tracks`,
+    fetchWithToken
+  )
+
+  return { 
+    data: { artists, tracks },
+    isLoading: topArtistsLoading | topTracksLoading,
+    error: topArtistsError | topTracksError,
   };
 }
 
