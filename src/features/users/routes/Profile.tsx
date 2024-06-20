@@ -37,12 +37,14 @@ export const Profile = () => {
   const [additionalItems, setAdditionalItems] = useState(null);
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
-  const [popularityNumbers, setPopularityNumbers] = useState([]);
-  const [fetchedUserProfile, setFetchedUserProfile] = useState();
+  let popularityNumbers = [];
   const { user, userMutate, loggedOut } = useSpotifyUser();
-  const { recentlyPlayed } = useSpotifyRecentlyPlayed();
-  const { recentlyPlayedSongs } = fetchRecentlyPlayedSongs()
-  console.log(recentlyPlayedSongs)
+  const { recentlyPlayedSongs, recentlyPlayedSongsIsLoading, recentlyPlayedSongsError } = fetchRecentlyPlayedSongs();
+
+  if (recentlyPlayedSongsError) return <div>Error loading data</div>;
+  if (!recentlyPlayedSongsIsLoading) {
+    popularityNumbers = recentlyPlayedSongs.map(item => item.popularity)
+  }
 
   useEffect(() => {
     if (loggedOut) {
@@ -55,69 +57,9 @@ export const Profile = () => {
     setAdditionalItems(moreTopItems)
   }
 
-  // Checks for tokens and stores them if not stored yet
-  // useEffect(() => {
-  //   const fetchProfileData = async () => {
-  //     try {
-  //       const fetchedProfile = await spotify.getProfile();
-  //       storeProfileData(fetchedProfile);
-
-  //       // const fetchedRecentlyPlayed = await spotify.getUsersRecentlyPlayed();
-  //       const fetchedRecentlyPlayed = await fetchAndCombineRecentlyPlayedSongs(spotify);
-  //       storeRecentlyPlayed(fetchedRecentlyPlayed);
-
-  //       const numbers = await fetchedRecentlyPlayed.map(item => item.popularity);
-  //       setPopularityNumbers(numbers);
-
-  //       const fetchedTopItems = await spotify.getUsersTopItems();
-  //       storeTopItems(fetchedTopItems);
-
-  //     } catch (error) {
-  //       console.error('Error fetching profile data: ', error);
-  //     }    
-  //   };
-
-  //   fetchProfileData();
-  // }, []);
-  // useEffect(() => {
-  //   if (!accessToken) {
-  //     const params = new URLSearchParams(window.location.search);
-  //     const accessTokenFromParams = params.get('access_token');
-  //     const refreshTokenFromParams = params.get('refresh_token');
-
-  //     if (accessTokenFromParams) {
-  //       storeAccessToken(accessTokenFromParams)
-  //     }
-  //     if (refreshTokenFromParams) {
-  //       storeRefreshToken(refreshTokenFromParams);
-  //     }
-  //   } else {
-  //     if (!profileData) {
-  //       const fetchProfileData = async () => {
-  //         try {
-  //           const fetchedProfile = await spotify.getProfile();
-  //           storeProfileData(fetchedProfile);
-
-  //           // const fetchedRecentlyPlayed = await spotify.getUsersRecentlyPlayed();
-  //           const fetchedRecentlyPlayed = await fetchAndCombineRecentlyPlayedSongs(spotify);
-  //           storeRecentlyPlayed(fetchedRecentlyPlayed);
-
-  //           const numbers = await fetchedRecentlyPlayed.map(item => item.popularity);
-  //           setPopularityNumbers(numbers);
-
   //           const fetchedTopItems = await spotify.getUsersTopItems();
   //           storeTopItems(fetchedTopItems);
 
-  //         } catch (error) {
-  //           console.error('Error fetching profile data: ', error);
-  //         }    
-  //       };
-  
-  //       fetchProfileData();
-  //     }
-  //   }
-    
-  // }, [accessToken]);
 
   const handleShowTopItems = () => {
     setShowTopItems(!showTopItems);
@@ -145,7 +87,7 @@ export const Profile = () => {
  
         <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
 
-          {recentlyPlayedSongs.length > 1 ? (
+          {!recentlyPlayedSongsIsLoading ? (
             <>
               <LineChart 
                 title='Popularity' 

@@ -24,7 +24,9 @@ export const audioFeaturesMiddleware = (useSWRNext) => {
 }
 
 export const fetchRecentlyPlayedSongs = () => {
-  const { data: recentlyPlayedSongs } = useSWR(
+  let combinedSongs = [];
+
+  const { data: recentlyPlayedSongs, error: recentlyPlayedSongsError } = useSWR(
     `${API_URL}/me/player/recently-played?limit=50`,
     fetchWithToken
   )
@@ -33,11 +35,9 @@ export const fetchRecentlyPlayedSongs = () => {
   // Map the track IDs to form a comma-separated string
   const trackIdsString = trackIds?.join(',');
 
-  const { data: audioFeatures } = useSWR(() => trackIdsString ? `${API_URL}/audio-features?ids=$` + trackIdsString : [],
+  const { data: audioFeatures, error: audioFeaturesError } = useSWR(() => trackIdsString ? `${API_URL}/audio-features?ids=$` + trackIdsString : [],
     fetchWithToken
   )
-
-  let combinedSongs = [];
 
   if (recentlyPlayedSongs && audioFeatures) {
     combinedSongs = recentlyPlayedSongs?.items.map(track => {
@@ -47,7 +47,9 @@ export const fetchRecentlyPlayedSongs = () => {
   }
 
   return {
-    recentlyPlayedSongs: combinedSongs
+    recentlyPlayedSongs: combinedSongs,
+    recentlyPlayedSongsIsLoading: !recentlyPlayedSongs || !audioFeatures,
+    recentlyPlayedSongsError: recentlyPlayedSongsError || audioFeaturesError,
   }
 }
 
