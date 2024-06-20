@@ -17,8 +17,6 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-
-import { useAuthContext } from '@/providers/AuthProvider';
 import { useProfileContext } from '@/providers/ProfileProvider';
 
 
@@ -52,13 +50,12 @@ const NavLink = (props: Props) => {
 
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { handleUserLogout } = useAuthContext();
   const { user } = useProfileContext();
   const navigate = useNavigate();
 
   // Function to delete access token and redirect to home page
   const handleLogout = () => {
-    handleUserLogout(); // Deletes stored access token and refresh token
+    localStorage.removeItem('tokenSet');
     window.open('https://www.spotify.com/us/account/apps/', '_blank'); // Spotify link to remove connected apps
     window.location.href='/'; // Redirects to home page
   }
