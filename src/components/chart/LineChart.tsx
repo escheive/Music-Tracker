@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { Flex, Heading, Tooltip } from '@chakra-ui/react';
+import { Flex, Heading, Square, Stack, Tooltip } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 
 const LineChart = ({
   title,
   description,
   data,
+  size,
   width = 720,
   height = 400,
   marginTop = 20,
@@ -187,7 +188,7 @@ const LineChart = ({
   };
 
   return (
-    <>
+    <Stack>
       <Flex flexDirection='row' justifyContent='center' alignItems='center'>
         <Heading>{title ? title : null}</Heading>
         <Tooltip hasArrow label={description} fontSize='md'>
@@ -196,7 +197,7 @@ const LineChart = ({
       </Flex>
       <Heading textAlign='center'>{average ? average.toFixed(2) : null}</Heading>
       <svg ref={svgRef} width={width} height={height}></svg>
-    </>
+    </Stack>
   );
 };
 

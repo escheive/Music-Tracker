@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import { Box, Square, Stack } from '@chakra-ui/react';
 
 const RadarChart = ({
   data, // Array of objects with keys representing categories and values representing data points
-  width = 640,
-  height = 640,
+  width = 540,
+  height = 540,
   centerX = width / 2, // X-coordinate of the center point
   centerY = height / 2, // Y-coordinate of the center point
   radius = Math.min(width, height) / 2 - 60, // Radius of the chart
-  maxRadius = 320,
+  maxRadius = 270,
   categories, // Array of category names (e.g. for mood, ['Happiness', 'Sadness', 'Excitement'])
 }) => {
   const svgRef = useRef();
@@ -122,9 +123,9 @@ const RadarChart = ({
 
 
   return (
-    <>
+    <Square>
       <svg ref={svgRef} width={width} height={height}></svg>
-    </>
+    </Square>
   );
 };
 

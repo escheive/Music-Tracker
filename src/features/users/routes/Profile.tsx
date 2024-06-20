@@ -11,7 +11,7 @@ import useSpotifyAPI, { useRecentlyPlayedSongs, useUsersTopItems, useSpotifyUser
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
-import { Box, Button, Heading, Text, Grid, GridItem, Link } from "@chakra-ui/react";
+import { Box, Button, Heading, Text, Grid, GridItem, Link, Flex } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -69,28 +69,28 @@ export const Profile = () => {
             <a href={user.external_urls.spotify} target="blank">Open on Spotify</a>
           </>
         ) : null}
- 
-        <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
 
-          {!recentlyPlayedSongsIsLoading ? (
-            <>
-              <LineChart 
-                title='Popularity' 
-                description='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.'
-                data={popularityNumbers} 
-              />
-              <MoodCharts
-                recentlyPlayedSongs={recentlyPlayedSongs} 
-              />
-              
-              {showRecentlyPlayed ? (
-                <>
-                  <Heading>Recently Played Tracks</Heading>
-                  <RecentlyPlayedList recentlyPlayedSongs={recentlyPlayedSongs} />
-                </>
-              ) : null}
-            </>
-          ) : null}
+        {!recentlyPlayedSongsIsLoading ? (
+          <>
+            <LineChart 
+              title='Popularity' 
+              description='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.'
+              data={popularityNumbers} 
+            />
+            <MoodCharts
+              recentlyPlayedSongs={recentlyPlayedSongs} 
+            />
+
+            <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
+            
+            {showRecentlyPlayed ? (
+              <>
+                <Heading>Recently Played Tracks</Heading>
+                <RecentlyPlayedList recentlyPlayedSongs={recentlyPlayedSongs} />
+              </>
+            ) : null}
+          </>
+        ) : null}
 
         <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
 

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import RadarChart from '@/components/chart/RadarChart';
 import LineChart from '@/components/chart/LineChart';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 
 const MOOD_CATEGORIES = ['Happiness', 'Energetic', 'Sadness', 'Calm']
 const MAX_SCALE=50;
@@ -180,7 +180,7 @@ const MoodCharts = ({ recentlyPlayedSongs }) => {
   // const averagedData = normalizeData(averageData());
 
   return (
-    <Box>
+    <Flex>
       <RadarChart 
         data={normalizedTotalMoodScores} 
         categories={MOOD_CATEGORIES}
@@ -190,7 +190,7 @@ const MoodCharts = ({ recentlyPlayedSongs }) => {
         data={dailyMoodScores}
         description='A display of your mood over the past 10 days.'
       />
-    </Box>
+    </Flex>
   );
 };
 
