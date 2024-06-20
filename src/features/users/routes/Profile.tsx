@@ -7,39 +7,27 @@ import LineChart from "@/components/chart/LineChart";
 import MoodCharts from "../components/MoodCharts";
 import useSWR from 'swr';
 
-import useSpotifyAPI, { fetchRecentlyPlayedSongs, useUsersTopItems, useSpotifyUser } from "@/api/spotify";
+import useSpotifyAPI, { useRecentlyPlayedSongs, useUsersTopItems, useSpotifyUser } from "@/api/spotify";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
 import { Box, Button, Heading, Text, Grid, GridItem, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-const fetchAndCombineRecentlyPlayedSongs = async (spotify) => {
-  const recentlyPlayed = await spotify.getUsersRecentlyPlayed();
-  const recentlyPlayedTrackIds = recentlyPlayed.items.map(track => track.track.id);
-  const recentlyPlayedAudioFeatures = await spotify.fetchAudioFeatures(recentlyPlayedTrackIds);
 
-  const combinedData = recentlyPlayed.items.map(track => {
-    const features = recentlyPlayedAudioFeatures.audio_features.find(feature => feature.id === track.track.id);
-    return { played_at: track.played_at, ...track.track, ...features };
-  });
-
-  return combinedData;
-}
 
 export const Profile = () => {
-  const { accessToken, storeAccessToken, refreshToken, storeRefreshToken } = useAuthContext();
+
   const navigate = useNavigate();
-  const { profileData, storeProfileData, storeRecentlyPlayed } = useUserContext();
+
   const spotify = useSpotifyAPI();
   const [additionalItems, setAdditionalItems] = useState(null);
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
   let popularityNumbers = [];
   const { user, userMutate, loggedOut } = useSpotifyUser();
-  const { recentlyPlayedSongs, recentlyPlayedSongsIsLoading, recentlyPlayedSongsError } = fetchRecentlyPlayedSongs();
+  const { recentlyPlayedSongs, recentlyPlayedSongsIsLoading, recentlyPlayedSongsError } = useRecentlyPlayedSongs();
   const { data: topItems, isLoading: topItemsLoading, error: topItemsError} = useUsersTopItems();
-  console.log(topItems)
 
   if (recentlyPlayedSongsError) return <div>Error loading data</div>;
   if (!recentlyPlayedSongsIsLoading) {
@@ -56,9 +44,6 @@ export const Profile = () => {
     const moreTopItems = await spotify.fetchMoreTopItems();
     setAdditionalItems(moreTopItems)
   }
-
-  //           const fetchedTopItems = await spotify.getUsersTopItems();
-  //           storeTopItems(fetchedTopItems);
 
 
   const handleShowTopItems = () => {

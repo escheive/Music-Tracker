@@ -9,7 +9,7 @@ let retryCount = 0;
 const API_URL = 'https://api.spotify.com/v1'
 
 
-export const fetchRecentlyPlayedSongs = () => {
+export const useRecentlyPlayedSongs = () => {
   let combinedSongs = [];
 
   const { data: recentlyPlayedSongs, error: recentlyPlayedSongsError } = useSWR(
@@ -54,57 +54,20 @@ export const useSpotifyUser = () => {
 
 export const useUsersTopItems = () => {
   const { data: artists, isLoading: topArtistsLoading, error: topArtistsError } = useSWR(
-    `${API_URL}/me/top/artists`,
+    `${API_URL}/me/top/artists?limit=50`,
     fetchWithToken
   )
   const { data: tracks, isLoading: topTracksLoading, error: topTracksError } = useSWR(
-    `${API_URL}/me/top/tracks`,
+    `${API_URL}/me/top/tracks?limit=50`,
     fetchWithToken
   )
 
   return { 
     data: { artists, tracks },
-    isLoading: topArtistsLoading | topTracksLoading,
+    isLoading: topArtistsLoading || topTracksLoading,
     error: topArtistsError | topTracksError,
   };
 }
-
-// const trackIds = recentlyPlayed.items.map(track => track.track.id);
-//   // Map the track IDs to form a comma-separated string
-//   const trackIdsString = trackIds.join(',');
-// const combinedSongs = recentlyPlayed && audioFeatures ? recentlyPlayed.items.map(track => {
-//   const features = audioFeatures.audio_features.find(feature => feature.id === track.track.id);
-//   return { played_at: track.played_at, ...track.track, ...features };
-// }) : [];
-
-
-export const useSpotifyRecentlyPlayed = () => {
-  const { data, mutate, isLoading, error } = useSWR(
-    `${API_URL}/me/player/recently-played?limit=50`,
-    fetchWithToken
-  )
-
-  return { 
-    recentlyPlayed: data,
-    recentlyPlayedMutate: mutate,
-    recentlyPlayedIsLoading: isLoading, 
-    recentlyPlayedError: error,
-  };
-}
-
-// export const useSpotifyRecentlyPlayed = () => {
-//   const { data, mutate, isLoading, error } = useSWR(
-//     `${API_URL}/me/player/recently-played?limit=50`,
-//     fetchWithToken,
-//   )
-
-//   return { 
-//     recentlyPlayed: data,
-//     recentlyPlayedMutate: mutate,
-//     recentlyPlayedIsLoading: isLoading, 
-//     recentlyPlayedError: error,
-//   };
-// }
 
 export const useSpotifyAudioFeatures = (trackIds) => {
   // Map the track IDs to form a comma-separated string
