@@ -4,18 +4,14 @@ import MoodCharts from "../components/MoodCharts";
 
 import { Box, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { useRecentlyPlayedSongs, useSpotifyUser } from "@/api/spotify";
 
 
 
 export const Mood = () => {
   const navigate = useNavigate();
-  const { 
-    user,
-    userMutate,
-    loggedOut,
-    recentlyPlayedSongs,
-    recentlyPlayedSongsIsLoading,
-  } = useProfileContext();
+  const { user, userMutate, loggedOut } = useSpotifyUser();
+  const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsLoading } = useRecentlyPlayedSongs()
 
   useEffect(() => {
     if (loggedOut) {
@@ -39,7 +35,7 @@ export const Mood = () => {
           </>
         ) : null}
 
-        {!recentlyPlayedSongsIsLoading ? (
+        {!recentlyPlayedSongsLoading ? (
           <>
             <MoodCharts
               recentlyPlayedSongs={recentlyPlayedSongs} 
