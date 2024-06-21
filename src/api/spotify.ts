@@ -16,11 +16,11 @@ export const useRecentlyPlayedSongs = () => {
   // Map the track IDs to form a comma-separated string
   const trackIdsString = trackIds?.join(',');
 
-  const { data: audioFeatures, error: audioFeaturesError } = useSWR(() => trackIdsString ? `${API_URL}/audio-features?ids=$` + trackIdsString : [],
+  const { data: audioFeatures, isLoading: audioFeaturesLoading, error: audioFeaturesError } = useSWR(() => trackIdsString ? `${API_URL}/audio-features?ids=$` + trackIdsString : [],
     fetchWithToken
   )
 
-  if (recentlyPlayedSongsLoading && audioFeatures) {
+  if (!recentlyPlayedSongsLoading && !audioFeaturesLoading) {
     combinedSongs = recentlyPlayedSongs?.items.map((track: any) => {
       const features = audioFeatures?.audio_features.find((feature: any) => feature?.id === track.track.id);
       return { played_at: track.played_at, ...track.track, ...features };

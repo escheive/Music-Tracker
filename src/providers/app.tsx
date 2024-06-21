@@ -53,9 +53,9 @@ export const AppProvider = () => {
     >       
       <ChakraProvider theme={theme}>
         <AuthProvider>
-          <ProfileProvider>
+          {/* <ProfileProvider> */}
             <RouterProvider router={router} />
-          </ProfileProvider>
+          {/* </ProfileProvider> */}
         </AuthProvider>
       </ChakraProvider>
     </React.Suspense>
