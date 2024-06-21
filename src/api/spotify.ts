@@ -7,7 +7,7 @@ const API_URL = 'https://api.spotify.com/v1'
 export const useRecentlyPlayedSongs = () => {
   let combinedSongs = [];
 
-  const { data: recentlyPlayedSongs, error: recentlyPlayedSongsError } = useSWR(
+  const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsLoading, error: recentlyPlayedSongsError } = useSWR(
     `${API_URL}/me/player/recently-played?limit=50`,
     fetchWithToken
   )
@@ -20,7 +20,7 @@ export const useRecentlyPlayedSongs = () => {
     fetchWithToken
   )
 
-  if (recentlyPlayedSongs && audioFeatures) {
+  if (recentlyPlayedSongsLoading && audioFeatures) {
     combinedSongs = recentlyPlayedSongs?.items.map((track: any) => {
       const features = audioFeatures?.audio_features.find((feature: any) => feature?.id === track.track.id);
       return { played_at: track.played_at, ...track.track, ...features };
