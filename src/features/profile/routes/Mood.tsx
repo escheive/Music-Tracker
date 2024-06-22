@@ -21,7 +21,7 @@ export const Mood = () => {
 
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+      <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' marginBlock='5%'>
         <Heading>Music Tracker</Heading>
         {user ? (
           <>

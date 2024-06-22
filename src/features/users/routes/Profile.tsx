@@ -50,7 +50,7 @@ export const Profile = () => {
 
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+      <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' marginBlock='5%'>
         <Heading>Music Tracker</Heading>
         <Heading>{user.display_name}</Heading>
         <p>Email: {user.email}</p>

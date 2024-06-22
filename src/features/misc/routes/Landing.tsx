@@ -22,7 +22,7 @@ export const Landing = () => {
   }
 
   return (
-    <Box display='flex' flexDirection='column' alignItems='center' >
+    <Box display='flex' flexDirection='column' alignItems='center' marginBlock='5%' >
       <Heading>Music Tracker</Heading>
       <Text m={2} textAlign='center'>Track your spotify account and connect with friends, all in one place using the Spotify API. No need to register an account, simply link your spotify account and see a breakdown of your entire account. To connect with others, register an account and start searching for your friends.</Text>
       <Box display='flex' justifyContent='center'>
