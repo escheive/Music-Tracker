@@ -130,8 +130,6 @@ const getAccessToken = async () => {
 
   if (tokenSetString !== null) {
     tokenSet = JSON.parse(tokenSetString);
-  } else {
-    return
   }
 
   if (tokenSet.expires_at < Date.now()) {
