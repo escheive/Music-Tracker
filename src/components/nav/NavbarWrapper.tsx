@@ -25,7 +25,7 @@ interface Props {
   to: any
 }
 
-const Links = ['Profile', 'Mood']
+const Links = ['Profile', 'Mood', 'Music']
 
 const NavLink = (props: Props) => {
   const { children, to } = props
