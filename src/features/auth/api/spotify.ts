@@ -22,6 +22,7 @@ const base64encode = (input: any) => {
 
 async function fetchJSON(input: any, init: any) {
   const response = await fetch(input, init)
+  console.log(response)
   const body = await response.json()
   if (!response.ok) {
     throw new ErrorResponse(response, body)
@@ -130,12 +131,15 @@ const getAccessToken = async () => {
 
   if (tokenSetString !== null) {
     tokenSet = JSON.parse(tokenSetString);
+  } else {
+    return
   }
 
   if (tokenSet.expires_at < Date.now()) {
     tokenSet = await createAccessToken({
       grant_type: 'refresh_token',
       refresh_token: tokenSet.refresh_token,
+      client_id: CLIENT_ID
     })
   }
 
