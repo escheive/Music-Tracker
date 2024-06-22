@@ -47,6 +47,20 @@ export const useSpotifyUser = () => {
   };
 }
 
+export const useSpotifyUsersPlaylists = () => {
+  const { data, isLoading, mutate, error } = useSWR(
+    `${API_URL}/me/playlists?limit=50`,
+    fetchWithToken,
+  )
+
+  return { 
+    data, 
+    isLoading,
+    mutate, 
+    error
+  };
+}
+
 export const useUsersTopItems = () => {
   const { data: artists, isLoading: topArtistsLoading, error: topArtistsError } = useSWR(
     `${API_URL}/me/top/artists?limit=50`,
