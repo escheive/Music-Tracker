@@ -195,7 +195,7 @@ const LineChart: React.FC<LineChartProps> = ({
   };
 
   return (
-    <Stack>
+    <Stack display='flex' width='100%' paddingInline='15%'>
       <Flex flexDirection='row' justifyContent='center' alignItems='center'>
         <Heading>{title ? title : null}</Heading>
         <Tooltip hasArrow label={description} fontSize='md'>
@@ -203,7 +203,7 @@ const LineChart: React.FC<LineChartProps> = ({
         </Tooltip>
       </Flex>
       <Heading textAlign='center'>{average ? average.toFixed(2) : null}</Heading>
-      <svg ref={svgRef} width={width} height={height}></svg>
+      <svg ref={svgRef} viewBox='0, 0, 720, 400'></svg>
     </Stack>
   );
 };
