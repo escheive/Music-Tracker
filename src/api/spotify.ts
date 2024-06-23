@@ -61,6 +61,20 @@ export const useSpotifyUsersPlaylists = () => {
   };
 }
 
+export const useSpotifyPlaylistsTracks = (playlistId: string) => {
+  const { data, isLoading, mutate, error } = useSWR(
+    playlistId ? `${API_URL}/playlists/${playlistId}/tracks` : null,
+    fetchWithToken,
+  )
+
+  return { 
+    data, 
+    isLoading,
+    mutate, 
+    error
+  };
+}
+
 export const useUsersTopItems = () => {
   const { data: artists, isLoading: topArtistsLoading, error: topArtistsError } = useSWR(
     `${API_URL}/me/top/artists?limit=50`,
