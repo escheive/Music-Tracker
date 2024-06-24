@@ -13,6 +13,12 @@ export const Music = () => {
     onOpen();
   }
 
+  if (usersPlaylistsError) {
+    return (
+      <Heading>Error: {usersPlaylistsError}</Heading>
+    )
+  }
+
   return (
     <Box>
       <Heading>Music</Heading>
