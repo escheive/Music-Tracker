@@ -28,7 +28,7 @@ interface PlaylistTracksProps {
 
 export const PlaylistTracks: React.FC<PlaylistTracksProps> = ({ isOpen, onClose, playlist }) => {
   const [offset, setOffset] = useState(0);
-  const [allTracks, setAllTracks] = useState<{}[]>([]);
+  const [allTracks, setAllTracks] = useState<object[]>([]);
   const { data: tracks } = useSpotifyPlaylistsTracks(playlist?.id, offset);
 
   const handleOnScroll = (e: any) => {
@@ -48,7 +48,7 @@ export const PlaylistTracks: React.FC<PlaylistTracksProps> = ({ isOpen, onClose,
 
   useEffect(() => {
     if (tracks && tracks.items) {
-      setAllTracks((prevTracks: {}[]) => [...prevTracks, ...tracks.items]);
+      setAllTracks((prevTracks: object[]) => [...prevTracks, ...tracks.items]);
     }
   }, [tracks]);
 

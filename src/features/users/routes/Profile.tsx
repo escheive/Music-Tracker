@@ -7,7 +7,6 @@ import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 import { Box, Heading, Grid, GridItem, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@/api/spotify";
-import PopularityChart from "@/components/chart/PopularityChart";
 
 
 
@@ -39,11 +38,11 @@ export const Profile = () => {
     )
   }
 
-  // if (recentlyPlayedSongsLoading) {
-  //   return (
-  //     <Heading>Loading...</Heading>
-  //   )
-  // }
+  if (recentlyPlayedSongsError) {
+    return (
+      <Heading>Error: {recentlyPlayedSongsError}</Heading>
+    )
+  }
 
   // Derive popularity numbers from recently played songs
   const popularityNumbers = recentlyPlayedSongs ? recentlyPlayedSongs.map((song: any) => song.popularity) : [];

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ChakraProvider, Spinner, extendTheme } from '@chakra-ui/react';
-import { ProfileProvider } from '@/providers/ProfileProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { commonRoutes } from '@/routes';
 import { publicRoutes } from '@/routes/public';
@@ -53,9 +52,7 @@ export const AppProvider = () => {
     >       
       <ChakraProvider theme={theme}>
         <AuthProvider>
-          {/* <ProfileProvider> */}
-            <RouterProvider router={router} />
-          {/* </ProfileProvider> */}
+          <RouterProvider router={router} />
         </AuthProvider>
       </ChakraProvider>
     </React.Suspense>
