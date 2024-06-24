@@ -6,14 +6,12 @@ import { useState } from "react";
 export const Music = () => {
   const { data: usersPlaylists, isLoading: usersPlaylistsLoading, error: usersPlaylistsError } = useSpotifyUsersPlaylists();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedPlaylist, setSelectedPlaylist] = useState(usersPlaylists.items[0]);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(usersPlaylists?.items[0]);
 
   const handleOpenPlaylist = (playlist: any) => {
     setSelectedPlaylist(playlist);
     onOpen();
   }
-
-  console.log(usersPlaylistsLoading, usersPlaylistsLoading)
 
   return (
     <Box>
