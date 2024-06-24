@@ -13,16 +13,41 @@ import {
   Flex
 } from '@chakra-ui/react';
 import { useSpotifyPlaylistsTracks } from '@/api/spotify';
+import { useEffect, useState } from 'react';
 
 export const PlaylistTracks = ({ isOpen, onClose, playlist }) => {
-  const { data: tracks } = useSpotifyPlaylistsTracks(playlist?.id);
+  const [offset, setOffset] = useState(0);
+  const [allTracks, setAllTracks] = useState([]);
+  const { data: tracks } = useSpotifyPlaylistsTracks(playlist?.id, offset);
   console.log(tracks)
   console.log(playlist)
+
+  const handleOnScroll = (e: any) => {
+    if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
+      console.log('the end')
+      setOffset((prevOffset) => prevOffset + 100);
+    }
+    // console.log(e.target.scrollHeight)
+    // console.log(e.target.scrollTop)
+    // console.log(e.target.clientHeight)
+  }
+
+  useEffect(() => {
+    if (playlist?.id) {
+      setOffset(0); // Reset offset when playlist changes
+      setAllTracks([]); // Clear the tracks when a new playlist is opened
+    }
+  }, [playlist?.id]);
+
+  useEffect(() => {
+    if (tracks && tracks.items) {
+      setAllTracks((prevTracks) => [...prevTracks, ...tracks.items]);
+    }
+  }, [tracks]);
 
   return (
     <>
       <Modal 
-        blockScrollOnMount={false} 
         isOpen={isOpen} 
         onClose={onClose} 
         isCentered 
@@ -38,10 +63,10 @@ export const PlaylistTracks = ({ isOpen, onClose, playlist }) => {
         <ModalContent>
           <ModalHeader textAlign='center'>{playlist ? playlist.name : null}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody onScroll={() => console.log('scrolling')}>
-            {tracks ? (
+          <ModalBody onScroll={(e) => handleOnScroll(e)}>
+            {allTracks ? (
               <>
-                {tracks.items.map((track: any) => (
+                {allTracks.map((track: any) => (
                   <Flex key={track.track.id}>
                     <Image 
                       src={track.track.album.images[0].url} 

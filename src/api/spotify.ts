@@ -61,9 +61,9 @@ export const useSpotifyUsersPlaylists = () => {
   };
 }
 
-export const useSpotifyPlaylistsTracks = (playlistId: string) => {
+export const useSpotifyPlaylistsTracks = (playlistId: string, offset: number = 0) => {
   const { data, isLoading, mutate, error } = useSWR(
-    playlistId ? `${API_URL}/playlists/${playlistId}/tracks` : null,
+    playlistId ? `${API_URL}/playlists/${playlistId}/tracks?offset=${offset}` : null,
     fetchWithToken,
   )
 
