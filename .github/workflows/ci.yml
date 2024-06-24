@@ -1,32 +1,55 @@
-name: CI
+name: Development
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+  workflow_call:
 
 jobs:
-  build:
-
+  test:
+    name: Test application
     runs-on: ubuntu-latest
-
+    timeout-minutes: 10
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: "🔧 setup node"
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 16
 
-    - name: Install dependencies
-      run: npm install
+      - name: "🔧 install npm@latest"
+        run: npm i -g npm@latest
 
-    - name: Run tests
-      run: npm test -- --watchAll=false
+      - name: "📦 install dependencies"
+        uses: bahmutov/npm-install@v1
 
-    - name: Lint code
-      run: npm run lint
+      - name: "🔍 run tests"
+        run: npm run test --if-present
+
+  lint:
+    name: Code standards
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "🔧 setup node"
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 16
+
+      - name: "🔧 install npm@latest"
+        run: npm i -g npm@latest
+
+      - name: "📦 install dependencies"
+        uses: bahmutov/npm-install@v1
+
+      - name: "🔍 lint code"
+        run: npm run lint --if-present
