@@ -7,7 +7,6 @@ export const Music = () => {
   const { data: usersPlaylists, isLoading: usersPlaylistsLoading, error: usersPlaylistsError } = useSpotifyUsersPlaylists();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPlaylist, setSelectedPlaylist] = useState(usersPlaylists?.items[0]);
-  console.log(usersPlaylists)
 
   const handleOpenPlaylist = (playlist: any) => {
     setSelectedPlaylist(playlist);
@@ -22,7 +21,7 @@ export const Music = () => {
 
   return (
     <Box marginInline='2%' marginBlock='5%' >
-      {!usersPlaylistsLoading ? (
+      {!usersPlaylistsLoading && usersPlaylists ? (
         <>
         {usersPlaylists.items.map((playlist: any) => (
           <Box key={playlist.id} padding={1}>
