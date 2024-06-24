@@ -22,7 +22,6 @@ const base64encode = (input: any) => {
 
 async function fetchJSON(input: any, init: any) {
   const response = await fetch(input, init)
-  console.log(response)
   const body = await response.json()
   if (!response.ok) {
     throw new ErrorResponse(response, body)
