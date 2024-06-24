@@ -1,17 +1,14 @@
 import { Box, Button, Heading, useDisclosure } from "@chakra-ui/react";
-import { useSpotifyPlaylistsTracks, useSpotifyUsersPlaylists } from "@/api/spotify";
-import { Link } from "react-router-dom";
+import { useSpotifyUsersPlaylists } from "@/api/spotify";
 import { PlaylistTracks } from "../components/PlaylistTracks";
 import { useState } from "react";
 
 export const Music = () => {
-  const { data: usersPlaylists, isLoading: usersPlaylistsLoading, error: usersPlaylistsError, mutate: usersPlaylistsMutate } = useSpotifyUsersPlaylists();
+  const { data: usersPlaylists, isLoading: usersPlaylistsLoading, error: usersPlaylistsError } = useSpotifyUsersPlaylists();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
-  // const { data: playlistTracks } = useSpotifyPlaylistsTracks(selectedPlaylist);
-  // console.log(playlistTracks)
+  const [selectedPlaylist, setSelectedPlaylist] = useState(usersPlaylists.items[0]);
 
-  const handleOpenPlaylist = (playlist: string) => {
+  const handleOpenPlaylist = (playlist: any) => {
     setSelectedPlaylist(playlist);
     onOpen();
   }
@@ -21,7 +18,7 @@ export const Music = () => {
       <Heading>Music</Heading>
       {!usersPlaylistsLoading ? (
         <>
-        {usersPlaylists.items.map((playlist) => (
+        {usersPlaylists.items.map((playlist: any) => (
           <Box key={playlist.id}>
             <Button onClick={() => handleOpenPlaylist(playlist)} variant='link'>
               <Heading key={playlist.id}>{playlist.name}</Heading>

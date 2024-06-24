@@ -8,28 +8,35 @@ import {
   ModalCloseButton,
   Text,
   Button,
-  Box,
   Image,
   Flex
 } from '@chakra-ui/react';
 import { useSpotifyPlaylistsTracks } from '@/api/spotify';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-export const PlaylistTracks = ({ isOpen, onClose, playlist }) => {
+interface PlaylistTracksProps {
+  isOpen: boolean;
+  onClose: () => void;
+  playlist: {
+    id: string;
+    name: string;
+    tracks: {
+      total: number;
+    }
+  };
+}
+
+export const PlaylistTracks: React.FC<PlaylistTracksProps> = ({ isOpen, onClose, playlist }) => {
   const [offset, setOffset] = useState(0);
-  const [allTracks, setAllTracks] = useState([]);
+  const [allTracks, setAllTracks] = useState<{}[]>([]);
   const { data: tracks } = useSpotifyPlaylistsTracks(playlist?.id, offset);
-  console.log(tracks)
-  console.log(playlist)
 
   const handleOnScroll = (e: any) => {
     if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
-      console.log('the end')
-      setOffset((prevOffset) => prevOffset + 100);
+      if (allTracks.length < playlist.tracks.total) {
+        setOffset((prevOffset) => prevOffset + 100);
+      }
     }
-    // console.log(e.target.scrollHeight)
-    // console.log(e.target.scrollTop)
-    // console.log(e.target.clientHeight)
   }
 
   useEffect(() => {
@@ -41,7 +48,7 @@ export const PlaylistTracks = ({ isOpen, onClose, playlist }) => {
 
   useEffect(() => {
     if (tracks && tracks.items) {
-      setAllTracks((prevTracks) => [...prevTracks, ...tracks.items]);
+      setAllTracks((prevTracks: {}[]) => [...prevTracks, ...tracks.items]);
     }
   }, [tracks]);
 
