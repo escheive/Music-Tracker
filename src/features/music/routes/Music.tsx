@@ -1,4 +1,4 @@
-import { Box, Button, Heading, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Heading, useDisclosure, Image, Text } from "@chakra-ui/react";
 import { useSpotifyUsersPlaylists } from "@/api/spotify";
 import { PlaylistTracks } from "../components/PlaylistTracks";
 import { useState } from "react";
@@ -6,7 +6,8 @@ import { useState } from "react";
 export const Music = () => {
   const { data: usersPlaylists, isLoading: usersPlaylistsLoading, error: usersPlaylistsError } = useSpotifyUsersPlaylists();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedPlaylist, setSelectedPlaylist] = useState(usersPlaylists.items[0]);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(usersPlaylists?.items[0]);
+  console.log(usersPlaylists)
 
   const handleOpenPlaylist = (playlist: any) => {
     setSelectedPlaylist(playlist);
@@ -20,14 +21,19 @@ export const Music = () => {
   }
 
   return (
-    <Box>
-      <Heading>Music</Heading>
+    <Box marginInline='2%' marginBlock='5%' >
       {!usersPlaylistsLoading ? (
         <>
         {usersPlaylists.items.map((playlist: any) => (
-          <Box key={playlist.id}>
+          <Box key={playlist.id} padding={1}>
             <Button onClick={() => handleOpenPlaylist(playlist)} variant='link'>
-              <Heading key={playlist.id}>{playlist.name}</Heading>
+            <Image 
+                src={playlist.images[0].url} 
+                boxSize={{base: '40px', md: '60px'}} 
+                fallbackSrc='https://via.placeholder.com/150' 
+                paddingRight={1}
+              />
+              <Text key={playlist.id} fontSize='3xl'>{playlist.name}</Text>
             </Button>
           </Box>
         ))}
