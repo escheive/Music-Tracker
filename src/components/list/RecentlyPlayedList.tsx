@@ -11,7 +11,11 @@ import {
   Link
 } from '@chakra-ui/react';
 
-export const RecentlyPlayedList = ({ recentlyPlayedSongs }: any) => {
+interface RecentlyPlayedListProps {
+  recentlyPlayedSongs: Record<string, any>[]
+}
+
+export const RecentlyPlayedList: React.FC<RecentlyPlayedListProps> = ({ recentlyPlayedSongs }) => {
 
   return (
     <>
@@ -26,7 +30,7 @@ export const RecentlyPlayedList = ({ recentlyPlayedSongs }: any) => {
             </Tr>
           </Thead>
           <Tbody>
-            {recentlyPlayedSongs.map((item: any, i: number) => {
+            {recentlyPlayedSongs.map((item: Record<string, any>, i: number) => {
               const dateListened = new Date(item.played_at).toLocaleString();
 
               return (
