@@ -1,4 +1,3 @@
-import { useProfileContext } from "@/providers/ProfileProvider";
 import { useEffect, useState } from "react";
 import LineChart from "@/components/chart/LineChart";
 
@@ -7,22 +6,16 @@ import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
 import { Box, Heading, Grid, GridItem, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@/api/spotify";
+import PopularityChart from "@/components/chart/PopularityChart";
 
 
 
 export const Profile = () => {
   const navigate = useNavigate();
-  const { 
-    user,
-    userMutate,
-    loggedOut,
-    recentlyPlayedSongs,
-    recentlyPlayedSongsIsLoading,
-    topItems,
-    topItemsLoading,
-    popularityNumbers, 
-  } = useProfileContext();
-
+  const { user, userMutate, loggedOut } = useSpotifyUser();
+  const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsLoading, error: recentlyPlayedSongsError } = useRecentlyPlayedSongs();
+  const { data: topItems, isLoading: topItemsLoading } = useUsersTopItems();
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
 
@@ -40,23 +33,35 @@ export const Profile = () => {
     setShowRecentlyPlayed(!showRecentlyPlayed);
   };
 
+  if (!user) {
+    return (
+      <Heading>Please connect your Spotify to see your profile</Heading>
+    )
+  }
+
+  // if (recentlyPlayedSongsLoading) {
+  //   return (
+  //     <Heading>Loading...</Heading>
+  //   )
+  // }
+
+  // Derive popularity numbers from recently played songs
+  const popularityNumbers = recentlyPlayedSongs ? recentlyPlayedSongs.map((song: any) => song.popularity) : [];
+
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+      <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' marginBlock='5%'>
         <Heading>Music Tracker</Heading>
-        {user ? (
-          <>
-            <Heading>{user.display_name}</Heading>
-            <p>Email: {user.email}</p>
-            <p>Country: {user.country}</p>
-            <p>Product: {user.product}</p>
-            <p>Type: {user.type}</p>
-            <p>Followers: {user.followers.total}</p>
-            <a href={user.external_urls.spotify} target="blank">Open on Spotify</a>
-          </>
-        ) : null}
+        <Heading>{user.display_name}</Heading>
+        <p>Email: {user.email}</p>
+        <p>Country: {user.country}</p>
+        <p>Product: {user.product}</p>
+        <p>Type: {user.type}</p>
+        <p>Followers: {user.followers.total}</p>
+        <a href={user.external_urls.spotify} target="blank">Open on Spotify</a>
 
-        {!recentlyPlayedSongsIsLoading ? (
+
+        {!recentlyPlayedSongsLoading ? (
           <>
             <LineChart 
               title='Popularity' 

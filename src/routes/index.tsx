@@ -1,6 +1,4 @@
 import { Landing } from '@/features/misc';
-import { lazyImport } from '@/utils/lazyImport';
-const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 
 export const commonRoutes = [
   { 
@@ -8,7 +6,7 @@ export const commonRoutes = [
     element: <Landing /> 
   },
   {
-    path:'/profile',
-    element: <Profile />
-  }
+    path: "*",
+    element: <Landing />
+  },
 ];

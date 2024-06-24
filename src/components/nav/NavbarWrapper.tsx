@@ -17,9 +17,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-
-import { useAuthContext } from '@/providers/AuthProvider';
-import { useProfileContext } from '@/providers/ProfileProvider';
+import { useSpotifyUser } from '@/api/spotify';
 
 
 interface Props {
@@ -27,8 +25,7 @@ interface Props {
   to: any
 }
 
-
-const Links = ['Profile', 'Mood', 'Projects', 'Team']
+const Links = ['Profile', 'Mood', 'Music']
 
 const NavLink = (props: Props) => {
   const { children, to } = props
@@ -52,13 +49,12 @@ const NavLink = (props: Props) => {
 
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { handleUserLogout } = useAuthContext();
-  const { user } = useProfileContext();
+  const { user } = useSpotifyUser();
   const navigate = useNavigate();
 
   // Function to delete access token and redirect to home page
   const handleLogout = () => {
-    handleUserLogout(); // Deletes stored access token and refresh token
+    localStorage.removeItem('tokenSet');
     window.open('https://www.spotify.com/us/account/apps/', '_blank'); // Spotify link to remove connected apps
     window.location.href='/'; // Redirects to home page
   }
@@ -82,9 +78,10 @@ const NavBar = () => {
           <HStack spacing={8} alignItems={'center'}>
             <NavLink to='/'>Logo</NavLink>
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
-              {Links.map((link) => (
+              {user ? 
+              Links.map((link) => (
                 <NavLink key={link} to={link}>{link}</NavLink>
-              ))}
+              )) : null }
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>

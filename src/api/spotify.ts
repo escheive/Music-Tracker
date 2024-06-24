@@ -7,7 +7,7 @@ const API_URL = 'https://api.spotify.com/v1'
 export const useRecentlyPlayedSongs = () => {
   let combinedSongs = [];
 
-  const { data: recentlyPlayedSongs, error: recentlyPlayedSongsError } = useSWR(
+  const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsLoading, error: recentlyPlayedSongsError } = useSWR(
     `${API_URL}/me/player/recently-played?limit=50`,
     fetchWithToken
   )
@@ -16,11 +16,11 @@ export const useRecentlyPlayedSongs = () => {
   // Map the track IDs to form a comma-separated string
   const trackIdsString = trackIds?.join(',');
 
-  const { data: audioFeatures, error: audioFeaturesError } = useSWR(() => trackIdsString ? `${API_URL}/audio-features?ids=$` + trackIdsString : [],
+  const { data: audioFeatures, isLoading: audioFeaturesLoading, error: audioFeaturesError } = useSWR(() => trackIdsString ? `${API_URL}/audio-features?ids=$` + trackIdsString : [],
     fetchWithToken
   )
 
-  if (recentlyPlayedSongs && audioFeatures) {
+  if (!recentlyPlayedSongsLoading && !audioFeaturesLoading) {
     combinedSongs = recentlyPlayedSongs?.items.map((track: any) => {
       const features = audioFeatures?.audio_features.find((feature: any) => feature?.id === track.track.id);
       return { played_at: track.played_at, ...track.track, ...features };
@@ -44,6 +44,34 @@ export const useSpotifyUser = () => {
     user: data, 
     userMutate: mutate, 
     loggedOut: error?.status === 401,
+  };
+}
+
+export const useSpotifyUsersPlaylists = () => {
+  const { data, isLoading, mutate, error } = useSWR(
+    `${API_URL}/me/playlists?limit=50`,
+    fetchWithToken,
+  )
+
+  return { 
+    data, 
+    isLoading,
+    mutate, 
+    error
+  };
+}
+
+export const useSpotifyPlaylistsTracks = (playlistId: string, offset: number = 0) => {
+  const { data, isLoading, mutate, error } = useSWR(
+    playlistId ? `${API_URL}/playlists/${playlistId}/tracks?offset=${offset}` : null,
+    fetchWithToken,
+  )
+
+  return { 
+    data, 
+    isLoading,
+    mutate, 
+    error
   };
 }
 

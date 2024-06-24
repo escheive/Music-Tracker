@@ -138,6 +138,7 @@ const getAccessToken = async () => {
     tokenSet = await createAccessToken({
       grant_type: 'refresh_token',
       refresh_token: tokenSet.refresh_token,
+      client_id: CLIENT_ID
     })
   }
 

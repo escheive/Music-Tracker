@@ -17,6 +17,7 @@ interface PopularityChartProps {
 
 const PopularityChart: React.FC<PopularityChartProps> = ({
   title,
+  description,
   data,
   width = 640,
   height = 400,
@@ -26,8 +27,9 @@ const PopularityChart: React.FC<PopularityChartProps> = ({
   marginLeft = 40 
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const popularityNumbers = data.map((song: any) => song.track.popularity)
   // Calculate total sum of the data
-  const total = data.reduce((acc: number, number: number) => acc + number, 0);
+  const total = popularityNumbers.reduce((acc: number, number: number) => acc + number, 0);
 
   // Calculate average of the data
   const average = total / data.length;

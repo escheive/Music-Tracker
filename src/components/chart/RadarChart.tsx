@@ -133,8 +133,8 @@ const RadarChart: React.FC<RadarChartProps> = ({
 
 
   return (
-    <Square>
-      <svg ref={svgRef} width={width} height={height}></svg>
+    <Square paddingInline='20%'>
+      <svg ref={svgRef} viewBox='0, 0, 540, 540'></svg>
     </Square>
   );
 };
