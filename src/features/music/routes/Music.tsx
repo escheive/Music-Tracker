@@ -13,10 +13,12 @@ export const Music = () => {
     onOpen();
   }
 
+  console.log(usersPlaylistsLoading, usersPlaylistsLoading)
+
   return (
     <Box>
       <Heading>Music</Heading>
-      {!usersPlaylistsLoading ? (
+      {!usersPlaylistsLoading && usersPlaylists ? (
         <>
         {usersPlaylists.items.map((playlist: any) => (
           <Box key={playlist.id}>
