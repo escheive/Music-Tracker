@@ -27,6 +27,9 @@ interface TrackProps {
 }
 
 export const Track: React.FC<TrackProps> = ({ isOpen, onClose, selectedTrack, setSelectedTrack }) => {
+  
+  if (!selectedTrack) return
+
   const releaseDate = selectedTrack?.track?.album?.release_date;
   let formattedDate = "Unknown Release Date";
 
@@ -74,11 +77,11 @@ export const Track: React.FC<TrackProps> = ({ isOpen, onClose, selectedTrack, se
             <Flex flexDirection='column' flex='1' wrap='wrap' alignItems='center'>
               <ModalHeader textAlign="center" m={0}>{selectedTrack?.track.name}</ModalHeader>
               <Flex wrap="wrap" justifyContent="center">
-                {selectedTrack.track.artists?.map((artist, index) => (
+                {selectedTrack?.track.artists?.map((artist, index) => (
                   <React.Fragment key={artist.id}>
                     <Text fontWeight='500'>{artist.name}</Text>
-                    {index === 0 && selectedTrack.track.artists.length > 1 && <Text paddingInline='1' fontWeight='bold'>feat. </Text>}
-                    {index > 0 && index < selectedTrack.track.artists.length - 1 && <Text paddingRight='1'>,</Text>}
+                    {index === 0 && selectedTrack?.track.artists.length > 1 && <Text paddingInline='1' fontWeight='bold'>feat. </Text>}
+                    {index > 0 && index < selectedTrack?.track.artists.length - 1 && <Text paddingRight='1'>,</Text>}
                   </React.Fragment>
                 ))}
               </Flex>
@@ -92,7 +95,7 @@ export const Track: React.FC<TrackProps> = ({ isOpen, onClose, selectedTrack, se
                   <Heading size='sm'>Popularity</Heading>
                 </CardHeader>
                 <CardBody>
-                  <Text>{selectedTrack.track.popularity}</Text>
+                  <Text>{selectedTrack?.track.popularity}</Text>
                 </CardBody>
               </Card>
               <Card size='sm' width='30%' alignItems='center'>
@@ -100,7 +103,7 @@ export const Track: React.FC<TrackProps> = ({ isOpen, onClose, selectedTrack, se
                   <Heading size='sm'>Duration</Heading>
                 </CardHeader>
                 <CardBody>
-                  <Text>{formatDuration(selectedTrack.track.duration_ms)}</Text>
+                  <Text>{formatDuration(selectedTrack?.track.duration_ms)}</Text>
                 </CardBody>
               </Card>
               <Card size='sm' width='30%' alignItems='center'>

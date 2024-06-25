@@ -55,6 +55,7 @@ export const AppProvider = () => {
         <ChakraProvider theme={theme}>
           <AuthProvider>
             <RouterProvider router={router} />
+            <div>Hi</div>
           </AuthProvider>
         </ChakraProvider>
       </ErrorBoundary>

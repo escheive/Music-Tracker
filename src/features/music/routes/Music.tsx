@@ -1,7 +1,7 @@
 import { Box, Button, Heading, useDisclosure, Image, Text } from "@chakra-ui/react";
 import { useSpotifyUsersPlaylists } from "@/api/spotify";
 import { PlaylistTracks } from "../components/PlaylistTracks";
-import { Track } from "../components/Track";
+import { Track } from "../../../components/modal/Track";
 import { useState } from "react";
 
 export const Music = () => {
@@ -9,7 +9,6 @@ export const Music = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPlaylist, setSelectedPlaylist] = useState(usersPlaylists?.items[0]);
   const [selectedTrack, setSelectedTrack] = useState<any>(null);
-  console.log(selectedTrack)
 
   const handleOpenPlaylist = (playlist: any) => {
     setSelectedPlaylist(playlist);
