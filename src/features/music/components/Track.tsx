@@ -12,6 +12,7 @@ import {
   Flex,
   Box,
 } from '@chakra-ui/react';
+import React from 'react';
 
 interface TrackProps {
   isOpen: boolean;
@@ -51,27 +52,31 @@ export const Track: React.FC<TrackProps> = ({ isOpen, onClose, selectedTrack, se
           backdropBlur='2px'
           />
         <ModalContent>
+          <Flex position="relative" alignItems="center" p={3}>
             <Image
               src={selectedTrack?.track.album.images[0].url} 
               boxSize={{base: '50px', md: '60px'}} 
               fallbackSrc='https://via.placeholder.com/150' 
-              m='3'
-              position='absolute'
+              mr='3'
             />
-            <ModalHeader textAlign='center'>{selectedTrack?.track.name}</ModalHeader>
+            <Flex flexDirection='column' flex='1' wrap='wrap' alignItems='center'>
+              <ModalHeader textAlign="center" m={0}>{selectedTrack?.track.name}</ModalHeader>
+              <Flex wrap="wrap" justifyContent="center">
+                {selectedTrack.track.artists?.map((artist, index) => (
+                  <React.Fragment key={artist.id}>
+                    <Text fontWeight='500'>{artist.name}</Text>
+                    {index === 0 && selectedTrack.track.artists.length > 1 && <Text paddingInline='1' fontWeight='bold'>feat. </Text>}
+                    {index > 0 && index < selectedTrack.track.artists.length - 1 && <Text paddingRight='1'>,</Text>}
+                  </React.Fragment>
+                ))}
+              </Flex>
+            </Flex>
+          </Flex>
           <ModalCloseButton />
           <ModalBody>
-            <Box
-              _hover={{ background: 'gray.200'}} 
-              mb='1'
-            >
+            <Box mb='1'>
               <Text>Popularity: {selectedTrack.track.popularity}</Text>
               <Text>Duration: {formatDuration(selectedTrack.track.duration_ms)}</Text>
-              {selectedTrack.track.artists?.map((artist) => (
-                <>
-                  <Text>{artist.name}</Text>
-                </>
-              ))}
             </Box>
           </ModalBody>
 
