@@ -7,6 +7,7 @@ import { publicRoutes } from '@/routes/public';
 import { protectedRoutes } from '@/routes/protected';
 import NavbarWrapper from '@/components/nav/NavbarWrapper';
 import { useSpotifyUser } from '@/api/spotify';
+import ErrorBoundary from '@/error-page';
 
 
 export const AppProvider = () => {
@@ -49,12 +50,14 @@ export const AppProvider = () => {
           <Spinner size="xl" />
         </div>
       }
-    >       
-      <ChakraProvider theme={theme}>
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
-      </ChakraProvider>
+    >
+      <ErrorBoundary>
+        <ChakraProvider theme={theme}>
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
+        </ChakraProvider>
+      </ErrorBoundary>
     </React.Suspense>
   );
 };

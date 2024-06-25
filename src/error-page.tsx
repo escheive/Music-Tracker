@@ -1,6 +1,35 @@
 import { useRouteError } from "react-router-dom";
 
-export default function ErrorPage() {
+import React, { Component } from 'react';
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // You can log the error to an error reporting service
+    console.error("Error boundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ErrorPage />;
+    }
+
+    return this.props.children; 
+  }
+}
+
+export default ErrorBoundary;
+
+
+const ErrorPage = () => {
   const error: any = useRouteError();
   console.error(error);
 
