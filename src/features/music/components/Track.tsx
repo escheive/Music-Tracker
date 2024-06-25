@@ -11,8 +11,13 @@ import {
   Image,
   Flex,
   Box,
+  Card,
+  CardHeader,
+  CardBody,
+  Heading,
 } from '@chakra-ui/react';
 import React from 'react';
+import { parseISO, format } from 'date-fns';
 
 interface TrackProps {
   isOpen: boolean;
@@ -22,6 +27,13 @@ interface TrackProps {
 }
 
 export const Track: React.FC<TrackProps> = ({ isOpen, onClose, selectedTrack, setSelectedTrack }) => {
+  const releaseDate = selectedTrack?.track?.album?.release_date;
+  let formattedDate = "Unknown Release Date";
+
+  if (releaseDate) {
+    const parsedDate = parseISO(releaseDate);
+    formattedDate = format(parsedDate, 'MMMM d, yyyy');
+  }
 
   const handleClose = () => {
     setSelectedTrack(null);
@@ -51,7 +63,7 @@ export const Track: React.FC<TrackProps> = ({ isOpen, onClose, selectedTrack, se
           backdropInvert='80%'
           backdropBlur='2px'
           />
-        <ModalContent>
+        <ModalContent bg='alternatePurple.100'>
           <Flex position="relative" alignItems="center" p={3}>
             <Image
               src={selectedTrack?.track.album.images[0].url} 
@@ -73,15 +85,37 @@ export const Track: React.FC<TrackProps> = ({ isOpen, onClose, selectedTrack, se
             </Flex>
           </Flex>
           <ModalCloseButton />
-          <ModalBody>
-            <Box mb='1'>
-              <Text>Popularity: {selectedTrack.track.popularity}</Text>
-              <Text>Duration: {formatDuration(selectedTrack.track.duration_ms)}</Text>
-            </Box>
+          <ModalBody marginTop={5}>
+            <Flex mb='1' width='100%' justifyContent='space-around'>
+              <Card size='sm' width='30%' alignItems='center'>
+                <CardHeader>
+                  <Heading size='sm'>Popularity</Heading>
+                </CardHeader>
+                <CardBody>
+                  <Text>{selectedTrack.track.popularity}</Text>
+                </CardBody>
+              </Card>
+              <Card size='sm' width='30%' alignItems='center'>
+                <CardHeader>
+                  <Heading size='sm'>Duration</Heading>
+                </CardHeader>
+                <CardBody>
+                  <Text>{formatDuration(selectedTrack.track.duration_ms)}</Text>
+                </CardBody>
+              </Card>
+              <Card size='sm' width='30%' alignItems='center'>
+                <CardHeader>
+                  <Heading size='sm'>Release</Heading>
+                </CardHeader>
+                <CardBody>
+                  <Text>{formattedDate}</Text>
+                </CardBody>
+              </Card>
+            </Flex>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme='purple' mr={3} onClick={handleClose}>
+            <Button colorScheme='gray' mr={3} onClick={handleClose}>
               Close
             </Button>
           </ModalFooter>
