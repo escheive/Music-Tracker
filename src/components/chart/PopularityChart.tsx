@@ -17,7 +17,6 @@ interface PopularityChartProps {
 
 const PopularityChart: React.FC<PopularityChartProps> = ({
   title,
-  description,
   data,
   width = 640,
   height = 400,

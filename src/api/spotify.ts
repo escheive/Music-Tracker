@@ -5,14 +5,14 @@ const API_URL = 'https://api.spotify.com/v1'
 
 
 export const useRecentlyPlayedSongs = () => {
-  let combinedSongs = [];
+  let combinedSongs: Record<string, any>[] = [];
 
   const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsLoading, error: recentlyPlayedSongsError } = useSWR(
     `${API_URL}/me/player/recently-played?limit=50`,
     fetchWithToken
   )
 
-  const trackIds = recentlyPlayedSongs?.items.map((track: any) => track.track.id);
+  const trackIds = recentlyPlayedSongs?.items.map((track: Record<string, any>) => track.track.id);
   // Map the track IDs to form a comma-separated string
   const trackIdsString = trackIds?.join(',');
 
@@ -21,8 +21,8 @@ export const useRecentlyPlayedSongs = () => {
   )
 
   if (!recentlyPlayedSongsLoading && !audioFeaturesLoading) {
-    combinedSongs = recentlyPlayedSongs?.items.map((track: any) => {
-      const features = audioFeatures?.audio_features.find((feature: any) => feature?.id === track.track.id);
+    combinedSongs = recentlyPlayedSongs?.items.map((track: Record<string, any>) => {
+      const features = audioFeatures?.audio_features.find((feature: Record<string, any>) => feature?.id === track.track.id);
       return { played_at: track.played_at, ...track.track, ...features };
     });
   }
@@ -92,7 +92,7 @@ export const useUsersTopItems = () => {
   };
 }
 
-export const useSpotifyAudioFeatures = (trackIds: any) => {
+export const useSpotifyAudioFeatures = (trackIds: string[]) => {
   // Map the track IDs to form a comma-separated string
   const trackIdsString = trackIds.join(',');
 

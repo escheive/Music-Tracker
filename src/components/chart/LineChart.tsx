@@ -3,11 +3,10 @@ import * as d3 from 'd3';
 import { Flex, Heading, Stack, Tooltip } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 
-
 interface LineChartProps {
   title: string;
   description: string;
-  data: any;
+  data: any[];
   width?: number;
   height?: number;
   marginTop?: number;
@@ -31,12 +30,8 @@ const LineChart: React.FC<LineChartProps> = ({
 
   const isObjectData = typeof data[0] === 'object';
 
-  const total = !isObjectData ? data.reduce((acc: number, d: number) => acc + d, 0) : 0;
+  const total = !isObjectData ? (data as number[]).reduce((acc, d) => acc + d, 0) : 0;
   const average = isObjectData ? 0 : total / data.length;
-
-  useEffect(() => {
-    drawChart();
-  }, [data]); // Re-draw chart when data changes
 
   // Function to transform happy and energy score from -1 to 1 range to 0 to 100
   const transformScore = (score: number) => 50 * (score + 1);
@@ -56,7 +51,7 @@ const LineChart: React.FC<LineChartProps> = ({
           .domain([0, data.length])
           .range([marginLeft, width - marginRight]);
 
-    const filteredData: number[] = data.filter((d: number): d is number => typeof d === 'number');
+    const filteredData: number[] = data.filter((d): d is number => typeof d === 'number');
     const y = d3.scaleLinear()
       .domain([0, isObjectData ? 100 : d3.max(filteredData) || 0])  // Use filteredData for domain calculation
       .range([height - marginBottom, marginTop]);
@@ -75,11 +70,11 @@ const LineChart: React.FC<LineChartProps> = ({
       .call(yAxis);
 
     if (isObjectData) {
-      const happyLine = d3.line()
+      const happyLine: any = d3.line()
         .x((d: any) => x(new Date(d.date)))
         .y((d: any) => y(transformScore(d.Happiness)));
 
-      const energyLine = d3.line()
+      const energyLine: any = d3.line()
         .x((d: any) => x(new Date(d.date)))
         .y((d: any) => y(transformScore(d.Energetic)));
 
@@ -101,7 +96,7 @@ const LineChart: React.FC<LineChartProps> = ({
 
       // Circles for each data point on happy line
       svg.selectAll('circle.happy')
-        .data(data)
+        .data(data as number[])
         .enter()
         .append('circle')
         .attr('class', 'happy')
@@ -114,7 +109,7 @@ const LineChart: React.FC<LineChartProps> = ({
 
       // Circles for each data point on energy line
       svg.selectAll('circle.energy')
-        .data(data)
+        .data(data as number[])
         .enter()
         .append('circle')
         .attr('class', 'energy')
@@ -139,7 +134,7 @@ const LineChart: React.FC<LineChartProps> = ({
 
       // Circles for each data point
       svg.selectAll('circle')
-        .data(data)
+        .data(data as number[])
         .enter()
         .append('circle')
         .attr('cx', (_d, i) => x(i+1))
@@ -193,6 +188,10 @@ const LineChart: React.FC<LineChartProps> = ({
         .attr('alignment-baseline', 'middle');
     }
   };
+
+  useEffect(() => {
+    drawChart();
+  }, [data, drawChart]); // Re-draw chart when data changes
 
   return (
     <Stack display='flex' width='100%' paddingInline='15%'>

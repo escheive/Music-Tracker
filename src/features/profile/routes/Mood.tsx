@@ -1,4 +1,3 @@
-import { useProfileContext } from "@/providers/ProfileProvider";
 import { useEffect } from "react";
 import MoodCharts from "../components/MoodCharts";
 

@@ -9,7 +9,10 @@ import {
   Text,
   Button,
   Image,
-  Flex
+  Flex,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText
 } from '@chakra-ui/react';
 import { useSpotifyPlaylistsTracks } from '@/api/spotify';
 import React, { useEffect, useState } from 'react';
@@ -17,6 +20,7 @@ import React, { useEffect, useState } from 'react';
 interface PlaylistTracksProps {
   isOpen: boolean;
   onClose: () => void;
+  setSelectedTrack: (track: Record<string, any> | null) => void;
   playlist: {
     id: string;
     name: string;
@@ -26,10 +30,11 @@ interface PlaylistTracksProps {
   };
 }
 
-export const PlaylistTracks: React.FC<PlaylistTracksProps> = ({ isOpen, onClose, playlist }) => {
+export const PlaylistTracks: React.FC<PlaylistTracksProps> = ({ isOpen, onClose, playlist, setSelectedTrack }) => {
   const [offset, setOffset] = useState(0);
-  const [allTracks, setAllTracks] = useState<{}[]>([]);
-  const { data: tracks } = useSpotifyPlaylistsTracks(playlist?.id, offset);
+  const [allTracks, setAllTracks] = useState<object[]>([]);
+  const { data: tracks, isLoading: tracksLoaded } = useSpotifyPlaylistsTracks(playlist?.id, offset);
+  const totalTracks = playlist?.tracks.total;
 
   const handleOnScroll = (e: any) => {
     if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
@@ -37,6 +42,10 @@ export const PlaylistTracks: React.FC<PlaylistTracksProps> = ({ isOpen, onClose,
         setOffset((prevOffset) => prevOffset + 100);
       }
     }
+  }
+
+  const handleTrackClick = (track: Record<string, any>) => {
+    setSelectedTrack(track)
   }
 
   useEffect(() => {
@@ -48,7 +57,7 @@ export const PlaylistTracks: React.FC<PlaylistTracksProps> = ({ isOpen, onClose,
 
   useEffect(() => {
     if (tracks && tracks.items) {
-      setAllTracks((prevTracks: {}[]) => [...prevTracks, ...tracks.items]);
+      setAllTracks((prevTracks: object[]) => [...prevTracks, ...tracks.items]);
     }
   }, [tracks]);
 
@@ -68,25 +77,41 @@ export const PlaylistTracks: React.FC<PlaylistTracksProps> = ({ isOpen, onClose,
           backdropBlur='2px'
           />
         <ModalContent>
-          <ModalHeader textAlign='center'>{playlist ? playlist.name : null}</ModalHeader>
+          <ModalHeader textAlign='center'>{playlist?.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody onScroll={(e) => handleOnScroll(e)}>
-            {allTracks ? (
+            {allTracks.length > 0 ? (
               <>
-                {allTracks.map((track: any) => (
-                  <Flex key={track.track.id}>
-                    <Image 
+                {allTracks.map((track: Record<string, any>) => (
+                  <Flex 
+                    key={track.track.id} 
+                    _hover={{ background: 'gray.200', cursor: 'pointer' }} 
+                    mb='1'
+                    onClick={() => handleTrackClick(track)}
+                  >
+                    <Image
                       src={track.track.album.images[0].url} 
-                      boxSize={{base: '40px', md: '60px'}} 
+                      boxSize={{base: '30px', md: '40px'}} 
                       fallbackSrc='https://via.placeholder.com/150' 
                     />
-                    <Text fontWeight='bold' mb='1rem' key={track.track.id}>
+                    <Text fontWeight='bold' key={track.track.id}>
                       {track.track.name}
                     </Text>
                   </Flex>
                 ))}
               </>
-            ) : null}
+            ) : (
+              <>
+                {Array.from({ length: totalTracks}).map((_: any, index: number) => (
+                    <Skeleton 
+                      key={`skeleton ${index}`}
+                      isLoaded={!tracksLoaded} 
+                      height='20px' 
+                      mb='1rem'
+                    />
+                ))}
+              </>
+            )}
           </ModalBody>
 
           <ModalFooter>
