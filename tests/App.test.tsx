@@ -3,9 +3,9 @@ import { AppProvider } from '../src/providers/app'
 import { act } from 'react-dom/test-utils';
 
 describe('App', () => {
-  it('renders the App component', () => {
-    act(() => {
-      render(<AppProvider />)
+  it('renders the App component', async () => {
+    await act(async () => {
+      render(<AppProvider />);
     });
     // render(<AppProvider />)
     

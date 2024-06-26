@@ -105,11 +105,6 @@ const NavBar = () => {
                 ) : (
                   <MenuItem onClick={handleLogin}>Login</MenuItem>
                 )}
-                {/* {profileData ? (
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                ) : (
-                  <MenuItem onClick={handleLogin}>Login</MenuItem>
-                )} */}
                 
               </MenuList>
             </Menu>
