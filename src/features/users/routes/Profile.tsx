@@ -7,7 +7,7 @@ import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 import { Box, Heading, Grid, GridItem, Link, useDisclosure } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@/api/spotify";
-import { Track } from "@/components/modal/Track";
+import { Track } from "@/components/modal/TrackModal";
 
 
 

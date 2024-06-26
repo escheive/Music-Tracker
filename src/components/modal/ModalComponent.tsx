@@ -11,6 +11,8 @@ import {
   useModal,
 } from '@chakra-ui/react';
 import { useModalContext } from '@/providers/ModalProvider';
+import { TrackModal } from './TrackModal';
+import { PlaylistTracksModal } from './PlaylistModal';
 
 
 export const ModalComponent = () => {
@@ -22,9 +24,8 @@ export const ModalComponent = () => {
       setSelectedTrack(null);
     } else {
       setSelectedPlaylist(null);
+      onClose();
     }
-
-    onClose();
   }
 
   return (
@@ -42,10 +43,12 @@ export const ModalComponent = () => {
         backdropBlur='2px'
         />
       <ModalContent bg='alternatePurple.100'>
-        
-        <ModalCloseButton />
-        <ModalBody marginTop={5}>
-        </ModalBody>
+
+        {selectedTrack ? (
+          <TrackModal selectedTrack={selectedTrack} />
+        ) : (
+          <PlaylistTracksModal setSelectedTrack={setSelectedTrack} playlist={selectedPlaylist} />
+        )}
 
         <ModalFooter>
           <Button colorScheme='gray' mr={3} onClick={handleClose}>
