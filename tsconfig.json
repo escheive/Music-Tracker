@@ -35,6 +35,9 @@
       "@components/*": [
         "src/components/*"
       ],
+      "@features/*": [
+        "src/features/*"
+      ],
       "@routes/*": [
         "src/routes/*"
       ],
@@ -46,6 +49,9 @@
       ],
       "~components/*": [
         "src/components/*"
+      ],
+      "~features/*": [
+        "src/features/*"
       ],
       "~routes/*": [
         "src/routes/*"

@@ -25,7 +25,20 @@ interface Props {
   to: any
 }
 
-const Links = ['Profile', 'Mood', 'Music']
+const Links = [
+  {
+    title: 'Profile',
+    route: '/profile'
+  }, 
+  {
+    title: 'Mood',
+    route: '/profile/mood'
+  }, 
+  {
+    title: 'Music',
+    route: '/profile/music'
+  },
+]
 
 const NavLink = (props: Props) => {
   const { children, to } = props
@@ -80,7 +93,7 @@ const NavBar = () => {
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
               {user ? 
               Links.map((link) => (
-                <NavLink key={link} to={link}>{link}</NavLink>
+                <NavLink key={link.title} to={link.route}>{link.title}</NavLink>
               )) : null }
             </HStack>
           </HStack>
@@ -115,7 +128,7 @@ const NavBar = () => {
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
               {Links.map((link) => (
-                <NavLink key={link} to={link}>{link}</NavLink>
+                <NavLink key={link.title} to={link.route}>{link.title}</NavLink>
               ))}
             </Stack>
           </Box>

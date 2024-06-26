@@ -1,18 +1,11 @@
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   Text,
-  Button,
   Image,
   Flex,
   Skeleton,
-  SkeletonCircle,
-  SkeletonText
 } from '@chakra-ui/react';
 import { useSpotifyPlaylistsTracks } from '@/api/spotify';
 import React, { useEffect, useState } from 'react';
@@ -24,7 +17,7 @@ interface PlaylistTracksProps {
 
 export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, setSelectedTrack }) => {
   if (!playlist) return
-  
+
   const [offset, setOffset] = useState(0);
   const [allTracks, setAllTracks] = useState<object[]>([]);
   const { data: tracks, isLoading: tracksLoaded } = useSpotifyPlaylistsTracks(playlist?.id, offset);

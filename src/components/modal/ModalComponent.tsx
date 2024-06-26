@@ -2,13 +2,8 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   Button,
-  useDisclosure,
-  useModal,
 } from '@chakra-ui/react';
 import { useModalContext } from '@/providers/ModalProvider';
 import { TrackModal } from './TrackModal';

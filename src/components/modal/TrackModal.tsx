@@ -1,22 +1,16 @@
+import React from 'react';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   Text,
-  Button,
   Image,
   Flex,
-  Box,
   Card,
   CardHeader,
   CardBody,
   Heading,
 } from '@chakra-ui/react';
-import React from 'react';
 import { parseISO, format } from 'date-fns';
 
 interface TrackProps {
@@ -34,11 +28,6 @@ export const TrackModal: React.FC<TrackProps> = ({ selectedTrack }) => {
     const parsedDate = parseISO(releaseDate);
     formattedDate = format(parsedDate, 'MMMM d, yyyy');
   }
-
-  // const handleClose = () => {
-  //   setSelectedTrack(null);
-  //   onClose();
-  // }
 
   const formatDuration = (timeInMs: number) => {
     const totalSeconds = Math.floor(timeInMs / 1000);

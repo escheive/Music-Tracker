@@ -4,21 +4,19 @@ import LineChart from "@/components/chart/LineChart";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
-import { Box, Heading, Grid, GridItem, Link, useDisclosure } from "@chakra-ui/react";
+import { Box, Heading, Grid, GridItem, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@/api/spotify";
 
 
 
-export const Profile = () => {
+export const ProfileRoute = () => {
   const navigate = useNavigate();
   const { user, userMutate, loggedOut } = useSpotifyUser();
   const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsLoading, error: recentlyPlayedSongsError } = useRecentlyPlayedSongs();
   const { data: topItems, isLoading: topItemsLoading } = useUsersTopItems();
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedTrack, setSelectedTrack] = useState<any>(null);
 
   useEffect(() => {
     if (loggedOut) {
