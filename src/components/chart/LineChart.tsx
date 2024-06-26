@@ -27,9 +27,7 @@ const LineChart: React.FC<LineChartProps> = ({
   marginLeft = 40 
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-
   const isObjectData = typeof data[0] === 'object';
-
   const total = !isObjectData ? (data as number[]).reduce((acc, d) => acc + d, 0) : 0;
   const average = isObjectData ? 0 : total / data.length;
 

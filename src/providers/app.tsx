@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { ChakraProvider, Spinner, extendTheme } from '@chakra-ui/react';
+import { ChakraProvider, Spinner, extendTheme, useDisclosure } from '@chakra-ui/react';
 import { AuthProvider } from '@/providers/AuthProvider';
+import { ModalProvider } from './ModalProvider';
 import { commonRoutes } from '@/routes';
 import { publicRoutes } from '@/routes/public';
 import { protectedRoutes } from '@/routes/protected';
 import NavbarWrapper from '@/components/nav/NavbarWrapper';
 import { useSpotifyUser } from '@/api/spotify';
-import ErrorBoundary from '@/error-page';
+import ErrorBoundary from '@/ErrorBoundary';
+import { ModalComponent } from '@/components/modal/ModalComponent';
 
 
 export const AppProvider = () => {
@@ -54,8 +56,10 @@ export const AppProvider = () => {
       <ErrorBoundary>
         <ChakraProvider theme={theme}>
           <AuthProvider>
-            <RouterProvider router={router} />
-            <div>Hi</div>
+            <ModalProvider>
+              <RouterProvider router={router} />
+              <ModalComponent />
+            </ModalProvider>
           </AuthProvider>
         </ChakraProvider>
       </ErrorBoundary>

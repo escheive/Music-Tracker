@@ -13,10 +13,20 @@ export const Mood = () => {
   const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsLoading } = useRecentlyPlayedSongs()
 
   useEffect(() => {
+    let isMounted = true;
+
     if (loggedOut) {
-      userMutate(null, false).then(() => navigate('/'))
+      userMutate(null, false).then(() => {
+        if (isMounted) {
+          navigate('/');
+        }
+      });
+
+      return () => {
+        isMounted = false;
+      };
     }
-  }, [loggedOut, userMutate])
+  }, [loggedOut, userMutate, navigate])
 
   return (
     <>

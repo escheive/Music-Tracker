@@ -59,8 +59,9 @@
     }
   },
   "include": [
-    "src"
-  ],
+    "src",
+    "./jest.setup.ts"
+, "tests"  ],
   "references": [
     {
       "path": "./tsconfig.node.json"

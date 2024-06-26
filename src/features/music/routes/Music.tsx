@@ -3,12 +3,14 @@ import { useSpotifyUsersPlaylists } from "@/api/spotify";
 import { PlaylistTracks } from "../components/PlaylistTracks";
 import { Track } from "../../../components/modal/Track";
 import { useState } from "react";
+import { useModalContext } from "@/providers/ModalProvider";
 
 export const Music = () => {
   const { data: usersPlaylists, isLoading: usersPlaylistsLoading, error: usersPlaylistsError } = useSpotifyUsersPlaylists();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPlaylist, setSelectedPlaylist] = useState(usersPlaylists?.items[0]);
   const [selectedTrack, setSelectedTrack] = useState<any>(null);
+  const { isOpen, onOpen, onClose } = useModalContext();
 
   const handleOpenPlaylist = (playlist: any) => {
     setSelectedPlaylist(playlist);
@@ -39,11 +41,11 @@ export const Music = () => {
             </Box>
           ))}
 
-          {!selectedTrack ? (
+          {/* {!selectedTrack ? (
             <PlaylistTracks isOpen={isOpen} onClose={onClose} playlist={selectedPlaylist} setSelectedTrack={setSelectedTrack} />
           ) : (
             <Track isOpen={isOpen} onClose={onClose} selectedTrack={selectedTrack} setSelectedTrack={setSelectedTrack} />
-          )}
+          )} */}
         </>
       ) : null}
     </Box>

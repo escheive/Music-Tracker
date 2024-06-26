@@ -1,15 +1,15 @@
 import { useRouteError } from "react-router-dom";
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, errorMessage: '' };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { hasError: true, errorMessage: error.message };
   }
 
   componentDidCatch(error, errorInfo) {
@@ -18,7 +18,7 @@ class ErrorBoundary extends Component {
   }
 
   render() {
-    if (this.state.hasError) {
+    if (this.state.errorMessage) {
       return <ErrorPage />;
     }
 
@@ -29,16 +29,17 @@ class ErrorBoundary extends Component {
 export default ErrorBoundary;
 
 
-const ErrorPage = () => {
+const ErrorPage = ({ errorMessage }) => {
   const error: any = useRouteError();
   console.error(error);
+  console.log(errorMessage)
 
   return (
     <div id="error-page">
       <h1>Oops!</h1>
       <p>Sorry, an unexpected error has occurred.</p>
       <p>
-        <i>{error.statusText || error.message}</i>
+        <i></i>
       </p>
     </div>
   );
