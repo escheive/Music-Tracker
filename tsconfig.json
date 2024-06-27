@@ -23,11 +23,11 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
       "@api/*": [
         "src/api/*"
+      ],
+      "@app/*": [
+        "src/app/*"
       ],
       "@assets/*": [
         "src/assets/*"
@@ -35,14 +35,35 @@
       "@components/*": [
         "src/components/*"
       ],
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@context/*": [
+        "src/context/*"
+      ],
       "@features/*": [
         "src/features/*"
       ],
-      "@routes/*": [
-        "src/routes/*"
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@lib/*": [
+        "src/lib/*"
+      ],
+      "@types/*": [
+        "src/typs/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@/*": [
+        "src/*"
       ],
       "~api/*": [
         "src/api/*"
+      ],
+      "~app/*": [
+        "src/app/*"
       ],
       "~assets/*": [
         "src/assets/*"
@@ -50,18 +71,30 @@
       "~components/*": [
         "src/components/*"
       ],
+      "~config/*": [
+        "src/config/*"
+      ],
+      "~context/*": [
+        "src/context/*"
+      ],
       "~features/*": [
         "src/features/*"
       ],
-      "~routes/*": [
-        "src/routes/*"
+      "~hooks/*": [
+        "src/hooks/*"
+      ],
+      "~lib/*": [
+        "src/lib/*"
+      ],
+      "~types/*": [
+        "src/typs/*"
+      ],
+      "~utils/*": [
+        "src/utils/*"
       ],
       "~/*": [
         "src/*"
       ],
-      "~context/*": [
-        "src/context/*"
-      ]
     }
   },
   "include": [

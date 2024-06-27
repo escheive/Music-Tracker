@@ -5,7 +5,7 @@ import {
   ModalFooter,
   Button,
 } from '@chakra-ui/react';
-import { useModalContext } from '@/providers/ModalProvider';
+import { useModalContext } from '@/context/ModalProvider';
 import { TrackModal } from './TrackModal';
 import { PlaylistTracksModal } from './PlaylistModal';
 
