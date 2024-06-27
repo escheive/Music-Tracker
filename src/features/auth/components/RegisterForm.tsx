@@ -1,9 +1,9 @@
 // src/features/auth/components/RegisterForm.js
 import { useState } from 'react';
 import useAuth from '../hooks/useAuth';
-import { Box, Button, Input, FormControl, FormLabel, Heading } from '@chakra-ui/react';
+import { Box, Button, Input, FormControl, FormLabel, Text, Flex, Link as ChakraLink } from '@chakra-ui/react';
 import { useSpotifyUser } from '@api/spotify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as ReactRouterLink } from 'react-router-dom';
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -25,7 +25,6 @@ const RegisterForm = () => {
 
   return (
     <Box p={4}>
-      <Heading>Register</Heading>
       <form onSubmit={handleSubmit}>
         <FormControl id="username" isRequired>
           <FormLabel>Username</FormLabel>
@@ -53,6 +52,17 @@ const RegisterForm = () => {
         </FormControl>
         <Button mt={4} colorScheme="teal" type="submit">Register</Button>
       </form>
+      <Flex>
+        <Text>Already have an account?</Text>
+        <ChakraLink 
+          as={ReactRouterLink} 
+          to="/auth/login" 
+          color='alternatePurple.400' paddingInline='1' _hover={{ color: 'alternatePurple.100' }}
+        >
+          Log in
+        </ChakraLink>
+      </Flex>
+      
     </Box>
   );
 };
