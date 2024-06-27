@@ -1,115 +1,51 @@
-// import { Switch } from '@headlessui/react';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import * as z from 'zod';
+// src/features/auth/components/RegisterForm.js
+import { useState } from 'react';
+import useAuth from '../hooks/useAuth';
+import { Box, Button, Input, FormControl, FormLabel, Heading } from '@chakra-ui/react';
 
-import { Button, Input, Text } from '@chakra-ui/react';
+const RegisterForm = () => {
+  const { register } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
 
-import supabase from '@/api/supabase';
-
-const schema = z
-  .object({
-    email: z.string().min(1, 'Required'),
-    firstName: z.string().min(1, 'Required'),
-    lastName: z.string().min(1, 'Required'),
-    password: z.string().min(1, 'Required'),
-  });
-
-type RegisterValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
-
-type RegisterFormProps = {
-  onSuccess: () => void;
-};
-
-export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
-  const [values, setValues] = useState<RegisterValues>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      // Validate form data using Zod schema
-      schema.parse(values);
-
-      // Call supabase API to register the user
-      const { error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-      })
-
-      if (error) {
-        throw error;
-      }
-
-      onSuccess();
-    } catch (error: any) {
-      console.error('Error registering user:', error.message);
-    }
+    await register(email, password, username);
   };
 
   return (
-    <div>
+    <Box p={4}>
+      <Heading>Register</Heading>
       <form onSubmit={handleSubmit}>
-        <Text>First Name</Text>
-        <Input
-          type='text'
-          name='firstName'
-          value={values.firstName}
-          onChange={handleChange}
-        />
-        <Text>Last Name</Text>
-        <Input
-          type="text"
-          name='lastName'
-          value={values.lastName}
-          onChange={handleChange}
-        />
-        <Text>Email Address</Text>
-        <Input
-          type="email"
-          name='email'
-          value={values.email}
-          onChange={handleChange}
-        />
-        <Text>Password</Text>
-        <Input
-          type="password"
-          name='password'
-          value={values.password}
-          onChange={handleChange}
-        />
-
-        <div>
-          <Button type="submit">
-            Register
-          </Button>
-        </div>
+        <FormControl id="username" isRequired>
+          <FormLabel>Username</FormLabel>
+          <Input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </FormControl>
+        <FormControl id="email" isRequired>
+          <FormLabel>Email</FormLabel>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </FormControl>
+        <FormControl id="password" isRequired>
+          <FormLabel>Password</FormLabel>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </FormControl>
+        <Button mt={4} colorScheme="teal" type="submit">Register</Button>
       </form>
-      <div className="mt-2 flex items-center justify-end">
-        <div className="text-sm">
-          <Link to="../login" className="font-medium text-blue-600 hover:text-blue-500">
-            Log In
-          </Link>
-        </div>
-      </div>
-    </div>
+    </Box>
   );
 };
+
+export default RegisterForm;
