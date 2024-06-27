@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { fetchWithToken } from '@/features/auth/api/spotify';
+import { fetchWithToken } from '@/api/spotify/auth';
 
 const API_URL = 'https://api.spotify.com/v1'
 

@@ -18,6 +18,13 @@ export const createRouter = () =>
           },
         },
         {
+          path: '/auth/spotify',
+          lazy: async () => {
+            const { SpotifyAuthRoute } = await import('./app/auth/spotify');
+            return { Component: SpotifyAuthRoute };
+          },
+        },
+        {
           path: '/*',
           element: (
             <ProtectedRoute>

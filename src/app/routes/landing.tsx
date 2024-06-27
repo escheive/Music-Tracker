@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import { Box, Heading, Button, Text } from '@chakra-ui/react';
 
-import { beginLogin } from '@/features/auth/api/spotify';
+import { beginLogin } from '@/api/spotify/auth';
 import { useSpotifyUser } from '@/api/spotify';
 
 

@@ -1,9 +1,9 @@
-import { completeLogin } from '../api/spotify';
+import { completeLogin } from '@/api/spotify/auth';
 import { useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useNavigate } from 'react-router';
 
-export const SpotifyCallback = () => {
+export const SpotifyAuthRoute = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
