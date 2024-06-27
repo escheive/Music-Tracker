@@ -39,8 +39,11 @@ export const ProfileRoute = () => {
   }
 
   if (recentlyPlayedSongsError) {
+    console.error(recentlyPlayedSongsError)
+    console.log(recentlyPlayedSongsError.status)
+    console.log(recentlyPlayedSongsError.body)
     return (
-      <Heading>Error: {recentlyPlayedSongsError}</Heading>
+      <Heading>Error</Heading>
     )
   }
 
