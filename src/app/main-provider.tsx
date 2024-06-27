@@ -1,14 +1,7 @@
 import * as React from 'react';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ChakraProvider, Spinner, extendTheme } from '@chakra-ui/react';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { ModalProvider } from '../providers/ModalProvider';
-import { commonRoutes } from '@/routes';
-import { publicRoutes } from '@/routes/public';
-import { protectedRoutes } from '@/routes/protected';
-import NavbarWrapper from '@/components/nav/NavbarWrapper';
-import { useSpotifyUser } from '@/api/spotify';
-import ErrorBoundary from '@/ErrorBoundary';
 import { ModalComponent } from '@/components/modal/ModalComponent';
 
 type AppProviderProps = {
@@ -16,20 +9,6 @@ type AppProviderProps = {
 };
 
 export const AppProvider = ({ children }: AppProviderProps) => {
-  const { user } = useSpotifyUser();
-
-  const permittedRoutes = user ? protectedRoutes : publicRoutes;
-
-  const router = createBrowserRouter([
-    {
-      path: '/',
-      element: <NavbarWrapper />,
-      children: [
-        ...commonRoutes, 
-        ...permittedRoutes,
-      ]
-    }
-  ])
 
   const theme = extendTheme({
     colors: {
@@ -56,17 +35,14 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         </div>
       }
     >
-      <ErrorBoundary>
         <ChakraProvider theme={theme}>
           <AuthProvider>
             <ModalProvider>
               {children}
-              {/* <RouterProvider router={router} /> */}
               <ModalComponent />
             </ModalProvider>
           </AuthProvider>
         </ChakraProvider>
-      </ErrorBoundary>
     </React.Suspense>
   );
 };

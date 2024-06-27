@@ -49,7 +49,7 @@ export const TrackModal: React.FC<TrackProps> = ({ selectedTrack }) => {
         <Flex flexDirection='column' flex='1' wrap='wrap' alignItems='center'>
           <ModalHeader textAlign="center" m={0}>{selectedTrack?.track.name}</ModalHeader>
           <Flex wrap="wrap" justifyContent="center">
-            {selectedTrack?.track.artists?.map((artist, index) => (
+            {selectedTrack?.track.artists?.map((artist: any, index: number) => (
               <React.Fragment key={artist.id}>
                 <Text fontWeight='500'>{artist.name}</Text>
                 {index === 0 && selectedTrack?.track.artists.length > 1 && <Text paddingInline='1' fontWeight='bold'>feat. </Text>}

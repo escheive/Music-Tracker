@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { RouterProvider } from 'react-router-dom';
 
 import { AppProvider } from './main-provider';

@@ -11,8 +11,6 @@ import {
   Image,
   Flex,
   Skeleton,
-  SkeletonCircle,
-  SkeletonText
 } from '@chakra-ui/react';
 import { useSpotifyPlaylistsTracks } from '@/api/spotify';
 import React, { useEffect, useState } from 'react';
