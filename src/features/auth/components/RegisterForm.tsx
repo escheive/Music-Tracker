@@ -3,8 +3,10 @@ import { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Box, Button, Input, FormControl, FormLabel, Heading } from '@chakra-ui/react';
 import { useSpotifyUser } from '@api/spotify';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const { register } = useAuth();
   const { user } = useSpotifyUser();
   const [email, setEmail] = useState('');
@@ -12,11 +14,13 @@ const RegisterForm = () => {
   const [username, setUsername] = useState('');
 
   const handleSubmit = async (e) => {
-    if (!user) {
+    if (user) {
+      e.preventDefault();
+      await register(email, password, username);
+      navigate('/auth/login')
+    } else {
       console.error('Link spotify first')
     }
-    e.preventDefault();
-    await register(email, password, username);
   };
 
   return (
