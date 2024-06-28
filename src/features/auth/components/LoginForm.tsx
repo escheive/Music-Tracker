@@ -1,7 +1,7 @@
 import { Link as ReactRouterLink } from 'react-router-dom';
 import * as z from 'zod';
 
-import { Button, Text, Input, Link as ChakraLink, Flex, Box, FormControl, FormLabel } from '@chakra-ui/react';
+import { Button, Text, Input, Link as ChakraLink, Flex, Box, FormControl, FormLabel, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import supabase from '@/api/supabase';
@@ -18,6 +18,7 @@ type LoginValues = {
 
 
 export const LoginForm = () => {
+  const toast = useToast();
   const [values, setValues] = useState<LoginValues>({
     email: '',
     password: '',
@@ -33,6 +34,24 @@ export const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const { error } = await supabase.auth.signIn({ email, password });
+
+    if (error) {
+      toast({
+        title: 'Error logging in',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: 'Logged in successfully',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
 
     try {
       // Validate form data using Zod schema

@@ -25,13 +25,6 @@ export const createRouter = () =>
           },
         },
         {
-          path: '/auth/register',
-          lazy: async () => {
-            const { RegisterRoute } = await import('./app/auth/register');
-            return { Component: RegisterRoute };
-          },
-        },
-        {
           path: '/auth/spotify',
           lazy: async () => {
             const { SpotifyAuthRoute } = await import('./app/auth/spotify');

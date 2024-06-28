@@ -11,6 +11,15 @@ type AppProviderProps = {
 export const AppProvider = ({ children }: AppProviderProps) => {
 
   const theme = extendTheme({
+    styles: {
+      global: {
+        // styles for the `body`
+        body: {
+          bg: '#f9f9f9',
+          color: '#4a4a4a'
+        },
+      },
+    },
     colors: {
       alternatePurple: {
         50: '#ffe5fe',

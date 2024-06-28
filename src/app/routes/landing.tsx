@@ -8,6 +8,7 @@ import { useSpotifyUser } from '@/api/spotify';
 export const LandingRoute = () => {
   const navigate = useNavigate();
   const { user } = useSpotifyUser();
+  
 
   const handleLogin = () => {
     navigate('/auth/login');
