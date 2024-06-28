@@ -23,13 +23,33 @@ export const LandingRoute = () => {
 
   return (
     <Box display='flex' flexDirection='column' alignItems='center' marginBlock='5%' >
-      <Heading>Music Tracker</Heading>
-      <Text m={2} textAlign='center'>Track your spotify account and connect with friends, all in one place using the Spotify API. No need to register an account, simply link your spotify account and see a breakdown of your entire account. To connect with others, register an account and start searching for your friends.</Text>
-      <Box display='flex' justifyContent='center'>
-        {!user ? (
-          <Button onClick={handleLinkSpotify} colorScheme='whatsapp' m={2}>Link Spotify</Button>
-        ) : null}
-        <Button onClick={handleLogin} colorScheme='blue' m={2}>Login</Button>
+      <Heading>Music Tracker for Spotify</Heading>
+      <Box padding={8} bg='gray.200' rounded={16}>
+        <Text m={2} textAlign='center'>Please link your spotify account to get started!</Text>
+        <Text>By linking your spotify account, you agree to our privacy policy</Text>
+        <Box display='flex' justifyContent='center'>
+          {!user ? (
+            <Button onClick={handleLinkSpotify} colorScheme='whatsapp' m={2}>Link Spotify</Button>
+          ) : null}
+          <Button onClick={handleLogin} colorScheme='blue' m={2}>Login</Button>
+        </Box>
+      </Box>
+      <Box flexDirection='column' width='60%'>
+        <Box alignSelf='flex-start'>
+          <Text>View your top tracks and artists</Text>
+        </Box>
+        <Box alignSelf='right'>
+          <Text textAlign='right'>Stay on top of your most recently played tracks</Text>
+        </Box>
+        <Box alignSelf='flex-start'>
+          <Text>Interact with your playlists</Text>
+        </Box>
+        <Box alignSelf='flex-end'>
+          <Text textAlign='right'>Find new music</Text>
+        </Box>
+        <Box>
+          <Text>Track you mood based on your music</Text>
+        </Box>
       </Box>
     </Box>
   );
