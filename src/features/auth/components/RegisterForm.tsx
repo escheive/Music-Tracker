@@ -52,7 +52,7 @@ const RegisterForm = () => {
         </FormControl>
         <Button mt={4} colorScheme="teal" type="submit">Register</Button>
       </form>
-      <Flex>
+      <Flex paddingBlock='1'>
         <Text>Already have an account?</Text>
         <ChakraLink 
           as={ReactRouterLink} 
