@@ -1,11 +1,7 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import supabase from '@api/supabase';
 
 type AuthContextType = {
-  accessToken: string;
-  storeAccessToken: (accessToken: string) => void;
-  refreshToken: string;
-  storeRefreshToken: (refreshToken: string) => void;
-  handleUserLogout: () => void;
   session: any;
   setSession: (session: any) => void;
 };
@@ -16,47 +12,36 @@ type AuthProviderProps = {
 
 
 const AuthContext = createContext<AuthContextType>({
-  accessToken: '',
-  storeAccessToken: (_accessToken: string) => {},
-  refreshToken: '',
-  storeRefreshToken: (_refreshToken: string) => {},
-  handleUserLogout: () => {},
   session: null,
-  setSession: (session: any) => {session},
+  setSession: (session: any) => { session; },
 });
 
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('usePlayerContext must be used within the PlayerContext provider');
+    throw new Error('useAuthContext must be used within the AuthContext provider');
   }
   return context;
 };
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [accessToken, setAccessToken] = useState('');
-  const [refreshToken, setRefreshToken] = useState('');
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState(null)
 
-  const storeAccessToken = (token: string) => {
-    setAccessToken(token);
-  };
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
 
-  const storeRefreshToken = (token: string) => {
-    setRefreshToken(token);
-  };
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
 
-  const handleUserLogout = () => {
-    setAccessToken('');
-    setRefreshToken('')
-  }
+    return () => subscription.unsubscribe()
+  }, [])
 
   const contextValue = {
-    accessToken, 
-    storeAccessToken, 
-    refreshToken, 
-    storeRefreshToken,
-    handleUserLogout,
     session,
     setSession
   }

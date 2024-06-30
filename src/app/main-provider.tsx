@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ChakraProvider, Spinner, extendTheme } from '@chakra-ui/react';
 import { AuthProvider } from '@/context/AuthProvider';
-import { ModalProvider } from '../context/ModalProvider';
+import { ModalProvider } from '@/context/ModalProvider';
 import { ModalComponent } from '@/components/modal/ModalComponent';
 
 type AppProviderProps = {

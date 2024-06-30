@@ -5,29 +5,13 @@ import { beginLogin } from '@/api/spotify/auth';
 import { useSpotifyUser } from '@/api/spotify';
 import { useEffect, useState } from 'react';
 import supabase from '@api/supabase';
+import { useAuthContext } from '@context/AuthProvider';
 
 
 export const LandingRoute = () => {
   const navigate = useNavigate();
   const { user } = useSpotifyUser();
-  const [session, setSession] = useState(null)
-
-    useEffect(() => {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session)
-      })
-
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setSession(session)
-      })
-
-      return () => subscription.unsubscribe()
-    }, [])
-
-    console.log(session)
-  
+  const { session } = useAuthContext();
 
   const handleLogin = () => {
     navigate('/auth/login');
@@ -51,7 +35,9 @@ export const LandingRoute = () => {
           {!user ? (
             <Button onClick={handleLinkSpotify} colorScheme='whatsapp' m={2}>Link Spotify</Button>
           ) : null}
-          <Button onClick={handleLogin} colorScheme='blue' m={2}>Login</Button>
+          {!session ? (
+            <Button onClick={handleLogin} colorScheme='blue' m={2}>Login to Music Tracker</Button>
+          ) : null}
         </Box>
       </Box>
       <Box flexDirection='column' width='60%'>
