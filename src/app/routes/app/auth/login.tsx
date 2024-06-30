@@ -1,6 +1,8 @@
 import { Auth } from '@supabase/auth-ui-react';
 import supabase from '@api/supabase';
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const customTheme = {
   default: {
@@ -65,16 +67,40 @@ const customTheme = {
 }
 
 export const LoginRoute = () => {
+  const navigate = useNavigate();
+  const [session, setSession] = useState(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  if (session) {
+    navigate('/')
+  }
 
   return (
     <Box padding={4} height='100vh'>
-      <Auth 
-        supabaseClient={supabase} 
-        theme='default'
-        appearance={{
-          theme: customTheme,
-        }}
-      />
+      {!session ? (
+        <Auth 
+          supabaseClient={supabase} 
+          theme='default'
+          appearance={{
+            theme: customTheme,
+          }}
+        />
+      ) : (
+        <Text>You are already logged in!</Text>
+      )}
     </Box>
   );
 };
