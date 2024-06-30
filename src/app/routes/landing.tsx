@@ -2,9 +2,7 @@ import { useNavigate } from 'react-router';
 import { Box, Heading, Button, Text } from '@chakra-ui/react';
 
 import { beginLogin } from '@/api/spotify/auth';
-import { useSpotifyUser } from '@/api/spotify';
-import { useEffect, useState } from 'react';
-import supabase from '@api/supabase';
+import { useSpotifyUser } from '@api/spotify/spotify';
 import { useAuthContext } from '@context/AuthProvider';
 
 

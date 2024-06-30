@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { Button, Text, Input, Link as ChakraLink, Flex, Box, FormControl, FormLabel, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import supabase from '@/api/supabase';
+import supabase from '@api/supabase/supabase';
 
 const schema = z.object({
   email: z.string().min(1, 'Required'),

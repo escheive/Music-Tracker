@@ -6,7 +6,10 @@ import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
 import { Box, Heading, Grid, GridItem, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@/api/spotify";
+import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@api/spotify/spotify";
+import supabase from "@api/supabase/supabase";
+import { useAuthContext } from "@context/AuthProvider";
+import { useSupabaseUser } from "@api/supabase/fetch";
 
 
 
@@ -17,6 +20,10 @@ export const ProfileRoute = () => {
   const { data: topItems, isLoading: topItemsLoading } = useUsersTopItems();
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
+  const { session } = useAuthContext();
+  const { data: profile, error: profileError } = useSupabaseUser(session?.user.id);
+  console.log(profile)
+
 
   useEffect(() => {
     if (loggedOut) {

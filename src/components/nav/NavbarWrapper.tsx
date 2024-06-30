@@ -17,7 +17,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { useSpotifyUser } from '@/api/spotify';
+import { useSpotifyUser } from '@api/spotify/spotify';
 
 
 interface Props {

@@ -1,5 +1,5 @@
 import { Box, Button, Heading, Image, Text } from "@chakra-ui/react";
-import { useSpotifyUsersPlaylists } from "@/api/spotify";
+import { useSpotifyUsersPlaylists } from "@api/spotify/spotify";
 import { useModalContext } from "@/context/ModalProvider";
 
 export const ProfileMusicRoute = () => {

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Box, Button, Input, FormControl, FormLabel, Text, Flex, Link as ChakraLink } from '@chakra-ui/react';
-import { useSpotifyUser } from '@api/spotify';
+import { useSpotifyUser } from '@api/spotify/spotify';
 import { useNavigate, Link as ReactRouterLink } from 'react-router-dom';
 
 const RegisterForm = () => {

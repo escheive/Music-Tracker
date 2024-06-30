@@ -7,7 +7,7 @@ import {
   Flex,
   Skeleton,
 } from '@chakra-ui/react';
-import { useSpotifyPlaylistsTracks } from '@/api/spotify';
+import { useSpotifyPlaylistsTracks } from '@api/spotify/spotify';
 import React, { useEffect, useState } from 'react';
 
 interface PlaylistTracksProps {

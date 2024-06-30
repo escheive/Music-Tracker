@@ -3,7 +3,7 @@ import MoodCharts from "@features/profile/components/MoodCharts";
 
 import { Box, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useRecentlyPlayedSongs, useSpotifyUser } from "@/api/spotify";
+import { useRecentlyPlayedSongs, useSpotifyUser } from "@api/spotify/spotify";
 
 
 

@@ -1,6 +1,6 @@
-import supabase from '@api/supabase';
+import supabase from '@api/supabase/supabase';
 
-export const createUser = async (email, password, username) => {
+export const createUser = async (email: any, password: any, username: any) => {
   const { data, error } = await supabase
     .from('Users')
     .insert([{ email, password, username }]);
@@ -26,7 +26,7 @@ export const fetchUsers = async () => {
   return data;
 };
 
-export const updateUser = async (id, updatedFields) => {
+export const updateUser = async (id: any, updatedFields: any) => {
   const { data, error } = await supabase
     .from('users')
     .update(updatedFields)
@@ -40,7 +40,7 @@ export const updateUser = async (id, updatedFields) => {
   return data;
 };
 
-export const deleteUser = async (id) => {
+export const deleteUser = async (id: any) => {
   const { data, error } = await supabase
     .from('users')
     .delete()
