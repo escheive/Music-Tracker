@@ -29,7 +29,10 @@ export const useSupabasePosts = () => {
   const { data, mutate, error } = useSWR("posts?is_published=true", async () => {
     const { data, error } = await supabase
       .from('Posts')
-      .select("*")
+      .select(`
+        *,
+        user: Profiles (username)
+      `)
    
     if (error) throw error.message;
     return data;
