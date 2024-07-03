@@ -3,9 +3,12 @@ import { createBrowserRouter } from 'react-router-dom';
 import { ProtectedRoute } from '@/lib/auth';
 import { AppRoot } from './app/root';
 import NavbarWrapper from '@/components/nav/NavbarWrapper';
+import { useAuthContext } from '@context/AuthProvider';
 
-export const createRouter = () =>
-  createBrowserRouter([
+export const createRouter = () => {
+  const { session } = useAuthContext();
+
+  return createBrowserRouter([
     {
       path: '/',
       element: <NavbarWrapper />,
@@ -13,8 +16,13 @@ export const createRouter = () =>
         {
           path: '/',
           lazy: async () => {
-            const { LandingRoute } = await import('./landing');
-            return { Component: LandingRoute };
+            if (session) {
+              const { DashboardRoute } = await import('./dashboard');
+              return { Component: DashboardRoute };
+            } else {
+              const { LandingRoute } = await import('./landing');
+              return { Component: LandingRoute };
+            }
           },
         },
         {
@@ -72,3 +80,4 @@ export const createRouter = () =>
       },
     },
   ]);
+}

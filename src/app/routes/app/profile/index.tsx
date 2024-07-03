@@ -8,9 +8,12 @@ import { Box, Heading, Grid, GridItem, Link, Flex, Image, Text } from "@chakra-u
 import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@api/spotify/spotify";
 import { useAuthContext } from "@context/AuthProvider";
-import { useSupabaseUser } from "@api/supabase/fetch";
+import { useSupabaseProfile } from "@api/supabase/fetch";
+import { supabaseFetcher } from "@api/supabase/fetch";
+// import { supabaseUserApi } from "@api/supabase/fetch";
 import spotifyCMYKLogo from '@assets/spotify/logos/Spotify_Logo_CMYK_Green.png';
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import useSWR from "swr";
 
 
 
@@ -22,7 +25,9 @@ export const ProfileRoute = () => {
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
   const { session } = useAuthContext();
-  const { data: profile, error: profileError } = useSupabaseUser(session?.user.id);
+  const { data: profile, error: profileError } = useSupabaseProfile(session?.user.id)
+  console.log(profile)
+  console.log(session)
 
   useEffect(() => {
     if (loggedOut) {
@@ -63,59 +68,47 @@ export const ProfileRoute = () => {
           <Text fontSize='3xl'>{profile?.username}</Text>
             <Link href={user.external_urls.spotify} target="_blank" isExternal _hover={{ fontStyle: 'normal'}}>
               <Flex alignItems='center'>
+                <Text fontSize={['md', 'lg']}>{user.display_name} on</Text>
                 <Image
                   src={spotifyCMYKLogo} 
                   width={['80px']}
                   height={['24px']}
+                  mx='2px'
                   fallbackSrc='https://via.placeholder.com/150' 
                 />
-                <Text fontSize={['md', 'lg']}>{user.display_name}</Text>
-                <ExternalLinkIcon mx='2px' />
+                <ExternalLinkIcon />
               </Flex>
             </Link>
-            <Text>Email: {user.email}</Text>
-            <Text>Country: {user.country}</Text>
-            <Text>Product: {user.product}</Text>
-            <Text>Type: {user.type}</Text>
+            <Text>{user.product === 'premium' ? 'Premium' : 'Free'} user</Text>
             <Text>Followers: {user.followers.total}</Text>
-            <a href={user.external_urls.spotify} target="blank">Open on Spotify</a>
         </Box>
 
+        <LineChart 
+          title='Popularity' 
+          description='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.'
+          data={popularityNumbers} 
+        />
 
-        {!recentlyPlayedSongsLoading ? (
+        <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
+        
+        {showRecentlyPlayed ? (
           <>
-            <LineChart 
-              title='Popularity' 
-              description='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.'
-              data={popularityNumbers} 
-            />
-
-            <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
-            
-            {showRecentlyPlayed ? (
-              <>
-                <Heading>Recently Played Tracks</Heading>
-                <RecentlyPlayedList recentlyPlayedSongs={recentlyPlayedSongs} />
-              </>
-            ) : null}
+            <Heading>Recently Played Tracks</Heading>
+            <RecentlyPlayedList recentlyPlayedSongs={recentlyPlayedSongs} />
           </>
         ) : null}
 
         <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
 
-        {!topItemsLoading && showTopItems ? (
-          <>
-            <Heading>Top Artists And Tracks</Heading>
-            <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
-              <GridItem w='100%' noOfLines={1}>
-                <TopItemsList itemType='Artists' items={topItems.artists.items} />
-              </GridItem>
-              <GridItem w='100%' noOfLines={1}>
-                <TopItemsList itemType='Tracks' items={topItems.tracks.items} />
-              </GridItem>
-            </Grid>
-          </>
-        ) : null}
+          <Heading>Top Artists And Tracks</Heading>
+          <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
+            <GridItem w='100%' noOfLines={1}>
+              <TopItemsList itemType='Artists' items={topItems?.artists?.items} />
+            </GridItem>
+            <GridItem w='100%' noOfLines={1}>
+              <TopItemsList itemType='Tracks' items={topItems?.tracks?.items} />
+            </GridItem>
+          </Grid>
 
       </Box>
     </>

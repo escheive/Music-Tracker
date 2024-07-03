@@ -23,26 +23,28 @@ export const RecentlyPlayedList: React.FC<RecentlyPlayedListProps> = ({ recently
         <Table variant='striped' colorScheme='alternatePurple'>
           <Thead>
             <Tr>
-              <Th fontSize={{base: '16', md: '18'}}>#</Th>
+              <Th fontSize={{base: '16', md: '18'}}>Time</Th>
               <Th fontSize={{base: '16', md: '18'}}>Track</Th>
               <Th fontSize={{base: '16', md: '18'}}>Artist</Th>
-              <Th fontSize={{base: '16', md: '18'}}></Th>
+              <Th fontSize={{base: '16', md: '18'}}>Album</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {recentlyPlayedSongs.map((item: Record<string, any>, i: number) => {
+            {recentlyPlayedSongs?.map((item: Record<string, any>, i: number) => {
               const dateListened = new Date(item.played_at).toLocaleString();
 
               return (
-                <Tr key={`recently played ${item.name, i}`} h='10%' w='100%'>
-                  <Td fontSize={{base: '16', md: '18'}}>{dateListened}</Td>
-                  <Td fontSize={{base: '16', md: '18'}}><Link href={item.external_urls?.spotify} target='_blank'>{item.name}</Link></Td>
-                  <Td fontSize={{base: '16', md: '18'}}><Link href={item.artists[0]?.external_urls?.spotify} target='_blank'>{item.artists[0]?.name}</Link></Td>
+                <Tr key={`recently played ${item.name, i}`} height='auto' w='100%'>
+                  <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>{dateListened}</Td>
+                  <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}><Link href={item.external_urls?.spotify} target='_blank'>{item.name}</Link></Td>
+                  <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}><Link href={item.artists[0]?.external_urls?.spotify} target='_blank'>{item.artists[0]?.name}</Link></Td>
                   <Td>
                     <Link href={item.album.external_urls?.spotify} target='_blank'>
                       <Image 
                         src={item.album?.images[0]?.url} 
-                        boxSize={{base: '40px', md: '60px'}} 
+                        objectFit='contain'
+                        boxSize={{ sm: '26px', base: '36px', md: '48px'}}
+                        minWidth='26px'
                         fallbackSrc='https://via.placeholder.com/150' 
                       />
                     </Link>
