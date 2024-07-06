@@ -35,8 +35,12 @@ const Links = [
     route: '/profile/mood'
   }, 
   {
-    title: 'Music',
+    title: 'My Music',
     route: '/profile/music'
+  },
+  {
+    title: 'Find Music',
+    route: '/find-music'
   },
 ]
 

@@ -31,14 +31,10 @@ export const ProfileMoodRoute = () => {
   return (
     <>
       <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' marginBlock='5%'>
-        <Heading>Music Tracker</Heading>
         {user ? (
           <>
             <Heading>{user.display_name}</Heading>
-            <p>Email: {user.email}</p>
-            <p>Country: {user.country}</p>
             <p>Product: {user.product}</p>
-            <p>Type: {user.type}</p>
             <p>Followers: {user.followers.total}</p>
             <a href={user.external_urls.spotify} target="blank">Open on Spotify</a>
           </>

@@ -3,6 +3,7 @@ import { ChakraProvider, Spinner, extendTheme } from '@chakra-ui/react';
 import { AuthProvider } from '@/context/AuthProvider';
 import { ModalProvider } from '@/context/ModalProvider';
 import { ModalComponent } from '@/components/modal/ModalComponent';
+import { Button, Text } from '@components/chakra-ui';
 
 type AppProviderProps = {
   children: React.ReactNode;
@@ -19,6 +20,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
           color: '#4a4a4a'
         },
       },
+    },
+    components: {
+      Button,
+      Text
     },
     colors: {
       alternatePurple: {
