@@ -1,15 +1,12 @@
 name: Development
 
 on:
-  push:
-    branches:
-      - gh-pages
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - edited
-  #     - synchronize
-  #     - reopened
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
   workflow_call:
 
 jobs:
