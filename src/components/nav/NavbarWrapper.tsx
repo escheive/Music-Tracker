@@ -17,7 +17,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { useSpotifyUser } from '@/api/spotify';
+import { useSpotifyUser } from '@api/spotify/spotify';
 
 
 interface Props {
@@ -25,7 +25,24 @@ interface Props {
   to: any
 }
 
-const Links = ['Profile', 'Mood', 'Music']
+const Links = [
+  {
+    title: 'Profile',
+    route: '/profile'
+  }, 
+  {
+    title: 'Mood',
+    route: '/profile/mood'
+  }, 
+  {
+    title: 'My Music',
+    route: '/profile/music'
+  },
+  {
+    title: 'Find Music',
+    route: '/find-music'
+  },
+]
 
 const NavLink = (props: Props) => {
   const { children, to } = props
@@ -66,7 +83,7 @@ const NavBar = () => {
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box bg={useColorModeValue('#ffe5fe', 'gray.900')} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
@@ -80,7 +97,7 @@ const NavBar = () => {
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
               {user ? 
               Links.map((link) => (
-                <NavLink key={link} to={link}>{link}</NavLink>
+                <NavLink key={link.title} to={link.route}>{link.title}</NavLink>
               )) : null }
             </HStack>
           </HStack>
@@ -105,11 +122,6 @@ const NavBar = () => {
                 ) : (
                   <MenuItem onClick={handleLogin}>Login</MenuItem>
                 )}
-                {/* {profileData ? (
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                ) : (
-                  <MenuItem onClick={handleLogin}>Login</MenuItem>
-                )} */}
                 
               </MenuList>
             </Menu>
@@ -120,7 +132,7 @@ const NavBar = () => {
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
               {Links.map((link) => (
-                <NavLink key={link} to={link}>{link}</NavLink>
+                <NavLink key={link.title} to={link.route}>{link.title}</NavLink>
               ))}
             </Stack>
           </Box>

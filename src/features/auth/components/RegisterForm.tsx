@@ -1,115 +1,70 @@
-// import { Switch } from '@headlessui/react';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import * as z from 'zod';
+// src/features/auth/components/RegisterForm.js
+import { useState } from 'react';
+import useAuth from '../hooks/useAuth';
+import { Box, Button, Input, FormControl, FormLabel, Text, Flex, Link as ChakraLink } from '@chakra-ui/react';
+import { useSpotifyUser } from '@api/spotify/spotify';
+import { useNavigate, Link as ReactRouterLink } from 'react-router-dom';
 
-import { Button, Input, Text } from '@chakra-ui/react';
+const RegisterForm = () => {
+  const navigate = useNavigate();
+  const { register } = useAuth();
+  const { user } = useSpotifyUser();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
 
-import supabase from '@/api/supabase';
-
-const schema = z
-  .object({
-    email: z.string().min(1, 'Required'),
-    firstName: z.string().min(1, 'Required'),
-    lastName: z.string().min(1, 'Required'),
-    password: z.string().min(1, 'Required'),
-  });
-
-type RegisterValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
-
-type RegisterFormProps = {
-  onSuccess: () => void;
-};
-
-export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
-  const [values, setValues] = useState<RegisterValues>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      // Validate form data using Zod schema
-      schema.parse(values);
-
-      // Call supabase API to register the user
-      const { error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-      })
-
-      if (error) {
-        throw error;
-      }
-
-      onSuccess();
-    } catch (error: any) {
-      console.error('Error registering user:', error.message);
+  const handleSubmit = async (e) => {
+    if (user) {
+      e.preventDefault();
+      await register(email, password, username);
+      navigate('/auth/login')
+    } else {
+      console.error('Link spotify first')
     }
   };
 
   return (
-    <div>
+    <Box p={4}>
       <form onSubmit={handleSubmit}>
-        <Text>First Name</Text>
-        <Input
-          type='text'
-          name='firstName'
-          value={values.firstName}
-          onChange={handleChange}
-        />
-        <Text>Last Name</Text>
-        <Input
-          type="text"
-          name='lastName'
-          value={values.lastName}
-          onChange={handleChange}
-        />
-        <Text>Email Address</Text>
-        <Input
-          type="email"
-          name='email'
-          value={values.email}
-          onChange={handleChange}
-        />
-        <Text>Password</Text>
-        <Input
-          type="password"
-          name='password'
-          value={values.password}
-          onChange={handleChange}
-        />
-
-        <div>
-          <Button type="submit">
-            Register
-          </Button>
-        </div>
+        <FormControl id="username" isRequired>
+          <FormLabel>Username</FormLabel>
+          <Input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </FormControl>
+        <FormControl id="email" isRequired>
+          <FormLabel>Email</FormLabel>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </FormControl>
+        <FormControl id="password" isRequired>
+          <FormLabel>Password</FormLabel>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </FormControl>
+        <Button mt={4} colorScheme="teal" type="submit">Register</Button>
       </form>
-      <div className="mt-2 flex items-center justify-end">
-        <div className="text-sm">
-          <Link to="../login" className="font-medium text-blue-600 hover:text-blue-500">
-            Log In
-          </Link>
-        </div>
-      </div>
-    </div>
+      <Flex paddingBlock='1'>
+        <Text>Already have an account?</Text>
+        <ChakraLink 
+          as={ReactRouterLink} 
+          to="/auth/login" 
+          color='alternatePurple.400' paddingInline='1' _hover={{ color: 'alternatePurple.100' }}
+        >
+          Log in
+        </ChakraLink>
+      </Flex>
+      
+    </Box>
   );
 };
+
+export default RegisterForm;

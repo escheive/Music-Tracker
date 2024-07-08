@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Heading } from '@chakra-ui/react';
+import { Heading, Box } from '@chakra-ui/react';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -9,13 +9,11 @@ type LayoutProps = {
 
 export const Layout = ({ children, title }: LayoutProps) => {
   return (
-    <>
-      <Heading>{title}</Heading>
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">{children}</div>
-        </div>
-      </div>
-    </>
+    <Box bg='gray.50'>
+      <Heading padding={4} color='#4A5568'>{title}</Heading>
+      <Box minHeight='screen' flex='flex' flexDirection='column' justifyContent='center' paddingBlock={12} maxWidth={700}>
+        {children}
+      </Box>
+    </Box>
   );
 };

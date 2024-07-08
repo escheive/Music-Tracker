@@ -11,11 +11,13 @@ import {
   Link
 } from '@chakra-ui/react';
 
-interface RecentlyPlayedListProps {
-  recentlyPlayedSongs: Record<string, any>[]
+interface TableComponentProps {
+  list: Record<string, any>[],
+  columns: String[]
 }
 
-export const RecentlyPlayedList: React.FC<RecentlyPlayedListProps> = ({ recentlyPlayedSongs }) => {
+export const TableComponent: React.FC<TableComponentProps> = ({ list, columns }) => {
+  console.log(list)
 
   return (
     <>
@@ -30,18 +32,14 @@ export const RecentlyPlayedList: React.FC<RecentlyPlayedListProps> = ({ recently
             </Tr>
           </Thead>
           <Tbody>
-            {recentlyPlayedSongs?.map((item: Record<string, any>, i: number) => {
-              const dateListened = new Date(item.played_at).toLocaleString();
+            {list?.map((item: Record<string, any>, i: number) => {
 
               return (
-                <Tr key={`recently played ${item.name, i}`} height='auto' w='100%'>
-                  <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>{dateListened}</Td>
-                  <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}><Link href={item.external_urls?.spotify} target='_blank'>{item.name}</Link></Td>
-                  <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}><Link href={item.artists[0]?.external_urls?.spotify} target='_blank'>{item.artists[0]?.name}</Link></Td>
+                <Tr key={`recently played ${item.track.name, i}`} height='auto' w='100%'>
                   <Td>
-                    <Link href={item.album.external_urls?.spotify} target='_blank'>
+                    <Link href={item.track.album.external_urls?.spotify} target='_blank'>
                       <Image 
-                        src={item.album?.images[0]?.url} 
+                        src={item[columns[0]]} 
                         objectFit='contain'
                         boxSize={{ sm: '26px', base: '36px', md: '48px'}}
                         minWidth='26px'
@@ -49,6 +47,10 @@ export const RecentlyPlayedList: React.FC<RecentlyPlayedListProps> = ({ recently
                       />
                     </Link>
                   </Td>
+                  <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}><Link href={item.track.external_urls?.spotify} target='_blank'>{item[columns[0]]}</Link></Td>
+                  <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}><Link href={item.track.artists[0]?.external_urls?.spotify} target='_blank'>{item.track.artists[0]?.name}</Link></Td>
+                  {/* <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>{dateListened}</Td> */}
+                  
                 </Tr>
               )
             })}
