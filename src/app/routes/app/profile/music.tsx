@@ -5,6 +5,7 @@ import { useModalContext } from "@/context/ModalProvider";
 export const ProfileMusicRoute = () => {
   const { data: usersPlaylists, isLoading: usersPlaylistsLoading, error: usersPlaylistsError } = useSpotifyUsersPlaylists();
   const { onOpen, setSelectedPlaylist } = useModalContext();
+  console.log(usersPlaylists)
 
   const handleOpenPlaylist = (playlist: any) => {
     setSelectedPlaylist(playlist);

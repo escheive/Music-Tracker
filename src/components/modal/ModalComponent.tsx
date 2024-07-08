@@ -29,7 +29,7 @@ export const ModalComponent = () => {
       onClose={handleClose} 
       isCentered 
       scrollBehavior='inside' 
-      size='xl'
+      size='2xl'
     >
       <ModalOverlay 
         bg='none'
