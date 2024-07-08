@@ -19,7 +19,6 @@ import {
 import { useSpotifyPlaylistsTracks } from '@api/spotify/spotify';
 import React, { useEffect, useState } from 'react';
 import { parseISO, format } from 'date-fns';
-import { TableComponent } from '@components/list/TableComponent';
 
 interface PlaylistTracksProps {
   setSelectedTrack: (track: Record<string, any> | null) => void;
@@ -36,13 +35,12 @@ interface PlaylistTracksProps {
 
 export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, setSelectedTrack }) => {
   if (!playlist) return
+  console.log(setSelectedTrack)
 
   const [offset, setOffset] = useState(0);
   const [allTracks, setAllTracks] = useState<object[]>([]);
   const { data: tracks, isLoading: tracksLoaded } = useSpotifyPlaylistsTracks(playlist?.id, offset);
   const totalTracks = playlist?.tracks.total;
-  console.log(allTracks)
-  console.log(playlist)
 
   const handleOnScroll = (e: any) => {
     if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
@@ -52,9 +50,9 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
     }
   }
 
-  const handleTrackClick = (track: Record<string, any>) => {
-    setSelectedTrack(track)
-  }
+  // const handleTrackClick = (track: Record<string, any>) => {
+  //   setSelectedTrack(track)
+  // }
 
   useEffect(() => {
     if (playlist?.id) {
@@ -87,7 +85,10 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
             {allTracks.length > 0 ? (
             <Tbody>
               {allTracks?.map((item: Record<string, any>, i: number) => {
-  
+                const songDuration = formatDuration(item?.track.duration_ms)
+                const parsedDate = parseISO(item?.added_at);
+                const formattedDate = format(parsedDate, 'MMMM d, yyyy');
+
                 return (
                   <Tr key={`recently played ${item.track.name, i}`} height='auto' w='100%'>
                     <Td>
@@ -114,10 +115,10 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
                       </Link>
                     </Td>
                     <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>
-                      {item.added_at}
+                      {formattedDate}
                     </Td>
                     <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>
-                      {item?.track.duration_ms}
+                      {songDuration}
                     </Td>   
                   </Tr>
                 )
@@ -141,43 +142,3 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
     </>
   )
 }
-
-// <>
-          //   {allTracks.map((track: Record<string, any>) => {
-          //     const addedDate = track?.added_at;
-          //     let formattedDate = "-";
-          //     if (addedDate) {
-          //       const parsedDate = parseISO(addedDate);
-          //       formattedDate = format(parsedDate, 'MMMM d, yyyy');
-          //     }
-
-          //     return (
-
-          //       <Flex 
-          //         key={track.track.id} 
-          //         _hover={{ background: 'gray.200', cursor: 'pointer' }} 
-          //         mb='1'
-          //         justifyContent='space-between'
-          //         onClick={() => handleTrackClick(track)}
-          //       >
-          //         <Image
-          //           src={track.track.album.images[0].url} 
-          //           boxSize={{base: '30px', md: '40px'}} 
-          //           fallbackSrc='https://via.placeholder.com/150' 
-          //         />
-          //         <Text fontWeight='bold' key={track.track.id}>
-          //           {track.track.name}
-          //         </Text>
-          //         <Text>
-          //           {track.track.album.name}
-          //         </Text>
-          //         <Text>
-          //           {formattedDate}
-          //         </Text>
-          //         <Text>
-          //           {formatDuration(track.track.duration_ms)}
-          //         </Text>
-          //       </Flex>
-          //     )
-          //   })}
-          // </>

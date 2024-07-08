@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { createUser, fetchUsers, updateUser, deleteUser } from '../api/authApi';
+import { createUser } from '../api/authApi';
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
 
-  const register = async (email, password, username) => {
+  const register = async (email: string, password: string, username: string) => {
     const newUser = await createUser(email, password, username);
     setUser(newUser);
   };

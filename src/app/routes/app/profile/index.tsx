@@ -9,12 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@api/spotify/spotify";
 import { useAuthContext } from "@context/AuthProvider";
 import { useSupabaseProfile } from "@api/supabase/fetch";
-import { supabaseFetcher } from "@api/supabase/fetch";
-// import { supabaseUserApi } from "@api/supabase/fetch";
 import spotifyCMYKLogo from '@assets/spotify/logos/Spotify_Logo_CMYK_Green.png';
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import useSWR from "swr";
-
 
 
 export const ProfileRoute = () => {
@@ -26,8 +22,7 @@ export const ProfileRoute = () => {
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
   const { session } = useAuthContext();
   const { data: profile, error: profileError } = useSupabaseProfile(session?.user.id)
-  console.log(profile)
-  console.log(session)
+  console.log(profileError, recentlyPlayedSongsError, recentlyPlayedSongsLoading, topItemsLoading)
 
   useEffect(() => {
     if (loggedOut) {

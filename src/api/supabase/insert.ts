@@ -1,7 +1,7 @@
 import supabase from "./supabase";
 
-const simplifySongData = (songs) => {
-  return songs.slice(0, 10).map(song => ({
+const simplifySongData = (songs: any[]) => {
+  return songs.slice(0, 10).map((song) => ({
     id: song.id,
     name: song.name,
     artist: song.artists[0].name,
@@ -10,14 +10,14 @@ const simplifySongData = (songs) => {
   }));
 };
 
-const simplifyTopItems = (topItems) => {
-  const simplifiedArtists = topItems.artists.items.slice(0, 5).map((artist) => ({
+const simplifyTopItems = (topItems: { artists: { items: [] }, tracks: { items: []}}) => {
+  const simplifiedArtists = topItems.artists.items.slice(0, 5).map((artist: any) => ({
     id: artist.id,
     name: artist.name,
     imageUrl: artist.images[0]?.url,
     spotifyUrl: artist.external_urls.spotify,
   }))
-  const simplifiedTracks = topItems.tracks.items.slice(0, 5).map((track) => ({
+  const simplifiedTracks = topItems.tracks.items.slice(0, 5).map((track: any) => ({
     id: track.id,
     name: track.name,
     imageUrl: track.album.images[0]?.url,
@@ -30,7 +30,7 @@ const simplifyTopItems = (topItems) => {
   };
 };
 
-export const createPost = async (post) => {
+export const createPost = async (post: any) => {
   let { user_id, type, content, metadata } = post;
 
   if (type === 'recentlyPlayed') {
@@ -39,7 +39,7 @@ export const createPost = async (post) => {
     metadata = simplifyTopItems(metadata);
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
   .from('Posts')
   .insert([
     { 
@@ -50,6 +50,8 @@ export const createPost = async (post) => {
     },
   ])
   .select()
+
+  return error;
 }
 
           
