@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
-
-import { ProtectedRoute } from '@/lib/auth';
 import { AppRoot } from './app/root';
 import NavbarWrapper from '@/components/nav/NavbarWrapper';
 import { useAuthContext } from '@context/AuthProvider';
+import { Navigate, useLocation } from "react-router-dom";
+import { useSpotifyUser } from "@api/spotify/spotify";
 
 export const createRouter = () => {
   const { session } = useAuthContext();
@@ -81,3 +81,20 @@ export const createRouter = () => {
     },
   ]);
 }
+
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = useSpotifyUser();
+  const location = useLocation();
+
+  if (!user) {
+    return (
+      <Navigate
+        to={`/auth/login?redirectTo=${encodeURIComponent(location.pathname)}`}
+        replace
+      />
+    );
+  }
+
+  return children;
+};
