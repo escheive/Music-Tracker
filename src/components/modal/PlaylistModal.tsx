@@ -19,6 +19,7 @@ import {
 import { useSpotifyPlaylistsTracks } from '@api/spotify/spotify';
 import React, { useEffect, useState } from 'react';
 import { parseISO, format } from 'date-fns';
+import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
 interface PlaylistTracksProps {
   setSelectedTrack: (track: Record<string, any> | null) => void;
@@ -35,7 +36,6 @@ interface PlaylistTracksProps {
 
 export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, setSelectedTrack }) => {
   if (!playlist) return
-  console.log(setSelectedTrack)
 
   const [offset, setOffset] = useState(0);
   const [allTracks, setAllTracks] = useState<object[]>([]);
@@ -70,6 +70,12 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
   return (
     <>
       <ModalHeader textAlign='center'>{playlist?.name}</ModalHeader>
+      <Image 
+        src={spotifyLogo} 
+        objectFit='contain'
+        height='30px'
+        fallbackSrc='https://via.placeholder.com/150' 
+      />
       <ModalCloseButton />
       <ModalBody onScroll={(e) => handleOnScroll(e)}>
           <TableContainer whiteSpace='wrap' height='100vh' overflowY='auto'>
@@ -97,10 +103,9 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
                           <Image 
                             src={item?.track.album.images[0]?.url} 
                             objectFit='contain'
-                            boxSize={{ sm: '26px', base: '36px', md: '48px'}}
-                            minWidth='26px'
+                            height='60px'
                             fallbackSrc='https://via.placeholder.com/150' 
-                            mr={3} // Add some margin to the right of the image
+                            mr={3}
                           />
                           <Box>
                             <Text fontWeight="bold">{item.track.name}</Text>

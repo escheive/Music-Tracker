@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import MoodCharts from "@features/profile/components/MoodCharts";
 
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser } from "@api/spotify/spotify";
+import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
 
 
@@ -33,10 +34,13 @@ export const ProfileMoodRoute = () => {
       <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' marginBlock='5%'>
         {user ? (
           <>
-            <Heading>{user.display_name}</Heading>
-            <p>Product: {user.product}</p>
-            <p>Followers: {user.followers.total}</p>
-            <a href={user.external_urls.spotify} target="blank">Open on Spotify</a>
+            <Heading>Your mood based on your recent songs</Heading>
+            <Image 
+              src={spotifyLogo} 
+              objectFit='contain'
+              height='30px'
+              fallbackSrc='https://via.placeholder.com/150' 
+            />
           </>
         ) : null}
 

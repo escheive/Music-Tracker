@@ -3,6 +3,7 @@ import supabase from '@api/supabase/supabase';
 import { Box, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@context/AuthProvider';
+import { useEffect } from 'react';
 
 const customTheme = {
   default: {
@@ -70,9 +71,11 @@ export const LoginRoute = () => {
   const navigate = useNavigate();
   const { session } = useAuthContext();
 
-  if (session) {
-    navigate('/profile')
-  }
+  useEffect(() => {
+    if (session) {
+      navigate('/');
+    }
+  }, [session, navigate]);
 
   return (
     <Box padding={4} height='100vh'>

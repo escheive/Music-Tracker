@@ -22,20 +22,29 @@ export const Button = defineStyleConfig({
   },
   // Two variants: outline and solid
   variants: {
+    solid: {
+      border: '2px solid',
+      borderColor: 'alternatePurple.200',
+      color: 'fbfbfb',
+      backgroundColor: 'alternatePurple.100',
+      _hover: {
+        backgroundColor: 'alternatePurple.200'
+      }
+    },
     outline: {
       border: '2px solid',
-      borderColor: 'alternatePurple.100',
-      color: 'f9f9f9',
-      backgroundColor: 'alternatePurple.50'
-    },
-    solid: {
-      backgroundColor: 'alternatePurple.200',
-      color: 'white',
+      borderColor: 'alternatePurple.200',
+      color: 'alternatePurple.200',
+      backgroundColor: 'transparent',
+      _hover: {
+        color: 'alternatePurple.300',
+        backgroundColor: 'alternatePurple.100'
+      }
     },
   },
   // The default size and variant values
   defaultProps: {
     size: 'md',
-    variant: 'outline',
+    variant: 'solid',
   },
 })

@@ -18,6 +18,8 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { useSpotifyUser } from '@api/spotify/spotify';
+import supabase from '@api/supabase/supabase';
+import { useAuthContext } from '@context/AuthProvider';
 
 
 interface Props {
@@ -67,14 +69,23 @@ const NavLink = (props: Props) => {
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useSpotifyUser();
+  const { session } = useAuthContext()
   const navigate = useNavigate();
 
-  // Function to delete access token and redirect to home page
   const handleLogout = () => {
-    localStorage.removeItem('tokenSet');
-    window.open('https://www.spotify.com/us/account/apps/', '_blank'); // Spotify link to remove connected apps
-    window.location.href='/'; // Redirects to home page
+    supabase.auth.signOut()
   }
+
+  const handleSettingsClick = () => {
+    navigate('/settings')
+  }
+
+  // Function to delete access token and redirect to home page
+  // const handleLogout = () => {
+  //   localStorage.removeItem('tokenSet');
+  //   window.open('https://www.spotify.com/us/account/apps/', '_blank'); // Spotify link to remove connected apps
+  //   window.location.href='/'; // Redirects to home page
+  // }
 
   // Function to navigate to login page
   const handleLogin = async () => {
@@ -115,9 +126,9 @@ const NavBar = () => {
                 />
               </MenuButton>
               <MenuList>
-                <MenuItem>Settings</MenuItem>
+                <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
                 <MenuDivider />
-                {user ? (
+                {session ? (
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 ) : (
                   <MenuItem onClick={handleLogin}>Login</MenuItem>

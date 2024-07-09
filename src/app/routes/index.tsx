@@ -68,6 +68,13 @@ export const createRouter = () => {
                 return { Component: ProfileMusicRoute };
               },
             },
+            {
+              path: 'settings',
+              lazy: async () => {
+                const { SettingsRoute } = await import('./app/settings');
+                return { Component: SettingsRoute };
+              },
+            },
           ]
         },
       ]

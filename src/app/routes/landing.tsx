@@ -26,10 +26,11 @@ export const LandingRoute = () => {
   return (
     <Box display='flex' flexDirection='column' alignItems='center' marginBlock='5%' >
       <Heading>Music Tracker for Spotify</Heading>
-      <Box padding={8} bg='gray.200' rounded={16}>
+      <Box padding={8} textAlign='center'>
         <Text m={2} textAlign='center'>Please link your spotify account to get started!</Text>
-        <Text>By linking your spotify account, you agree to our privacy policy</Text>
-        <Box display='flex' justifyContent='center'>
+        <Text m={2}>By linking your spotify account, you agree to our privacy policy</Text>
+        <Text m={2}>Create a Music Tracker account for free to post and see what others are posting</Text>
+        <Box display='flex' justifyContent='center' padding={2}>
           {!user ? (
             <Button onClick={handleLinkSpotify} colorScheme='whatsapp' m={2}>Link Spotify</Button>
           ) : null}

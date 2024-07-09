@@ -27,6 +27,7 @@ import { useEffect, useState } from 'react';
 import { createPost } from '@api/supabase/insert';
 import { useSupabasePostsInfinite } from "@api/supabase/fetch";
 import { useInView } from 'react-intersection-observer';
+import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
 
 export const DashboardRoute = () => {
@@ -172,66 +173,73 @@ export const DashboardRoute = () => {
                   borderRadius='md'
                 >
               
-                {post.type == 'recentlyPlayed' ? (
-                  <>
-                    <Text fontSize='md' fontWeight='semibold'>Recently Played Songs:</Text>
-                    {post?.metadata.slice(0, 3).map((song: any, index: number) => (
-                      <Flex key={index + song.id} alignItems='center' mb={2}>
-                        <Image 
-                          src={song.imageUrl} 
-                          alt={song.name} 
-                          boxSize='40px' 
-                          borderRadius='md'
-                          mr={3}
-                        />
-                        <Link href={song.spotifyUrl} target='_blank'>
-                          <Text fontSize={['sm', 'md']}>{song.name}</Text>
-                        </Link>
-                      </Flex>
-                    ))}
-                    <Button variant='solid' onClick={() => openModal(post)}>View More</Button>
-                  </>
-                ) : post.type === 'topItems' ? (
-                  <>
-                    <Flex>
-                      <Box flex='1' mr={4}>
-                        <Text fontSize='lg' fontWeight='semibold' mb={2}>My Top Artists</Text>
-                        {post?.metadata.artists.map((artist: any, index: number) => (
-                          <Flex key={index + artist.id} alignItems='center' mb={2}>
-                            <Image 
-                              src={artist.imageUrl} 
-                              alt={artist.name} 
-                              boxSize='40px' 
-                              borderRadius='md' 
-                              mr={3}
-                            />
-                            <Link href={artist.spotifyUrl} target='_blank'>
-                              <Text fontSize={['sm', 'md']}>{artist.name}</Text>
-                            </Link>
-                          </Flex>
-                        ))}
-                      </Box>
+                  {post.type == 'recentlyPlayed' ? (
+                    <>
+                      <Text fontSize='md' fontWeight='semibold'>Recently Played Songs:</Text>
+                      {post?.metadata.slice(0, 3).map((song: any, index: number) => (
+                        <Flex key={index + song.id} alignItems='center' mb={2}>
+                          <Image 
+                            src={song.imageUrl} 
+                            alt={song.name} 
+                            boxSize='40px' 
+                            borderRadius='md'
+                            mr={3}
+                          />
+                          <Link href={song.spotifyUrl} target='_blank'>
+                            <Text fontSize={['sm', 'md']}>{song.name}</Text>
+                          </Link>
+                        </Flex>
+                      ))}
+                      <Button variant='solid' onClick={() => openModal(post)}>View More</Button>
+                    </>
+                  ) : post.type === 'topItems' ? (
+                    <>
+                      <Flex>
+                        <Box flex='1' mr={4}>
+                          <Text fontSize='lg' fontWeight='semibold' mb={2}>My Top Artists</Text>
+                          {post?.metadata.artists.map((artist: any, index: number) => (
+                            <Flex key={index + artist.id} alignItems='center' mb={2}>
+                              <Image 
+                                src={artist.imageUrl} 
+                                alt={artist.name} 
+                                boxSize='40px' 
+                                borderRadius='md' 
+                                mr={3}
+                              />
+                              <Link href={artist.spotifyUrl} target='_blank'>
+                                <Text fontSize={['sm', 'md']}>{artist.name}</Text>
+                              </Link>
+                            </Flex>
+                          ))}
+                        </Box>
 
-                      <Box flex='1'>
-                        <Text fontSize='lg' fontWeight='semibold' mb={2}>My Top Tracks</Text>
-                        {post?.metadata.tracks.map((track: any, index: number) => (
-                          <Flex key={index + track.id} alignItems='center' mb={2}>
-                            <Image 
-                              src={track.imageUrl} 
-                              alt={track.name} 
-                              boxSize='40px'
-                              borderRadius='md'
-                              mr={3}
-                            />
-                            <Link href={track.spotifyUrl} target='_blank'>
-                              <Text fontSize={['sm', 'md']}>{track.name}</Text>
-                            </Link>
-                          </Flex>
-                        ))}
-                      </Box>
-                    </Flex>
-                  </>
-                ) : null}
+                        <Box flex='1'>
+                          <Text fontSize='lg' fontWeight='semibold' mb={2}>My Top Tracks</Text>
+                          {post?.metadata.tracks.map((track: any, index: number) => (
+                            <Flex key={index + track.id} alignItems='center' mb={2}>
+                              <Image 
+                                src={track.imageUrl} 
+                                alt={track.name} 
+                                boxSize='40px'
+                                borderRadius='md'
+                                mr={3}
+                              />
+                              <Link href={track.spotifyUrl} target='_blank'>
+                                <Text fontSize={['sm', 'md']}>{track.name}</Text>
+                              </Link>
+                            </Flex>
+                          ))}
+                        </Box>
+                      </Flex>
+                    </>
+                  ) : null}
+                <Image 
+                  src={spotifyLogo} 
+                  alt={'Spotify logo'} 
+                  height='30px'
+                  borderRadius='md'
+                  marginTop={3}
+                />
               </Box>
               ) : null}
             </Box>

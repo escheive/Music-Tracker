@@ -11,6 +11,7 @@ import { useAuthContext } from "@context/AuthProvider";
 import { useSupabaseProfile } from "@api/supabase/fetch";
 import spotifyCMYKLogo from '@assets/spotify/logos/Spotify_Logo_CMYK_Green.png';
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
 
 export const ProfileRoute = () => {
@@ -79,7 +80,7 @@ export const ProfileRoute = () => {
         </Box>
 
         <LineChart 
-          title='Popularity' 
+          title='Listening Popularity' 
           description='Popularity of your 50 most recently played tracks. Based on number of listens and how recent they were.'
           data={popularityNumbers} 
         />
@@ -89,21 +90,37 @@ export const ProfileRoute = () => {
         {showRecentlyPlayed ? (
           <>
             <Heading>Recently Played Tracks</Heading>
+            <Image 
+              src={spotifyLogo} 
+              objectFit='contain'
+              height='30px'
+              fallbackSrc='https://via.placeholder.com/150' 
+            />
             <RecentlyPlayedList recentlyPlayedSongs={recentlyPlayedSongs} />
           </>
         ) : null}
 
         <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
 
-          <Heading>Top Artists And Tracks</Heading>
-          <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
-            <GridItem w='100%' noOfLines={1}>
-              <TopItemsList itemType='Artists' items={topItems?.artists?.items} />
-            </GridItem>
-            <GridItem w='100%' noOfLines={1}>
-              <TopItemsList itemType='Tracks' items={topItems?.tracks?.items} />
-            </GridItem>
-          </Grid>
+          {showTopItems ? (
+            <>
+              <Heading>Top Artists And Tracks</Heading>
+              <Image 
+                src={spotifyLogo} 
+                objectFit='contain'
+                height='30px'
+                fallbackSrc='https://via.placeholder.com/150' 
+              />
+              <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
+                <GridItem w='100%' noOfLines={1}>
+                  <TopItemsList itemType='Artists' items={topItems?.artists?.items} />
+                </GridItem>
+                <GridItem w='100%' noOfLines={1}>
+                  <TopItemsList itemType='Tracks' items={topItems?.tracks?.items} />
+                </GridItem>
+              </Grid>
+            </>
+          ) : null}
 
       </Box>
     </>
