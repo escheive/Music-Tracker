@@ -191,7 +191,7 @@ export const DashboardRoute = () => {
                           </Link>
                         </Flex>
                       ))}
-                      <Button variant='solid' onClick={() => openModal(post)}>View More</Button>
+                      <Button variant='outline' onClick={() => openModal(post)}>View More</Button>
                     </>
                   ) : post.type === 'topItems' ? (
                     <>

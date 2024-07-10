@@ -69,7 +69,7 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
 
   return (
     <>
-      <ModalHeader textAlign='center'>{playlist?.name}</ModalHeader>
+      <ModalHeader textAlign='center' fontSize={['16', '22', '26']}>{playlist?.name}</ModalHeader>
       <Image 
         src={spotifyLogo} 
         objectFit='contain'
@@ -77,15 +77,15 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
         fallbackSrc='https://via.placeholder.com/150' 
       />
       <ModalCloseButton />
-      <ModalBody onScroll={(e) => handleOnScroll(e)}>
+      <ModalBody onScroll={(e) => handleOnScroll(e)} px={0}>
           <TableContainer whiteSpace='wrap' height='100vh' overflowY='auto'>
-          <Table variant='striped'>
+          <Table variant='striped' layout='auto'>
             <Thead>
               <Tr>
-                <Th fontSize={{base: '16', md: '18'}}>Title</Th>
-                <Th fontSize={{base: '16', md: '18'}}>Album</Th>
-                <Th fontSize={{base: '16', md: '18'}}>Added</Th>
-                <Th fontSize={{base: '16', md: '18'}}>Duration</Th>
+                <Th>Title</Th>
+                <Th>Album</Th>
+                <Th>Added</Th>
+                <Th>Duration</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -109,21 +109,21 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
                               mr={3}
                             />
                             <Box>
-                              <Text fontWeight="bold">{item.track.name}</Text>
+                              <Text fontWeight='bold'>{item.track.name}</Text>
                               <Text>{item.track.artists[0]?.name}</Text>
                             </Box>
                           </Flex>
                         </Link>
                       </Td>
-                      <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>
+                      <Td>
                         <Link href={item.track.album.external_urls?.spotify} target='_blank'>
                           {item?.track.album.name}
                         </Link>
                       </Td>
-                      <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>
+                      <Td>
                         {formattedDate}
                       </Td>
-                      <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>
+                      <Td>
                         {songDuration}
                       </Td>   
                     </Tr>

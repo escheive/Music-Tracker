@@ -4,6 +4,7 @@ import {
   ModalContent,
   ModalFooter,
   Button,
+  useTheme
 } from '@chakra-ui/react';
 import { useModalContext } from '@/context/ModalProvider';
 import { TrackModal } from './TrackModal';
@@ -12,6 +13,8 @@ import { PlaylistTracksModal } from './PlaylistModal';
 
 export const ModalComponent = () => {
   const { selectedTrack, setSelectedTrack, selectedPlaylist, setSelectedPlaylist, isOpen, onClose } = useModalContext();
+  const theme = useTheme();
+  console.log(theme)
 
   const handleClose = () => {
 
@@ -29,14 +32,14 @@ export const ModalComponent = () => {
       onClose={handleClose} 
       isCentered 
       scrollBehavior='inside' 
-      size='2xl'
+      size='3xl'
     >
       <ModalOverlay 
-        bg='none'
-        backdropFilter='auto'
+        // bg='none'
+        // backdropFilter='auto'
         backdropInvert='80%'
         backdropBlur='2px'
-        />
+      />
       <ModalContent>
 
         {selectedTrack ? (
@@ -46,7 +49,7 @@ export const ModalComponent = () => {
         )}
 
         <ModalFooter>
-          <Button colorScheme='gray' mr={3} onClick={handleClose}>
+          <Button mr={3} onClick={handleClose}>
             Close
           </Button>
         </ModalFooter>
