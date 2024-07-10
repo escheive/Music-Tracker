@@ -8,7 +8,8 @@ import {
   Td,
   TableContainer,
   Image,
-  Link
+  Link,
+  useTheme
 } from '@chakra-ui/react';
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
@@ -21,7 +22,7 @@ export const RecentlyPlayedList: React.FC<RecentlyPlayedListProps> = ({ recently
   return (
     <>
       <TableContainer whiteSpace='wrap' height='100vh' overflowY='auto'>
-        <Table variant='striped' colorScheme='alternatePurple'>
+        <Table variant='striped'>
           <Thead>
             <Tr>
               <Th fontSize={{base: '16', md: '18'}}>Time</Th>

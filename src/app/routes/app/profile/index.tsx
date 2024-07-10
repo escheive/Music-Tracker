@@ -22,7 +22,7 @@ export const ProfileRoute = () => {
   const [showTopItems, setShowTopItems] = useState(true);
   const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(true);
   const { session } = useAuthContext();
-  const { data: profile, error: profileError } = useSupabaseProfile(session?.user.id)
+  const { data: profile, error: profileError } = session ? useSupabaseProfile(session?.user.id) : { data: null, error: null }
   console.log(profileError, recentlyPlayedSongsError, recentlyPlayedSongsLoading, topItemsLoading)
 
   useEffect(() => {

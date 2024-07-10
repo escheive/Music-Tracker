@@ -20,6 +20,7 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { useSpotifyUser } from '@api/spotify/spotify';
 import supabase from '@api/supabase/supabase';
 import { useAuthContext } from '@context/AuthProvider';
+import { useSupabaseProfile } from '@api/supabase/fetch';
 
 
 interface Props {
@@ -70,6 +71,7 @@ const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useSpotifyUser();
   const { session } = useAuthContext()
+  const { data: profile } = useSupabaseProfile(session?.user.id);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -94,7 +96,7 @@ const NavBar = () => {
 
   return (
     <>
-      <Box bg={useColorModeValue('#ffe5fe', 'gray.900')} px={4}>
+      <Box bg={profile?.theme ? `${profile.theme}.100` : '#ffe5fe'} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}

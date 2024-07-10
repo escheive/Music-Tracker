@@ -8,7 +8,7 @@ export const supabaseFetcher = (url: string) => fetch(url, {method: 'GET'}).then
 
 
 export const useSupabaseProfile = (userId: any) => {
-  const { data, mutate, error } = useSWR('api/supabase/profile', async () => {
+  const { data, mutate, isLoading, error } = useSWR(userId ? 'api/supabase/profile' : null, async () => {
     const { data, error } = await supabase
       .from('Profiles')
       .select()
@@ -18,12 +18,26 @@ export const useSupabaseProfile = (userId: any) => {
     if (error) throw error.message;
 
     return data
+  }, {
+    revalidateOnFocus: false, // Disable revalidation on focus
+    revalidateOnReconnect: false, // Disable revalidation on reconnection
+    refreshInterval: 0, // Disable revalidation
   });
 
   return {
     data,
-    mutate,
-    error
+    isLoading,
+    error,
+    // Function to manually update the profile in the cache
+    updateProfile: async (newProfile) => {
+      await supabase
+        .from('Profiles')
+        .update(newProfile)
+        .eq('id', userId);
+      
+      // Update the local cache with the new profile data
+      mutate({ ...data, ...newProfile }, false);
+    },
   }
 }
 
@@ -82,6 +96,7 @@ export const useSupabasePostsInfinite = () => {
   const { data, size, setSize, error } = useSWRInfinite(getKey, fetcher, {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
+    refreshInterval: 360000, // Revalidate automatically every hour
   });
 
   return {

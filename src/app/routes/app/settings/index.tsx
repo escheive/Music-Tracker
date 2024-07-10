@@ -4,25 +4,39 @@ import LineChart from "@/components/chart/LineChart";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
-import { Box, Heading, Grid, GridItem, Link, Flex, Image, Text, Select } from "@chakra-ui/react";
+import { Box, Heading, Grid, GridItem, Link, Flex, Image, Text, Select, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@api/spotify/spotify";
 import { useAuthContext } from "@context/AuthProvider";
 import { useSupabaseProfile } from "@api/supabase/fetch";
 import spotifyCMYKLogo from '@assets/spotify/logos/Spotify_Logo_CMYK_Green.png';
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { updateSupabaseProfile } from "@api/supabase/update";
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
+
+const colorOptions = [
+  'gray', 'red', 'orange', 'yellow', 'green', 'teal', 
+  'blue', 'cyan', 'purple', 'pink', 'alternatePurple'
+];
+
+const shades = [50, 100, 200, 300, 400, 500, 600, 700, 800];
 
 
 export const SettingsRoute = () => {
   const navigate = useNavigate();
   const { user, userMutate, loggedOut } = useSpotifyUser();
   const { session } = useAuthContext();
-  const { data: profile, error: profileError } = useSupabaseProfile(session?.user.id)
+  const { data: profile, updateProfile, error: profileError } = useSupabaseProfile(session?.user.id)
   const [currentProfileTheme, setCurrentProfileTheme] = useState(profile?.theme);
 
   const handleChange = (e) => {
     setCurrentProfileTheme(event?.target.value)
+  }
+
+  const handleSubmit = async () => {
+    const newProfileData = {...profile, theme: currentProfileTheme}
+    await updateSupabaseProfile(profile.id, currentProfileTheme);
+    await updateProfile(newProfileData)
   }
 
   useEffect(() => {
@@ -33,11 +47,12 @@ export const SettingsRoute = () => {
 
   if (!user) {
     return (
-      <Heading>Please connect your Spotify to see your profile</Heading>
+      <>
+        <Heading>Please connect your Spotify to see your profile</Heading>
+        
+      </>
     )
   }
-
-  console.log(user)
 
   return (
     <>
@@ -62,22 +77,30 @@ export const SettingsRoute = () => {
         <Text>Color Scheme</Text>
         <Select 
           placeholder='Select a color scheme for the site' 
-          bg={currentProfileTheme ? `${currentProfileTheme}.100` : 'alternatePurple.100'}
+          bg={currentProfileTheme}
           value={currentProfileTheme}
           onChange={handleChange}
         >
-          <option value='gray'>Gray</option>
-          <option value='red'>Red</option>
-          <option value='orange'>Orange</option>
-          <option value='yellow'>Yellow</option>
-          <option value='green'>Green</option>
-          <option value='teal'>Teal</option>
-          <option value='blue'>Blue</option>
-          <option value='cyan'>Cyan</option>
-          <option value='purple'>Purple</option>
-          <option value='pink'>Pink</option>
-          <option value='alternatePurple'>Alternate Purple</option>
+          {colorOptions.map(color => (
+            <option key={color} value={color}>{color.charAt(0).toUpperCase() + color.slice(1)}</option>
+          ))}
         </Select>
+
+        <Flex mt={4} wrap='wrap'>
+          {shades.map(shade => (
+            <Box 
+              key={shade} 
+              bg={`${currentProfileTheme}.${shade}`} 
+              width='40px' 
+              height='40px' 
+              m={2} 
+              borderRadius='md' 
+            />
+          ))}
+        </Flex>
+        <Button onClick={handleSubmit}>
+          Save Changes
+        </Button>
       </Box>
     </>
   );

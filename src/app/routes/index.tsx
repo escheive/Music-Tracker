@@ -7,6 +7,7 @@ import { useSpotifyUser } from "@api/spotify/spotify";
 
 export const createRouter = () => {
   const { session } = useAuthContext();
+  const { user } = useSpotifyUser();
 
   return createBrowserRouter([
     {
@@ -16,7 +17,7 @@ export const createRouter = () => {
         {
           path: '/',
           lazy: async () => {
-            if (session) {
+            if (session && user) {
               const { DashboardRoute } = await import('./dashboard');
               return { Component: DashboardRoute };
             } else {

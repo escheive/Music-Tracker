@@ -26,7 +26,8 @@ export const useAuthContext = () => {
 };
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [session, setSession] = useState<Session | null>(null)
+  const [session, setSession] = useState<Session | null>(null);
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
