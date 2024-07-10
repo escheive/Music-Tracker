@@ -35,7 +35,7 @@ export const SettingsRoute = () => {
 
   const handleSubmit = async () => {
     const newProfileData = {...profile, theme: currentProfileTheme}
-    await updateSupabaseProfile(profile.id, currentProfileTheme);
+    // await updateSupabaseProfile(profile.id, currentProfileTheme);
     await updateProfile(newProfileData)
   }
 

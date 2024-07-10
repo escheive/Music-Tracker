@@ -19,6 +19,7 @@ import {
   Flex,
   Image,
   Link,
+  Container
 } from '@chakra-ui/react';
 
 import { useRecentlyPlayedSongs, useUsersTopItems } from '@api/spotify/spotify';
@@ -165,12 +166,12 @@ export const DashboardRoute = () => {
 
               <Text fontSize='md' fontWeight='semibold' mb={3}>{post.content}</Text>
               {post.type !== 'general' ? (
-                <Box 
+                <Container
                   p={[1, 4]} 
                   mb={[3, 6]} 
-                  bg='alternatePurple.50'
                   boxShadow='sm'
                   borderRadius='md'
+                  variant='post'
                 >
               
                   {post.type == 'recentlyPlayed' ? (
@@ -240,7 +241,7 @@ export const DashboardRoute = () => {
                   borderRadius='md'
                   marginTop={3}
                 />
-              </Box>
+              </Container>
               ) : null}
             </Box>
           )

@@ -37,7 +37,7 @@ export const ModalComponent = () => {
         backdropInvert='80%'
         backdropBlur='2px'
         />
-      <ModalContent bg='alternatePurple.100'>
+      <ModalContent>
 
         {selectedTrack ? (
           <TrackModal selectedTrack={selectedTrack} />

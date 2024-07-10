@@ -1,4 +1,4 @@
-import { ChakraProvider, Spinner, extendTheme, theme as defaultTheme, useTheme } from '@chakra-ui/react';
+import { ChakraProvider, Spinner, extendTheme, theme as defaultTheme, useTheme, withDefaultColorScheme } from '@chakra-ui/react';
 import { AuthProvider, useAuthContext } from '@/context/AuthProvider';
 import { useSupabaseProfile } from '@api/supabase/fetch';
 import { useEffect, useState, useMemo } from 'react';
@@ -10,8 +10,12 @@ type AppProviderProps = {
 
 export const CustomChakraProvider = ({children}: AppProviderProps) => {
   const { session } = useAuthContext();
+  const { data: profile } = useSupabaseProfile(session?.user.id);
 
-  const theme = extendTheme({
+
+  const theme = extendTheme(
+    withDefaultColorScheme({ colorScheme: `${profile?.theme}` || 'cyan' }),
+    {
     styles: {
       global: {
         // styles for the `body`
@@ -22,8 +26,51 @@ export const CustomChakraProvider = ({children}: AppProviderProps) => {
       },
     },
     components: {
-      Button,
-      Text
+      Container: {
+        // defaultProps: {
+        //   colorScheme: `${profile?.theme}`,
+        // },
+        baseStyle: {
+          _focus: { boxShadow: 'none' },
+        },
+        variants: {
+          post: (props) => ({
+            bg: props.colorMode === 'dark' ? `${profile?.theme}.200` : `${profile?.theme}.200`,
+          }),
+        },
+      },
+      Button: {
+        // defaultProps: {
+        //   colorScheme: `${profile?.theme}`,
+        // },
+        baseStyle: {
+          _focus: { boxShadow: 'none' },
+        },
+        // variants: {
+        //   solid: (props) => ({
+        //     bg: props.colorMode === 'dark' ? `${profile?.theme}.500` : `${profile?.theme}.600`,
+        //     _hover: {
+        //       bg: props.colorMode === 'dark' ? `${profile?.theme}.400` : `${profile?.theme}.700`,
+        //     },
+        //   }),
+        // },
+      },
+      Table: {
+        defaultProps: {
+          colorScheme: `${profile?.theme}`,
+        },
+        baseStyle: {
+          _focus: { boxShadow: 'none' },
+        },
+        // variants: {
+        //   solid: (props) => ({
+        //     bg: props.colorMode === 'dark' ? `${profile?.theme}.500` : `${profile?.theme}.600`,
+        //     _hover: {
+        //       bg: props.colorMode === 'dark' ? `${profile?.theme}.400` : `${profile?.theme}.700`,
+        //     },
+        //   }),
+        // },
+      },
     },
     colors: {
       alternatePurple: {

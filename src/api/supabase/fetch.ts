@@ -22,6 +22,7 @@ export const useSupabaseProfile = (userId: any) => {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
     refreshInterval: 0, // Disable revalidation
+    dedupingInterval: 60000
   });
 
   return {
@@ -58,6 +59,7 @@ export const useSupabasePosts = () => {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
     refreshInterval: 360000, // Revalidate automatically every hour
+    dedupingInterval: 60000
   });
 
   return {
@@ -97,6 +99,7 @@ export const useSupabasePostsInfinite = () => {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
     refreshInterval: 360000, // Revalidate automatically every hour
+    dedupingInterval: 60000
   });
 
   return {
