@@ -24,20 +24,6 @@ export const CustomChakraProvider = ({children}: AppProviderProps) => {
   const theme = extendTheme(
     withDefaultColorScheme({ colorScheme: `${profile?.theme}` || 'cyan' }),
     {
-      colors: {
-        alternatePurple: {
-          50: '#ffe5fe',
-          100: '#f8b5fd',
-          200: '#ee84f9',
-          300: '#e254f7',
-          400: '#d226f5',
-          500: '#b112dc',
-          600: '#850cab',
-          700: '#5b077a',
-          800: '#35024a',
-          900: '#16001c',
-        }
-      },
       styles: {
         global: {
           // styles for the `body`
@@ -58,6 +44,10 @@ export const CustomChakraProvider = ({children}: AppProviderProps) => {
           variants: {
             post: (props) => ({
               bg: props.colorMode === 'dark' ? `${profile?.theme}.200` : `${profile?.theme}.100`,
+              margin: 0,
+              maxWidth: '100%',
+              py: 4,
+              px: 8
             }),
           },
         },
@@ -83,10 +73,8 @@ export const CustomChakraProvider = ({children}: AppProviderProps) => {
         Modal: {
           baseStyle: {
             overlay: {
-              bg: withOpacity(`${profile?.theme || 'gray'}`, '50', 'CC'),
-              // backgroundColor: `${profile?.theme}`,
+              bg: `${profile?.theme}.50` + 'CC',
               backdropFilter: 'blur(2px) opacity(0.2)',
-              // backdropFilter='blur(10px) hue-rotate(90deg)',
             }
           }
         },
@@ -107,6 +95,20 @@ export const CustomChakraProvider = ({children}: AppProviderProps) => {
           // },
         },
         Text,
+      },
+      colors: {
+        alternatePurple: {
+          50: '#ffe5fe',
+          100: '#f8b5fd',
+          200: '#ee84f9',
+          300: '#e254f7',
+          400: '#d226f5',
+          500: '#b112dc',
+          600: '#850cab',
+          700: '#5b077a',
+          800: '#35024a',
+          900: '#16001c',
+        }
       },
   })
 

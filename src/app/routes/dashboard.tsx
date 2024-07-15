@@ -9,6 +9,7 @@ import {
   Radio,
   RadioGroup,
   Stack,
+  VStack,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -19,8 +20,9 @@ import {
   Flex,
   Image,
   Link,
-  Container
+  Container,
 } from '@chakra-ui/react';
+import { TriangleUpIcon, ChatIcon, CopyIcon } from '@chakra-ui/icons';
 
 import { useRecentlyPlayedSongs, useUsersTopItems } from '@api/spotify/spotify';
 import { useAuthContext } from '@context/AuthProvider';
@@ -153,22 +155,21 @@ export const DashboardRoute = () => {
           return (
             <Box 
               key={post.id}
-              p={4} 
               mb={6} 
               bg='white' 
               boxShadow='md'
               borderRadius='md'
             >
-              <Flex mb={2} alignItems='center'>
-                <Text fontSize='lg' paddingRight={2} fontWeight='semibold'>{post.user.username}</Text>
-                <Text fontSize='sm' fontWeight='semibold'>{postedAt}</Text>
-              </Flex>
+              <Box p={4}>
+                <Flex mb={2} alignItems='center'>
+                  <Text fontSize='lg' paddingRight={2} fontWeight='semibold'>{post.user.username}</Text>
+                  <Text fontSize='sm' fontWeight='semibold'>{postedAt}</Text>
+                </Flex>
 
-              <Text fontSize='md' fontWeight='semibold' mb={3}>{post.content}</Text>
+                <Text fontSize='md' fontWeight='semibold'>{post.content}</Text>
+              </Box>
               {post.type !== 'general' ? (
                 <Container
-                  p={[1, 4]} 
-                  mb={[3, 6]} 
                   boxShadow='sm'
                   borderRadius='md'
                   variant='post'
@@ -243,6 +244,22 @@ export const DashboardRoute = () => {
                 />
               </Container>
               ) : null}
+
+              <Flex py={4} justifyContent='space-around'>
+                <VStack mb={2} alignItems='center'>
+                  <TriangleUpIcon />
+                  <Text>16</Text>
+                </VStack>
+                <VStack mb={2} alignItems='center'>
+                  <ChatIcon />
+                  <Text>Comments</Text>
+                </VStack>
+                <VStack mb={2} alignItems='center'>
+                  <CopyIcon />
+                  <Text>Save</Text>
+                </VStack>
+              </Flex>
+
             </Box>
           )
         })}
