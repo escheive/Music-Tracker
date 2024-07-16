@@ -4,7 +4,7 @@ import { AuthProvider, useAuthContext } from '@/context/AuthProvider';
 import { ModalProvider } from '@/context/ModalProvider';
 import { ModalComponent } from '@/components/modal/ModalComponent';
 import { Button, Text } from '@components/chakra-ui';
-import { useSupabaseProfile } from '@api/supabase/fetch';
+import { useSupabaseProfile } from '@api/supabase/fetch/fetch';
 import { CustomChakraProvider } from '@context/CustomChakraProvider';
 import { SWRConfig } from 'swr';
 

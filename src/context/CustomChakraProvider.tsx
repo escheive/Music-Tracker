@@ -1,6 +1,6 @@
 import { ChakraProvider, Spinner, extendTheme, theme as defaultTheme, useTheme, withDefaultColorScheme } from '@chakra-ui/react';
 import { AuthProvider, useAuthContext } from '@/context/AuthProvider';
-import { useSupabaseProfile } from '@api/supabase/fetch';
+import { useSupabaseProfile } from '@api/supabase/fetch/fetch';
 import { useEffect, useState, useMemo } from 'react';
 import { Button, Text } from '@components/chakra-ui';
 import { modalAnatomy as modalParts } from '@chakra-ui/anatomy'
@@ -13,8 +13,6 @@ type AppProviderProps = {
 export const CustomChakraProvider = ({children}: AppProviderProps) => {
   const { session } = useAuthContext();
   const { data: profile } = useSupabaseProfile(session?.user.id);
-  console.log(defaultTheme)
-  console.log(profile?.theme)
 
   const withOpacity = (color, value, opacity) => {
     return defaultTheme.colors[color][value] + opacity;
@@ -57,7 +55,7 @@ export const CustomChakraProvider = ({children}: AppProviderProps) => {
           },
           variants: {
             solid: (props) => ({
-              bg: props.colorMode === 'dark' ? `${profile?.theme}.300` : `${profile?.theme}.300`,
+              bg: profile?.theme ? props.colorMode === 'dark' ? `${profile?.theme}.300` : `${profile?.theme}.300` : props.colorScheme,
               _hover: {
                 bg: props.colorMode === 'dark' ? `${profile?.theme}.200` : `${profile?.theme}.400`,
               },

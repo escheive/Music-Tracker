@@ -4,6 +4,7 @@ import NavbarWrapper from '@/components/nav/NavbarWrapper';
 import { useAuthContext } from '@context/AuthProvider';
 import { Navigate, useLocation } from "react-router-dom";
 import { useSpotifyUser } from "@api/spotify/spotify";
+import { CreateProfileRoute } from './app/auth/createProfile';
 
 export const createRouter = () => {
   const { session } = useAuthContext();
@@ -48,6 +49,13 @@ export const createRouter = () => {
             </ProtectedRoute>
           ),
           children: [
+            {
+              path: 'create-profile',
+              lazy: async () => {
+                const { CreateProfileRoute } = await import('./app/auth/createProfile');
+                return { Component: CreateProfileRoute };
+              },
+            },
             {
               path: 'profile',
               lazy: async () => {

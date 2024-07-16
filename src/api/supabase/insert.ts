@@ -54,4 +54,33 @@ export const createPost = async (post: any) => {
   return error;
 }
 
-          
+export async function createProfile(userId, profile) {
+  const { data, error } = await supabase
+    .from('Profiles')
+    .insert([
+      { 
+        id: userId,
+        username: profile.username,
+        theme: profile.theme
+      }
+    ]);
+
+  if (error) {
+    console.error('Error creating profile:', error);
+    return null;
+  }
+  return data;
+}   
+
+export const addLike = async (userId, postId) => {
+  const { data, error } = await supabase
+    .from('Likes')
+    .insert([{ user_id: userId, post_id: postId }]);
+
+  if (error) {
+    console.error('Error adding like:', error);
+    return null;
+  }
+
+  return data;
+};

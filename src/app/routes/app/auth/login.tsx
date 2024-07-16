@@ -71,11 +71,29 @@ export const LoginRoute = () => {
   const navigate = useNavigate();
   const { session } = useAuthContext();
 
+  // useEffect(() => {
+  //   if (session) {
+
+  //     navigate('/');
+  //   }
+  // }, [session, navigate]);
+
   useEffect(() => {
-    if (session) {
-      navigate('/');
-    }
-  }, [session, navigate]);
+    // Listen for authentication state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION' && session) {
+        // Check if the user is new and redirect to the create profile page
+        navigate('/create-profile');
+      } else if ( event === 'SIGNED_IN') {
+        navigate('/')
+      }
+    });
+
+    // Cleanup listener on component unmount
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   return (
     <Box padding={4} height='100vh'>

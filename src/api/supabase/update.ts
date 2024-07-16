@@ -7,8 +7,12 @@ export const updateSupabaseProfile = async (profileId, newTheme) => {
     .eq('id', profileId)
     .select()
 
-  console.log(data)
+    if (error) {
+      console.error('Error adding like:', error);
+      return null;
+    }
 
-    return { data, error }
+    return data;
 }
+
           

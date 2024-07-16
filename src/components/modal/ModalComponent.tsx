@@ -13,8 +13,6 @@ import { PlaylistTracksModal } from './PlaylistModal';
 
 export const ModalComponent = () => {
   const { selectedTrack, setSelectedTrack, selectedPlaylist, setSelectedPlaylist, isOpen, onClose } = useModalContext();
-  const theme = useTheme();
-  console.log(theme)
 
   const handleClose = () => {
 

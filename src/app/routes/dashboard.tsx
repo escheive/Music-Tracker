@@ -28,9 +28,10 @@ import { useRecentlyPlayedSongs, useUsersTopItems } from '@api/spotify/spotify';
 import { useAuthContext } from '@context/AuthProvider';
 import { useEffect, useState } from 'react';
 import { createPost } from '@api/supabase/insert';
-import { useSupabasePostsInfinite } from "@api/supabase/fetch";
+import { useSupabasePostsInfinite, useSupabaseProfile } from "@api/supabase/fetch/fetch";
 import { useInView } from 'react-intersection-observer';
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
+import { addLike } from '@api/supabase/insert';
 
 
 export const DashboardRoute = () => {
@@ -38,6 +39,7 @@ export const DashboardRoute = () => {
   // const { data: posts, mutate: postsMutate, error: errorMutate } = useSupabasePosts();
   const { data: recentlyPlayedSongs } = useRecentlyPlayedSongs();
   const { data: topItems } = useUsersTopItems();
+  const { data: profile } = useSupabaseProfile(session?.user.id);
   const [draftedPost, setDraftedPost] = useState({
     user_id: session?.user.id,
     type: 'general',
@@ -46,7 +48,7 @@ export const DashboardRoute = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Record<string, any> | null>(null);
-  const { data, size, setSize, error } = useSupabasePostsInfinite();
+  const { data, size, setSize, error } = useSupabasePostsInfinite(session?.user.id);
   const { ref, inView } = useInView();
   const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded
 
@@ -107,6 +109,10 @@ export const DashboardRoute = () => {
     }); // Reset text area after submission
   };
 
+  const handleLike = async (postId) => {
+    await addLike(profile?.id, postId)
+  }
+
   return (
     <Box display='flex' flexDirection='column' alignItems='center' marginBlock='5%' >
       <Heading>Music Tracker for Spotify</Heading>
@@ -151,6 +157,7 @@ export const DashboardRoute = () => {
 
         {posts?.map((post) => {
           const postedAt = new Date(post.created_at).toLocaleString();
+          console.log(post)
 
           return (
             <Box 
@@ -162,7 +169,7 @@ export const DashboardRoute = () => {
             >
               <Box p={4}>
                 <Flex mb={2} alignItems='center'>
-                  <Text fontSize='lg' paddingRight={2} fontWeight='semibold'>{post.user.username}</Text>
+                  <Text fontSize='lg' paddingRight={2} fontWeight='semibold'>{post?.username}</Text>
                   <Text fontSize='sm' fontWeight='semibold'>{postedAt}</Text>
                 </Flex>
 
@@ -246,17 +253,37 @@ export const DashboardRoute = () => {
               ) : null}
 
               <Flex py={4} justifyContent='space-around'>
-                <VStack mb={2} alignItems='center'>
+                <VStack 
+                  alignItems='center'
+                  color={post.user_liked ? `${profile?.theme}.600` : null}
+                  _hover={{ 
+                    color: `${profile?.theme}.600`,
+                    transform: 'scale(1.1)'
+                  }}
+                  onClick={() => handleLike(post.id)}
+                >
                   <TriangleUpIcon />
-                  <Text>16</Text>
+                  <Text>{post?.like_count}</Text>
                 </VStack>
-                <VStack mb={2} alignItems='center'>
+                <VStack 
+                  alignItems='center'
+                  _hover={{ 
+                    color: `${profile?.theme}.600`,
+                    transform: 'scale(1.1)'
+                  }}
+                >
                   <ChatIcon />
-                  <Text>Comments</Text>
+                  <Text>24</Text>
                 </VStack>
-                <VStack mb={2} alignItems='center'>
+                <VStack 
+                  alignItems='center'
+                  _hover={{ 
+                    color: `${profile?.theme}.600`,
+                    transform: 'scale(1.1)'
+                  }}
+                >
                   <CopyIcon />
-                  <Text>Save</Text>
+                  <Text>32</Text>
                 </VStack>
               </Flex>
 
