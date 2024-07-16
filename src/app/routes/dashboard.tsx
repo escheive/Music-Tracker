@@ -48,7 +48,7 @@ export const DashboardRoute = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Record<string, any> | null>(null);
-  const { data, size, setSize, error } = useSupabasePostsInfinite(session?.user.id);
+  const { data, size, setSize, likePost, unlikePost, error } = useSupabasePostsInfinite(session?.user.id);
   const { ref, inView } = useInView();
   const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded
 
@@ -109,8 +109,12 @@ export const DashboardRoute = () => {
     }); // Reset text area after submission
   };
 
-  const handleLike = async (postId) => {
-    await addLike(profile?.id, postId)
+  const handleLike = async (postId, userLiked) => {
+    if (!userLiked) {
+      await likePost(profile?.id, postId)
+    } else {
+      await unlikePost(profile?.id, postId)
+    }
   }
 
   return (
@@ -157,7 +161,6 @@ export const DashboardRoute = () => {
 
         {posts?.map((post) => {
           const postedAt = new Date(post.created_at).toLocaleString();
-          console.log(post)
 
           return (
             <Box 
@@ -260,7 +263,7 @@ export const DashboardRoute = () => {
                     color: `${profile?.theme}.600`,
                     transform: 'scale(1.1)'
                   }}
-                  onClick={() => handleLike(post.id)}
+                  onClick={() => handleLike(post.id, post.user_liked)}
                 >
                   <TriangleUpIcon />
                   <Text>{post?.like_count}</Text>

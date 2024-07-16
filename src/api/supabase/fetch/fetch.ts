@@ -141,6 +141,32 @@ export const useSupabasePosts = () => {
         return newData;
       }, false);
     };
+
+    const unlikePost = async (userId, postId) => {
+      await supabase
+        .from('Likes')
+        .delete()
+        .eq('user_id', userId)
+        .eq('post_id', postId);
+  
+      // Update the local cache
+      mutate((currentData) => {
+        // Create a new array with updated posts data
+        const newData = currentData.map((page) =>
+          page.map((post) =>
+            post.id === postId
+              ? {
+                  ...post,
+                  like_count: post.like_count - 1,
+                  user_liked: false,
+                }
+              : post
+          )
+        );
+  
+        return newData;
+      }, false);
+    };
   
     return {
       data,
@@ -148,6 +174,7 @@ export const useSupabasePosts = () => {
       setSize,
       error,
       likePost,
+      unlikePost
     };
   };
 
