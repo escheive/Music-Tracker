@@ -32,6 +32,7 @@ import { useSupabasePostsInfinite, useSupabaseProfile } from "@api/supabase/fetc
 import { useInView } from 'react-intersection-observer';
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 import { addLike } from '@api/supabase/insert';
+import { PostList } from '@features/posts/Post';
 
 
 export const DashboardRoute = () => {
@@ -157,7 +158,8 @@ export const DashboardRoute = () => {
           Post
         </Button>
       </Box>
-      <Box flexDirection='column' width={['100%', '80%']}>
+      <PostList />
+      {/* <Box flexDirection='column' width={['100%', '80%']}>
 
         {posts?.map((post) => {
           const postedAt = new Date(post.created_at).toLocaleString();
@@ -276,7 +278,7 @@ export const DashboardRoute = () => {
                   }}
                 >
                   <ChatIcon />
-                  <Text>24</Text>
+                  <Text>{post?.comment_count}</Text>
                 </VStack>
                 <VStack 
                   alignItems='center'
@@ -294,7 +296,7 @@ export const DashboardRoute = () => {
           )
         })}
         <div ref={ref} />
-      </Box>
+      </Box> */}
       {selectedPost && (
         <Modal isOpen={isModalOpen} onClose={closeModal} size='xl'>
           <ModalOverlay />

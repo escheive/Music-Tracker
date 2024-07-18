@@ -81,7 +81,7 @@ export const useSupabasePosts = () => {
     
     // Fetch posts with like counts
     const { data: posts, error: postsError } = await supabase
-      .from('posts_with_likes')
+      .from('posts_with_likes_and_comments')
       .select('*')
       .order('created_at', { ascending: false })
       .range(pageIndex * PAGE_SIZE, (pageIndex + 1) * PAGE_SIZE - 1);
@@ -105,6 +105,18 @@ export const useSupabasePosts = () => {
     }));
   
     return postsWithLikes;
+  };
+
+  const fetchCommentsForPost = async (postId) => {
+    const { data: comments, error } = await supabase
+      .from('Comments')
+      .select('*, Profiles (username)')
+      .eq('post_id', postId)
+      .order('created_at', { ascending: true });
+  
+    if (error) throw error;
+  
+    return comments;
   };
   
   export const useSupabasePostsInfinite = (userId) => {
@@ -167,6 +179,39 @@ export const useSupabasePosts = () => {
         return newData;
       }, false);
     };
+
+
+    const addComment = async (userId, username, postId, content) => {
+      await supabase
+        .from('Comments')
+        .insert([{
+          user_id: userId, 
+          username: username,
+          post_id: postId,
+          content: content,
+        }]);
+
+      mutate((currentData) => {
+        const newData = currentData.map((page) =>
+          page.map((post) =>
+            post.id === postId
+              ? {
+                  ...post,
+                  comment_count: post.comment_count + 1,
+                  comments: [...post.comments, { user_id: userId, username: username, post_id: postId, content: content }],
+                }
+              : post
+          )
+        );
+
+        return newData;
+      }, false);
+    };
+
+    const getCommentsForPost = async (postId) => {
+      const comments = await fetchCommentsForPost(postId);
+      return comments;
+    };
   
     return {
       data,
@@ -174,7 +219,9 @@ export const useSupabasePosts = () => {
       setSize,
       error,
       likePost,
-      unlikePost
+      unlikePost,
+      addComment,
+      getCommentsForPost,
     };
   };
 
