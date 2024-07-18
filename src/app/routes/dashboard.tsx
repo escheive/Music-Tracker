@@ -112,14 +112,6 @@ export const DashboardRoute = () => {
     }); // Reset text area after submission
   };
 
-  const handleLike = async (postId, userLiked) => {
-    if (!userLiked) {
-      await likePost(profile?.id, postId)
-    } else {
-      await unlikePost(profile?.id, postId)
-    }
-  }
-
   return (
     <Box display='flex' flexDirection='column' alignItems='center' marginBlock='5%' >
       <Heading>Music Tracker for Spotify</Heading>

@@ -41,7 +41,11 @@ export const PostList = () => {
       {allPosts?.map((post) => {
 
         return (
-          <Post key={post.id} post={post} setSelectedPost={() => setSelectedPost(post)}/>
+          <Post 
+            key={post.id} 
+            post={post} 
+            setSelectedPost={() => setSelectedPost(post)}
+          />
         )
       })}
       <div ref={ref} />
@@ -114,18 +118,18 @@ const PostModal = ({ post, setSelectedPost, onClose }) => {
 
 export const Post = ({ post, setSelectedPost }) => {
   const { session }  = useAuthContext();
-  const [comments, setComments] = useState([]);
-  const [showComments, setShowComments] = useState(false);
-  // const { getCommentsForPost } = useSupabasePostsInfinite(session?.user.id);
   const { data: profile } = useSupabaseProfile(session?.user.id);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { likePost, unlikePost } = useSupabasePostsInfinite(profile?.id);
 
   const postedAt = new Date(post.created_at).toLocaleString();
 
-  const openModal = (post: any) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
-  };
+  const handleLike = async (postId, userLiked) => {
+    if (!userLiked) {
+      await likePost(profile?.id, postId)
+    } else {
+      await unlikePost(profile?.id, postId)
+    }
+  }
 
   return (
     <Box 
@@ -168,7 +172,6 @@ export const Post = ({ post, setSelectedPost }) => {
                   </Link>
                 </Flex>
               ))}
-              <Button variant='outline' onClick={() => openModal(post)}>View More</Button>
             </>
           ) : post.type === 'topItems' ? (
             <>
