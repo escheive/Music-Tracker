@@ -47,40 +47,40 @@ export const DashboardRoute = () => {
     content: '',
     metadata: null
   });
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Record<string, any> | null>(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [selectedPost, setSelectedPost] = useState<Record<string, any> | null>(null);
   const { data, size, setSize, likePost, unlikePost, error } = useSupabasePostsInfinite(session?.user.id);
-  const { ref, inView } = useInView();
-  const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded
+  // const { ref, inView } = useInView();
+  // const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded
 
   // Combine all pages of posts into one array
-  const posts = data ? data.flat() : [];
+  // const posts = data ? data.flat() : [];
 
   // Load more posts when the last element comes into view
-  useEffect(() => {
-    if (inView && hasMore && data && data.length > 0) {
-      setSize(size + 1);
-    }
-  }, [inView]);
+  // useEffect(() => {
+  //   if (inView && hasMore && data && data.length > 0) {
+  //     setSize(size + 1);
+  //   }
+  // }, [inView]);
 
-  useEffect(() => {
-    // Check if there are no more posts to load
-    if (data && data[data.length - 1] && data[data.length - 1].length < 10) {
-      setHasMore(false);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   // Check if there are no more posts to load
+  //   if (data && data[data.length - 1] && data[data.length - 1].length < 10) {
+  //     setHasMore(false);
+  //   }
+  // }, [data]);
 
-  if (error) return <Text>Error fetching posts</Text>;
+  // if (error) return <Text>Error fetching posts</Text>;
 
-  const openModal = (post: any) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
-  };
+  // const openModal = (post: any) => {
+  //   setSelectedPost(post);
+  //   setIsModalOpen(true);
+  // };
 
-  const closeModal = () => {
-    setSelectedPost(null);
-    setIsModalOpen(false);
-  };
+  // const closeModal = () => {
+  //   setSelectedPost(null);
+  //   setIsModalOpen(false);
+  // };
 
   const handlePostChange = (e: any) => {
     const { name, value } = 'target' in e ? e.target : { name: 'type', value: e};
@@ -297,7 +297,7 @@ export const DashboardRoute = () => {
         })}
         <div ref={ref} />
       </Box> */}
-      {selectedPost && (
+      {/* {selectedPost && (
         <Modal isOpen={isModalOpen} onClose={closeModal} size='xl'>
           <ModalOverlay />
           <ModalContent>
@@ -325,7 +325,7 @@ export const DashboardRoute = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
-      )}
+      )} */}
     </Box>
   );
 };

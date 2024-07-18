@@ -1,20 +1,39 @@
 import { useEffect, useState, useRef } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Box, Flex, Text, Container, Image, Link, VStack, Textarea } from '@chakra-ui/react';
-import { useSupabasePostsInfinite, useSupabaseProfile } from "@api/supabase/fetch/fetch";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Box, Flex, Text, Container, Image, Link, VStack, Textarea, Avatar } from '@chakra-ui/react';
+import { useSupabaseCommentsInfinite, useSupabasePostsInfinite, useSupabaseProfile } from "@api/supabase/fetch/fetch";
 import { useAuthContext } from "@context/AuthProvider";
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 import { ChatIcon, CopyIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { useInView } from 'react-intersection-observer';
+import { useSWRConfig } from 'swr';
+
 
 // Post List Component
 export const PostList = () => {
   const { session } = useAuthContext();
   const [selectedPost, setSelectedPost] = useState(null);
-  const { data: posts } = useSupabasePostsInfinite(session?.user.id);
+  const { data: posts, setSize, size, error: postsError } = useSupabasePostsInfinite(session?.user.id);
   const { ref, inView } = useInView();
+  const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded
   
   // Combine all pages of posts into one array
   const allPosts = posts ? posts.flat() : [];
+
+  // Load more posts when the last element comes into view
+  useEffect(() => {
+    if (inView && hasMore && posts && posts.length > 0) {
+      setSize(size + 1);
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    // Check if there are no more posts to load
+    if (posts && posts[posts.length - 1] && posts[posts.length - 1].length < 10) {
+      setHasMore(false);
+    }
+  }, [posts]);
+
+  if (postsError) return <Text>Error fetching posts</Text>;
 
   return (
     <Box flexDirection='column' width={['100%', '80%']}>
@@ -37,29 +56,22 @@ export const PostList = () => {
 const PostModal = ({ post, setSelectedPost, onClose }) => {
   const { session } = useAuthContext();
   const { data: profile } = useSupabaseProfile(session?.user.id);
-  const { getCommentsForPost, addComment } = useSupabasePostsInfinite(session?.user.id);
-  const [comments, setComments] = useState([]);
+  // const { getCommentsForPost } = useSupabasePostsInfinite(session?.user.id);
+  const { data, size, setSize, addComment, mutate } = useSupabaseCommentsInfinite(post.id);
+  // Combine all pages of data into one array
+  const comments = data ? data.flat() : [];
+  // const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  console.log(comments)
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      const fetchedComments = await getCommentsForPost(post.id);
-      setComments(fetchedComments);
-    };
-    fetchComments();
-  }, [post.id]);
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    // Assuming you have a userId from your auth context or state
     const userId = profile?.id;
     const username = profile?.username;
-    await addComment(userId, username, post.id, newComment);
-    setNewComment('');
-    const updatedComments = await getCommentsForPost(post.id);
-    setComments(updatedComments);
-  };
+    if (userId && newComment.trim()) {
+      await addComment(userId, username, post.id, newComment);
+      setNewComment('');
+    }
+  }
 
   return (
     <Modal isOpen={true} onClose={onClose} size='3xl'>
@@ -79,11 +91,20 @@ const PostModal = ({ post, setSelectedPost, onClose }) => {
               <Button type="submit" colorScheme="blue">Post Comment</Button>
             </form>
           </Box>
-          {comments.map(comment => (
-            <div key={comment.id}>
-              <p>{comment.username}: {comment.content}</p>
-            </div>
-          ))}
+          <Box mt={4}>
+            {comments.map(comment => (
+              <Box key={comment.id} p={4} borderWidth="1px" borderRadius="lg" mb={4}>
+                <Flex alignItems="center">
+                  {/* <Avatar size="sm" name={comment.username} src={comment.avatar_url} mr={3} /> */}
+                  <Box>
+                    <Text fontWeight="bold">{comment.Profiles?.username}</Text>
+                    <Text fontSize="sm" color="gray.500">{new Date(comment.created_at).toLocaleString()}</Text>
+                  </Box>
+                </Flex>
+                <Text mt={2}>{comment.content}</Text>
+              </Box>
+            ))}
+          </Box>
         </ModalBody>
       </ModalContent>
     </Modal>
@@ -95,19 +116,15 @@ export const Post = ({ post, setSelectedPost }) => {
   const { session }  = useAuthContext();
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
-  const { getCommentsForPost } = useSupabasePostsInfinite(session?.user.id);
+  // const { getCommentsForPost } = useSupabasePostsInfinite(session?.user.id);
   const { data: profile } = useSupabaseProfile(session?.user.id);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const postedAt = new Date(post.created_at).toLocaleString();
 
-  const handleShowComments = async () => {
-    if (!showComments) {
-      const fetchedComments = await getCommentsForPost(post.id);
-      setComments(fetchedComments);
-      setShowComments(true);
-    } else {
-      setShowComments(false);
-    }
+  const openModal = (post: any) => {
+    setSelectedPost(post);
+    setIsModalOpen(true);
   };
 
   return (
