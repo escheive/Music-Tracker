@@ -27,7 +27,7 @@ import { TriangleUpIcon, ChatIcon, CopyIcon } from '@chakra-ui/icons';
 import { useRecentlyPlayedSongs, useUsersTopItems } from '@api/spotify/spotify';
 import { useAuthContext } from '@context/AuthProvider';
 import { useEffect, useState } from 'react';
-import { createPost } from '@api/supabase/insert';
+// import { createPost } from '@api/supabase/insert';
 import { useSupabasePostsInfinite, useSupabaseProfile } from "@api/supabase/fetch/fetch";
 import { useInView } from 'react-intersection-observer';
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
@@ -49,7 +49,7 @@ export const DashboardRoute = () => {
   });
   // const [isModalOpen, setIsModalOpen] = useState(false);
   // const [selectedPost, setSelectedPost] = useState<Record<string, any> | null>(null);
-  const { data, size, setSize, likePost, unlikePost, error } = useSupabasePostsInfinite(session?.user.id);
+  const { data, size, setSize, likePost, unlikePost, createPost, error } = useSupabasePostsInfinite(session?.user.id);
   // const { ref, inView } = useInView();
   // const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded
 
@@ -90,7 +90,8 @@ export const DashboardRoute = () => {
     }));
   };
 
-  const handlePostSubmit = () => {
+  const handlePostSubmit = async (e) => {
+    e.preventDefault();
     let metadata: any;
     if (draftedPost.type == 'recentlyPlayed') {
       metadata = recentlyPlayedSongs;
@@ -98,10 +99,11 @@ export const DashboardRoute = () => {
       metadata = topItems;
     }
 
-    createPost({
-      ...draftedPost,
-      metadata: metadata
-    })
+    await createPost(
+      draftedPost,
+      profile?.username
+    )
+
     setDraftedPost({
       user_id: session?.user.id,
       type: 'general',
