@@ -32,7 +32,7 @@ import { useSupabasePostsInfinite, useSupabaseProfile } from "@api/supabase/fetc
 import { useInView } from 'react-intersection-observer';
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 import { addLike } from '@api/supabase/insert';
-import { PostList } from '@features/posts/Post';
+import { PostList } from '@features/posts/PostList';
 
 
 export const DashboardRoute = () => {
