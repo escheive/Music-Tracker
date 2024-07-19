@@ -18,6 +18,26 @@ export const useSupabasePostsInfinite = (userId) => {
   // Function to create new post
   const createPost = async (post: any, username: any) => {
     let { user_id, type, content, metadata } = post; // Destructure new post
+    console.log(post)
+
+    // Check if the user has already posted this type today
+    const { data: existingPosts, error: existingPostsError } = await supabase
+    .from('Posts')
+    .select('*')
+    .eq('user_id', user_id)
+    .eq('type', type)
+    .gte('created_at', new Date().toISOString().split('T')[0]) // Check from the start of today
+    .lte('created_at', new Date().toISOString()); // Until now
+
+    if (existingPostsError) {
+      console.error('Error checking existing posts:', existingPostsError);
+      return null;
+    }
+
+    if (existingPosts.length > 0) {
+      console.warn('User has already posted this type today.');
+      return { error: 'You can only post your top items or recently played songs once per day.' };
+    }
 
     // Simplify any metadata user wants to post to reduce size
     let simplifiedMetadata;

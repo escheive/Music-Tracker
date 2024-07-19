@@ -20,7 +20,7 @@ export const PostForm = () => {
   const { data: recentlyPlayedSongs } = useRecentlyPlayedSongs();
   const { data: topItems } = useUsersTopItems();
   const { data: profile } = useSupabaseProfile(session?.user.id);
-  const [draftedPost, setDraftedPost] = useState({
+  const [draftedPost, setDraftedPost] = useState<Record<string, any>>({
     user_id: session?.user.id,
     type: 'general',
     content: '',
@@ -30,7 +30,17 @@ export const PostForm = () => {
 
   // Track changes to the create post form
   const handlePostChange = (e: any) => {
-    const { name, value } = 'target' in e ? e.target : { name: 'type', value: e};
+    let name, value;
+    if (typeof e === 'string') {
+      // Radiogroup updates
+      name = 'type';
+      value = e;
+    } else {
+      // This is from form inputs like Textarea
+      name = e.target.name;
+      value = e.target.value;
+    }
+
     setDraftedPost(prevState => ({
       ...prevState,
       [name]: value
@@ -40,11 +50,12 @@ export const PostForm = () => {
   // Submit user post to db, update cache, reset post form
   const handlePostSubmit = async (e) => {
     e.preventDefault();
-    let metadata: any;
+    const postWithMetadata = draftedPost;
+
     if (draftedPost.type == 'recentlyPlayed') {
-      metadata = recentlyPlayedSongs;
+      postWithMetadata.metadata = recentlyPlayedSongs;
     } else if (draftedPost.type == 'topItems') {
-      metadata = topItems;
+      postWithMetadata.metadata = topItems;
     }
 
     // Update db and cache
