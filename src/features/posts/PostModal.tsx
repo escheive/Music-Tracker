@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Box, Flex, Text, Textarea, Avatar } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box } from '@chakra-ui/react';
 import { useSupabaseCommentsInfinite, useSupabaseProfile } from "@api/supabase/fetch/fetch";
 import { useAuthContext } from "@context/AuthProvider";
 import { Post } from './Post';
+import { CommentForm } from './CommentForm';
+import { CommentList } from './CommentList';
 
 // Post Modal Component
 export const PostModal = ({ post, setSelectedPost, onClose }) => {
@@ -27,35 +29,22 @@ export const PostModal = ({ post, setSelectedPost, onClose }) => {
 
   return (
     <Modal isOpen={true} onClose={onClose} size='3xl'>
-      <ModalOverlay />
+      <ModalOverlay 
+        bg='blackAlpha.400'
+        backdropFilter='blur(2px)'
+      />
       <ModalContent>
         <ModalCloseButton />
         <ModalBody p={4}>
           <Post post={post} setSelectedPost={setSelectedPost} />
+          <CommentForm 
+            handleCommentSubmit={handleCommentSubmit} 
+            newComment={newComment} 
+            setNewComment={setNewComment}
+          />
+          
           <Box mt={4}>
-            <form onSubmit={handleCommentSubmit}>
-              <Textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Write a comment..."
-                mb={2}
-              />
-              <Button type="submit" colorScheme="blue">Post Comment</Button>
-            </form>
-          </Box>
-          <Box mt={4}>
-            {comments.map(comment => (
-              <Box key={comment.id} p={4} borderWidth="1px" borderRadius="lg" mb={4}>
-                <Flex alignItems="center">
-                  {/* <Avatar size="sm" name={comment.username} src={comment.avatar_url} mr={3} /> */}
-                  <Box>
-                    <Text fontWeight="bold">{comment.Profiles?.username}</Text>
-                    <Text fontSize="sm" color="gray.500">{new Date(comment.created_at).toLocaleString()}</Text>
-                  </Box>
-                </Flex>
-                <Text mt={2}>{comment.content}</Text>
-              </Box>
-            ))}
+          <CommentList comments={comments} />
           </Box>
         </ModalBody>
       </ModalContent>

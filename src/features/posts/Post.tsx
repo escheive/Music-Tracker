@@ -11,7 +11,9 @@ export const Post = ({ post, setSelectedPost }) => {
 
   const postedAt = new Date(post.created_at).toLocaleString();
 
-  const handleLike = async (postId, userLiked) => {
+  const handleLike = async (e, postId, userLiked) => {
+    console.log(e)
+    e.stopPropagation();
     if (!userLiked) {
       await likePost(profile?.id, postId)
     } else {
@@ -120,7 +122,7 @@ export const Post = ({ post, setSelectedPost }) => {
             color: `${profile?.theme}.600`,
             transform: 'scale(1.1)'
           }}
-          onClick={() => handleLike(post.id, post.user_liked)}
+          onClick={(e) => handleLike(e, post.id, post.user_liked)}
         >
           <TriangleUpIcon />
           <Text>{post?.like_count}</Text>

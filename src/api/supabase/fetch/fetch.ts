@@ -143,7 +143,7 @@ const fetchComments = async (key, postId) => {
     .from('Comments')
     .select('*, Profiles (username)')
     .eq('post_id', postId)
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: false })
     .range(pageIndex * PAGE_SIZE, (pageIndex + 1) * PAGE_SIZE - 1);
 
   if (error) throw error;
@@ -183,8 +183,10 @@ export const useSupabaseCommentsInfinite = (postId) => {
     mutate((currentData) => {
       const updatedComments = currentData ? [...currentData] : [];
       if (updatedComments.length > 0) {
-        updatedComments[updatedComments.length - 1].push(tempCacheComment);
+        // Prepend the new comment to the beginning of the first page
+        updatedComments[0].unshift(tempCacheComment);
       } else {
+        // If there are no comments, create the first page with the new comment
         updatedComments.push([tempCacheComment]);
       }
       return updatedComments;
