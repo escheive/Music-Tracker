@@ -11,7 +11,8 @@ import {
 import { useRecentlyPlayedSongs, useUsersTopItems } from '@api/spotify/spotify';
 import { useAuthContext } from '@context/AuthProvider';
 import { useState } from 'react';
-import { useSupabasePostsInfinite, useSupabaseProfile } from "@api/supabase/fetch/fetch";
+import { useSupabasePostsInfinite } from '@api/supabase/posts';
+import { useSupabaseProfile } from '@api/supabase/profile';
 
 
 export const PostForm = () => {

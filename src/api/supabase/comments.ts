@@ -1,10 +1,7 @@
-import supabase from "../supabase";
-import useSWR from "swr";
+import supabase from "./supabase";
 import useSWRInfinite from 'swr/infinite'
 
 const PAGE_SIZE = 10;
-
-export const supabaseFetcher = (url: string) => fetch(url, {method: 'GET'}).then(res => res.json());
 
 
 const fetchComments = async (key, postId) => {
@@ -77,17 +74,4 @@ export const useSupabaseCommentsInfinite = (postId) => {
     error,
     mutate,
   };
-};
-
-
-const fetchCommentsForPost = async (postId) => {
-  const { data: comments, mutate, error } = await supabase
-    .from('Comments')
-    .select('*, Profiles (username)')
-    .eq('post_id', postId)
-    .order('created_at', { ascending: true });
-
-  if (error) throw error;
-
-  return comments;
 };

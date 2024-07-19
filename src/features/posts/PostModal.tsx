@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box } from '@chakra-ui/react';
-import { useSupabaseCommentsInfinite, useSupabaseProfile } from "@api/supabase/fetch/fetch";
+import { useSupabaseProfile } from '@api/supabase/profile';
+import { useSupabaseCommentsInfinite } from '@api/supabase/comments';
 import { useAuthContext } from "@context/AuthProvider";
 import { Post } from './Post';
 import { CommentForm } from './CommentForm';

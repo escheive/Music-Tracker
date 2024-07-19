@@ -8,7 +8,7 @@ import { Box, Heading, Grid, GridItem, Link, Flex, Image, Text } from "@chakra-u
 import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@api/spotify/spotify";
 import { useAuthContext } from "@context/AuthProvider";
-import { useSupabaseProfile } from "@api/supabase/fetch/fetch";
+import { useSupabaseProfile } from "@api/supabase/profile";
 import spotifyCMYKLogo from '@assets/spotify/logos/Spotify_Logo_CMYK_Green.png';
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';

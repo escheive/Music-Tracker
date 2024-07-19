@@ -20,7 +20,7 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { useSpotifyUser } from '@api/spotify/spotify';
 import supabase from '@api/supabase/supabase';
 import { useAuthContext } from '@context/AuthProvider';
-import { useSupabaseProfile } from '@api/supabase/fetch/fetch';
+import { useSupabaseProfile } from '@api/supabase/profile';
 
 
 interface Props {

@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
-import { useSupabasePostsInfinite, useSupabaseProfile } from "@api/supabase/fetch/fetch";
+import { useSupabasePostsInfinite } from '@api/supabase/posts';
+import { useSupabaseProfile } from '@api/supabase/profile';
 import { useAuthContext } from "@context/AuthProvider";
 import { PostMetadata } from './PostMetadata';
 import { PostActions } from './PostActions';

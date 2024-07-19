@@ -1,10 +1,7 @@
 import { ChakraProvider, Spinner, extendTheme, theme as defaultTheme, useTheme, withDefaultColorScheme } from '@chakra-ui/react';
 import { AuthProvider, useAuthContext } from '@/context/AuthProvider';
-import { useSupabaseProfile } from '@api/supabase/fetch/fetch';
-import { useEffect, useState, useMemo } from 'react';
+import { useSupabaseProfile } from '@api/supabase/profile';
 import { Button, Text } from '@components/chakra-ui';
-import { modalAnatomy as modalParts } from '@chakra-ui/anatomy'
-import { createMultiStyleConfigHelpers } from '@chakra-ui/styled-system'
 
 type AppProviderProps = {
   children: React.ReactNode;

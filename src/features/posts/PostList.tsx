@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import { useSupabasePostsInfinite } from "@api/supabase/fetch/fetch";
+import { useSupabasePostsInfinite } from '@api/supabase/posts';
 import { useAuthContext } from "@context/AuthProvider";
 import { useInView } from 'react-intersection-observer';
 import { Post } from './Post';

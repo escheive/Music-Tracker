@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Flex, Text, Avatar } from '@chakra-ui/react';
 import { useInView } from 'react-intersection-observer';
-import { useSupabaseCommentsInfinite } from '@api/supabase/fetch/fetch';
+import { useSupabaseCommentsInfinite } from '@api/supabase/comments';
 
 export const CommentList = ({ post }) => {
   const { data, size, setSize, error: commentsError } = useSupabaseCommentsInfinite(post.id);
