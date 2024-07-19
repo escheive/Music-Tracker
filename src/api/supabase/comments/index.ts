@@ -1,4 +1,4 @@
-import supabase from "./supabase";
+import supabase from "../supabase";
 import useSWRInfinite from 'swr/infinite'
 
 const PAGE_SIZE = 10;
