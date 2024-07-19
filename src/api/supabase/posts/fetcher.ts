@@ -1,11 +1,12 @@
 import supabase from '@api/supabase/supabase';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 10; // Limit 10 posts at a time
 
+// Function to handle post fetching
 export const fetcher = async (key, userId) => {
   const pageIndex = parseInt(key.split('=')[2], 10);
   
-  // Fetch posts with like counts
+  // Fetch posts with like counts and comment counts
   const { data: posts, error: postsError } = await supabase
     .from('posts_with_likes_and_comments')
     .select('*')
@@ -14,8 +15,8 @@ export const fetcher = async (key, userId) => {
 
   if (postsError) throw postsError;
 
-  // Fetch user likes for these posts
-  const postIds = posts.map(post => post.id);
+  const postIds = posts.map(post => post.id); // Grab all ids from fetched posts
+  // Fetch this users likes for post ids
   const { data: likes, error: likesError } = await supabase
     .from('Likes')
     .select('*')
@@ -24,7 +25,7 @@ export const fetcher = async (key, userId) => {
 
   if (likesError) throw likesError;
 
-  // Merge the results
+  // Add if this user liked a post to post data
   const postsWithLikes = posts.map(post => ({
     ...post,
     user_liked: likes.some(like => like.post_id === post.id),

@@ -1,8 +1,13 @@
 import supabase from "../supabase";
 import useSWR from "swr";
 
+// Hook for users profile
 export const useSupabaseProfile = (userId: any) => {
+
+  // UseSWR hook to cache results and only fetch when valid session
   const { data, mutate, isLoading, error } = useSWR(userId ? 'api/supabase/profile' : null, async () => {
+
+    // Fetch profile from db
     const { data, error } = await supabase
       .from('Profiles')
       .select()
@@ -15,12 +20,13 @@ export const useSupabaseProfile = (userId: any) => {
   }, {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
-    refreshInterval: 0, // Disable revalidation
-    dedupingInterval: 60000
+    refreshInterval: 0, // Disable auto revalidation for profiles
+    dedupingInterval: 60000 // Profiles only can be refetched once per min
   });
 
-  // Function to manually update the profile in the cache
+  // Function to update profile
   const updateProfile = async (newProfile) => {
+    // Update profile in db
     await supabase
       .from('Profiles')
       .update(newProfile)
@@ -30,7 +36,9 @@ export const useSupabaseProfile = (userId: any) => {
     mutate({ ...data, ...newProfile }, false);
   };
 
+  // Creates a new user profile based on auth id
   const createProfile = async (userId, profile) => {
+    // Insert to db
     const { data, error } = await supabase
       .from('Profiles')
       .insert([

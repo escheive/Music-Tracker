@@ -6,17 +6,20 @@ import { getKey } from './swrKey';
 import { simplifySongData, simplifyTopItems } from "./utils";
 
 
+// Hook for fetching, updating posts
 export const useSupabasePostsInfinite = (userId) => {
   const { data, mutate, size, setSize, error } = useSWRInfinite((index) => getKey(index, userId), (key) => fetcher(key, userId), {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
     refreshInterval: 360000, // Revalidate automatically every hour
-    dedupingInterval: 60000,
+    dedupingInterval: 60000, // Limit updates from api 1/min
   });
 
+  // Function to create new post
   const createPost = async (post: any, username: any) => {
-    let { user_id, type, content, metadata } = post;
+    let { user_id, type, content, metadata } = post; // Destructure new post
 
+    // Simplify any metadata user wants to post to reduce size
     let simplifiedMetadata;
     if (type === 'recentlyPlayed') {
       simplifiedMetadata = simplifySongData(metadata);
@@ -24,13 +27,14 @@ export const useSupabasePostsInfinite = (userId) => {
       simplifiedMetadata = simplifyTopItems(metadata);
     }
 
+    // Add db columns to post for cache update
     const tempCachePost = {
-      id: Date.now(), // Temporary ID for the new post
+      id: Date.now(),
       user_id,
       type,
       content,
       metadata: simplifiedMetadata,
-      created_at: new Date().toISOString(), 
+      created_at: new Date().toISOString(),
       username: username,
       user_liked: false,
       like_count: 0,
@@ -40,14 +44,17 @@ export const useSupabasePostsInfinite = (userId) => {
     // Optimistically update the local cache
     mutate((currentData) => {
       const updatedPosts = currentData ? [...currentData] : [];
+      // If posts, add at beginning so its at top of feed
       if (updatedPosts.length > 0) {
         updatedPosts[0].unshift(tempCachePost);
       } else {
+        // If no posts, push
         updatedPosts.push([tempCachePost]);
       }
       return updatedPosts;
     }, false);
   
+    // Insert post to db
     const { data, error } = await supabase
       .from('Posts')
       .insert([
@@ -68,7 +75,9 @@ export const useSupabasePostsInfinite = (userId) => {
     return data[0];
   }
 
+  // Handle user liking post
   const likePost = async (userId, postId) => {
+    // Insert like to db
     await supabase
       .from('Likes')
       .insert([{
@@ -78,7 +87,7 @@ export const useSupabasePostsInfinite = (userId) => {
 
     // Update the local cache
     mutate((currentData) => {
-      // Create a new array with updated posts data
+      // Create a new array with updated liked post
       const newData = currentData.map((page) =>
         page.map((post) =>
           post.id === postId
@@ -95,7 +104,9 @@ export const useSupabasePostsInfinite = (userId) => {
     }, false);
   };
 
+  // Handle user unliking a post
   const unlikePost = async (userId, postId) => {
+    // Remove like from db
     await supabase
       .from('Likes')
       .delete()
@@ -104,7 +115,7 @@ export const useSupabasePostsInfinite = (userId) => {
 
     // Update the local cache
     mutate((currentData) => {
-      // Create a new array with updated posts data
+      // Create a new array with post like data updated
       const newData = currentData.map((page) =>
         page.map((post) =>
           post.id === postId
