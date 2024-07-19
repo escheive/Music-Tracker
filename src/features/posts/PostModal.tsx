@@ -9,18 +9,17 @@ import { CommentList } from './CommentList';
 // Post Modal Component
 export const PostModal = ({ post, setSelectedPost, onClose }) => {
   const { session } = useAuthContext();
+  const { addComment } = useSupabaseCommentsInfinite(post.id);
   const { data: profile } = useSupabaseProfile(session?.user.id);
-  // const { getCommentsForPost } = useSupabasePostsInfinite(session?.user.id);
-  const { data, size, setSize, addComment, mutate } = useSupabaseCommentsInfinite(post.id);
-  // Combine all pages of data into one array
-  const comments = data ? data.flat() : [];
-  // const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
 
+  // Submit users comment to db, update cache
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
+
     const userId = profile?.id;
     const username = profile?.username;
+
     if (userId && newComment.trim()) {
       await addComment(userId, username, post.id, newComment);
       setNewComment('');
@@ -37,6 +36,7 @@ export const PostModal = ({ post, setSelectedPost, onClose }) => {
         <ModalCloseButton />
         <ModalBody p={4}>
           <Post post={post} setSelectedPost={setSelectedPost} />
+
           <CommentForm 
             handleCommentSubmit={handleCommentSubmit} 
             newComment={newComment} 
@@ -44,8 +44,11 @@ export const PostModal = ({ post, setSelectedPost, onClose }) => {
           />
           
           <Box mt={4}>
-          <CommentList comments={comments} />
+            <CommentList 
+              post={post} 
+            />
           </Box>
+
         </ModalBody>
       </ModalContent>
     </Modal>
