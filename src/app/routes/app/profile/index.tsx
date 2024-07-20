@@ -4,7 +4,7 @@ import LineChart from "@/components/chart/LineChart";
 import { TopItemsList } from "@/components/list/TopItemsList";
 import { RecentlyPlayedList } from "@/components/list/RecentlyPlayedList";
 
-import { Box, Heading, Grid, GridItem, Link, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Heading, Grid, GridItem, Link, Flex, Image, Text, Divider } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useRecentlyPlayedSongs, useSpotifyUser, useUsersTopItems } from "@api/spotify/spotify";
 import { useAuthContext } from "@context/AuthProvider";
@@ -85,33 +85,38 @@ export const ProfileRoute = () => {
           data={popularityNumbers} 
         />
 
-        <Link onClick={handleShowRecentlyPlayed}>{showRecentlyPlayed ? 'Hide' : 'Show'} Recently Played</Link>
-        
-        {showRecentlyPlayed ? (
-          <>
-            <Heading>Recently Played Tracks</Heading>
-            <Image 
-              src={spotifyLogo} 
-              objectFit='contain'
-              height='30px'
-              fallbackSrc='https://via.placeholder.com/150' 
-            />
-            <RecentlyPlayedList recentlyPlayedSongs={recentlyPlayedSongs} />
-          </>
-        ) : null}
-
-        <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
-
-          {showTopItems ? (
+        <Flex py={4} alignItems='center' justifyContent='center' flexDirection='column'>
+          {showRecentlyPlayed ? (
             <>
-              <Heading>Top Artists And Tracks</Heading>
+              <Heading>Recently Played Tracks</Heading>
+              <Link onClick={handleShowRecentlyPlayed}>Hide Recently Played</Link>
               <Image 
                 src={spotifyLogo} 
                 objectFit='contain'
                 height='30px'
                 fallbackSrc='https://via.placeholder.com/150' 
               />
-              <Grid templateColumns='repeat(2, 1fr)' gap={6} p={6} w='100%'>
+              <Divider width='80%' my={4} />
+              <RecentlyPlayedList recentlyPlayedSongs={recentlyPlayedSongs} />
+            </>
+          ) : null}
+
+          <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Recently Played</Link>
+        </Flex>
+
+        <Flex py={4} alignItems='center' justifyContent='center' flexDirection='column'>
+          {showTopItems ? (
+            <>
+              <Heading>Top Artists And Tracks</Heading>
+              <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
+              <Image 
+                src={spotifyLogo} 
+                objectFit='contain'
+                height='30px'
+                fallbackSrc='https://via.placeholder.com/150' 
+              />
+              <Divider width='80%' mt={4} />
+              <Grid templateColumns='repeat(2, 1fr)' gap={6} w='100%'>
                 <GridItem w='100%' noOfLines={1}>
                   <TopItemsList itemType='Artists' items={topItems?.artists?.items} />
                 </GridItem>
@@ -121,6 +126,8 @@ export const ProfileRoute = () => {
               </Grid>
             </>
           ) : null}
+          <Link onClick={handleShowTopItems}>{showTopItems ? 'Hide' : 'Show'} Top Items</Link>
+        </Flex>
 
       </Box>
     </>
