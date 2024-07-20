@@ -5,10 +5,13 @@ import { fetcher } from './fetcher';
 import { getKey } from './swrKey';
 import { simplifySongData, simplifyTopItems } from "./utils";
 
+const METADATA_DAILY_LIMIT = 1;
+const GENERAL_DAILY_LIMIT = 20;
+
 
 // Hook for fetching, updating posts
 export const useSupabasePostsInfinite = (userId) => {
-  const { data, mutate, size, setSize, error } = useSWRInfinite((index) => getKey(index, userId), (key) => fetcher(key, userId), {
+  const { data, mutate, size, setSize, error, isValidating } = useSWRInfinite((index) => getKey(index, userId), (key) => fetcher(key, userId), {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
     refreshInterval: 360000, // Revalidate automatically every hour
@@ -18,23 +21,27 @@ export const useSupabasePostsInfinite = (userId) => {
   // Function to create new post
   const createPost = async (post: any, username: any) => {
     let { user_id, type, content, metadata } = post; // Destructure new post
-    console.log(post)
 
     // Check if the user has already posted this type today
     const { data: existingPosts, error: existingPostsError } = await supabase
-    .from('Posts')
-    .select('*')
-    .eq('user_id', user_id)
-    .eq('type', type)
-    .gte('created_at', new Date().toISOString().split('T')[0]) // Check from the start of today
-    .lte('created_at', new Date().toISOString()); // Until now
+      .from('Posts')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('type', type)
+      .gte('created_at', new Date().toISOString().split('T')[0]) // Check from the start of today
+      .lte('created_at', new Date().toISOString()); // Until now
 
     if (existingPostsError) {
       console.error('Error checking existing posts:', existingPostsError);
       return null;
     }
 
-    if (existingPosts.length > 0) {
+    const limit =
+      type === 'recentlyPlayed' || type === 'topItems' 
+      ? METADATA_DAILY_LIMIT 
+      : GENERAL_DAILY_LIMIT
+
+    if (existingPosts.length > limit) {
       console.warn('User has already posted this type today.');
       return { error: 'You can only post your top items or recently played songs once per day.' };
     }
@@ -63,7 +70,7 @@ export const useSupabasePostsInfinite = (userId) => {
 
     // Optimistically update the local cache
     mutate((currentData) => {
-      const updatedPosts = currentData ? [...currentData] : [];
+      const updatedPosts = currentData ? currentData : [];
       // If posts, add at beginning so its at top of feed
       if (updatedPosts.length > 0) {
         updatedPosts[0].unshift(tempCachePost);
@@ -75,7 +82,7 @@ export const useSupabasePostsInfinite = (userId) => {
     }, false);
   
     // Insert post to db
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('Posts')
       .insert([
         { 
@@ -92,7 +99,7 @@ export const useSupabasePostsInfinite = (userId) => {
       return null;
     }
   
-    return data[0];
+    return tempCachePost;
   }
 
   // Handle user liking post
@@ -157,6 +164,7 @@ export const useSupabasePostsInfinite = (userId) => {
     size,
     setSize,
     error,
+    isValidating,
     likePost,
     unlikePost,
     createPost

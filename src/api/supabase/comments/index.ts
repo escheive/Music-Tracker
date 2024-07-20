@@ -70,7 +70,7 @@ export const useSupabaseCommentsInfinite = (postId) => {
       .from('Comments')
       .insert([ newComment ]);
 
-    return newComment;
+    return tempCacheComment;
   };
 
   return {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text, Flex, Spinner } from '@chakra-ui/react';
 import { useSupabasePostsInfinite } from '@api/supabase/posts';
 import { useAuthContext } from "@context/AuthProvider";
 import { useInView } from 'react-intersection-observer';
@@ -10,7 +10,7 @@ import { PostModal } from './PostModal';
 export const PostList = () => {
   const { session } = useAuthContext();
   const [selectedPost, setSelectedPost] = useState(null);
-  const { data: posts, setSize, size, error: postsError } = useSupabasePostsInfinite(session?.user.id);
+  const { data: posts, setSize, size, error: postsError, isValidating: postsValidating } = useSupabasePostsInfinite(session?.user.id);
   const { ref, inView } = useInView();
   const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded
   
@@ -20,7 +20,7 @@ export const PostList = () => {
   // Load more posts when the last element comes into view
   useEffect(() => {
     if (inView && hasMore && posts && posts.length > 0) {
-      setSize(size + 1);
+      setSize(size + 1)
     }
   }, [inView]);
 
@@ -46,7 +46,15 @@ export const PostList = () => {
           />
         )
       })}
+
       <div ref={ref} />
+
+      {postsValidating && (
+        <Flex justifyContent="center" alignItems="center" mt={4}>
+          <Spinner size="xl" />
+        </Flex>
+      )}
+
       {selectedPost && (
         <PostModal post={selectedPost} setSelectedPost={setSelectedPost} onClose={() => setSelectedPost(null)} />
       )}
