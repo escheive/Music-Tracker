@@ -34,5 +34,5 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     globals: true
   },
-  base: '/music-tracker',
+  base: '/',
 })

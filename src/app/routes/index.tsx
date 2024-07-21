@@ -1,12 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
-
-import { ProtectedRoute } from '@/lib/auth';
 import { AppRoot } from './app/root';
 import NavbarWrapper from '@/components/nav/NavbarWrapper';
 import { useAuthContext } from '@context/AuthProvider';
+import { Navigate, useLocation } from "react-router-dom";
+import { useSpotifyUser } from "@api/spotify/spotify";
+import { CreateProfileRoute } from './app/auth/createProfile';
 
 export const createRouter = () => {
   const { session } = useAuthContext();
+  const { user } = useSpotifyUser();
 
   return createBrowserRouter([
     {
@@ -16,7 +18,7 @@ export const createRouter = () => {
         {
           path: '/',
           lazy: async () => {
-            if (session) {
+            if (session && user) {
               const { DashboardRoute } = await import('./dashboard');
               return { Component: DashboardRoute };
             } else {
@@ -48,6 +50,13 @@ export const createRouter = () => {
           ),
           children: [
             {
+              path: 'create-profile',
+              lazy: async () => {
+                const { CreateProfileRoute } = await import('./app/auth/createProfile');
+                return { Component: CreateProfileRoute };
+              },
+            },
+            {
               path: 'profile',
               lazy: async () => {
                 const { ProfileRoute } = await import('./app/profile');
@@ -68,6 +77,20 @@ export const createRouter = () => {
                 return { Component: ProfileMusicRoute };
               },
             },
+            {
+              path: 'find-music',
+              lazy: async () => {
+                const { FindMusicRoute } = await import('./app/find/music');
+                return { Component: FindMusicRoute };
+              },
+            },
+            {
+              path: 'settings',
+              lazy: async () => {
+                const { SettingsRoute } = await import('./app/settings');
+                return { Component: SettingsRoute };
+              },
+            },
           ]
         },
       ]
@@ -81,3 +104,20 @@ export const createRouter = () => {
     },
   ]);
 }
+
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = useSpotifyUser();
+  const location = useLocation();
+
+  if (!user) {
+    return (
+      <Navigate
+        to={`/auth/login?redirectTo=${encodeURIComponent(location.pathname)}`}
+        replace
+      />
+    );
+  }
+
+  return children;
+};

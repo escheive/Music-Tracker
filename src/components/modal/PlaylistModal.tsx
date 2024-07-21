@@ -19,6 +19,7 @@ import {
 import { useSpotifyPlaylistsTracks } from '@api/spotify/spotify';
 import React, { useEffect, useState } from 'react';
 import { parseISO, format } from 'date-fns';
+import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
 interface PlaylistTracksProps {
   setSelectedTrack: (track: Record<string, any> | null) => void;
@@ -35,7 +36,6 @@ interface PlaylistTracksProps {
 
 export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, setSelectedTrack }) => {
   if (!playlist) return
-  console.log(setSelectedTrack)
 
   const [offset, setOffset] = useState(0);
   const [allTracks, setAllTracks] = useState<object[]>([]);
@@ -69,73 +69,108 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
 
   return (
     <>
-      <ModalHeader textAlign='center'>{playlist?.name}</ModalHeader>
+      <ModalHeader textAlign='center' fontSize={['16', '22', '26']}>{playlist?.name}</ModalHeader>
+      <Image 
+        src={spotifyLogo} 
+        objectFit='contain'
+        height='30px'
+        fallbackSrc='https://via.placeholder.com/150' 
+      />
       <ModalCloseButton />
-      <ModalBody onScroll={(e) => handleOnScroll(e)}>
+      <ModalBody onScroll={(e) => handleOnScroll(e)} px={0}>
           <TableContainer whiteSpace='wrap' height='100vh' overflowY='auto'>
-          <Table variant='striped' colorScheme='alternatePurple'>
+          <Table variant='striped' layout='auto'>
             <Thead>
               <Tr>
-                <Th fontSize={{base: '16', md: '18'}}>Title</Th>
-                <Th fontSize={{base: '16', md: '18'}}>Album</Th>
-                <Th fontSize={{base: '16', md: '18'}}>Added</Th>
-                <Th fontSize={{base: '16', md: '18'}}>Duration</Th>
+                <Th>Title</Th>
+                <Th>Album</Th>
+                <Th>Added</Th>
+                <Th>Duration</Th>
               </Tr>
             </Thead>
-            {allTracks.length > 0 ? (
             <Tbody>
-              {allTracks?.map((item: Record<string, any>, i: number) => {
-                const songDuration = formatDuration(item?.track.duration_ms)
-                const parsedDate = parseISO(item?.added_at);
-                const formattedDate = format(parsedDate, 'MMMM d, yyyy');
+            {allTracks.length > 0 ? (
+              <>
+                {allTracks?.map((item: Record<string, any>, i: number) => {
+                  const songDuration = formatDuration(item?.track.duration_ms)
+                  const parsedDate = parseISO(item?.added_at);
+                  const formattedDate = format(parsedDate, 'MMMM d, yyyy');
 
-                return (
-                  <Tr key={`recently played ${item.track.name, i}`} height='auto' w='100%'>
-                    <Td>
-                      <Link href={item.track.external_urls?.spotify} target='_blank'>
-                        <Flex alignItems="center" flexDirection="row">
-                          <Image 
-                            src={item?.track.album.images[0]?.url} 
-                            objectFit='contain'
-                            boxSize={{ sm: '26px', base: '36px', md: '48px'}}
-                            minWidth='26px'
-                            fallbackSrc='https://via.placeholder.com/150' 
-                            mr={3} // Add some margin to the right of the image
-                          />
-                          <Box>
-                            <Text fontWeight="bold">{item.track.name}</Text>
-                            <Text>{item.track.artists[0]?.name}</Text>
-                          </Box>
-                        </Flex>
-                      </Link>
-                    </Td>
-                    <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>
-                      <Link href={item.track.album.external_urls?.spotify} target='_blank'>
-                        {item?.track.album.name}
-                      </Link>
-                    </Td>
-                    <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>
-                      {formattedDate}
-                    </Td>
-                    <Td fontSize={{ sm: '12px', base: '16px', md: '18px'}}>
-                      {songDuration}
-                    </Td>   
-                  </Tr>
-                )
-              })}
-            </Tbody>
+                  return (
+                    <Tr key={`recently played ${item.track.name, i}`} height='auto' w='100%'>
+                      <Td>
+                        <Link href={item.track.external_urls?.spotify} target='_blank'>
+                          <Flex alignItems="center" flexDirection="row">
+                            <Image 
+                              src={item?.track.album.images[0]?.url} 
+                              objectFit='contain'
+                              height='60px'
+                              fallbackSrc='https://via.placeholder.com/150' 
+                              mr={3}
+                            />
+                            <Box>
+                              <Text fontWeight='bold'>{item.track.name}</Text>
+                              <Text>{item.track.artists[0]?.name}</Text>
+                            </Box>
+                          </Flex>
+                        </Link>
+                      </Td>
+                      <Td>
+                        <Link href={item.track.album.external_urls?.spotify} target='_blank'>
+                          {item?.track.album.name}
+                        </Link>
+                      </Td>
+                      <Td>
+                        {formattedDate}
+                      </Td>
+                      <Td>
+                        {songDuration}
+                      </Td>   
+                    </Tr>
+                  )
+                })}
+              </>
             ) : (
               <>
                 {Array.from({ length: totalTracks}).map((_: any, index: number) => (
-                    <Skeleton 
-                      key={`skeleton ${index}`}
-                      isLoaded={!tracksLoaded} 
-                      height='20px' 
-                      mb='1rem'
-                    />
+                  <Tr key={`skeleton ${index}`}>
+                    <Td>
+                      <Skeleton 
+                        key={`skeleton ${index}`}
+                        isLoaded={!tracksLoaded} 
+                        height='20px' 
+                        mb='1rem'
+                      />
+                    </Td>
+                    <Td>
+                      <Skeleton 
+                        key={`skeleton ${index}`}
+                        isLoaded={!tracksLoaded} 
+                        height='20px' 
+                        mb='1rem'
+                      />
+                    </Td>
+                    <Td>
+                      <Skeleton 
+                        key={`skeleton ${index}`}
+                        isLoaded={!tracksLoaded} 
+                        height='20px' 
+                        mb='1rem'
+                      />
+                    </Td>
+                    <Td>
+                      <Skeleton 
+                        key={`skeleton ${index}`}
+                        isLoaded={!tracksLoaded} 
+                        height='20px' 
+                        mb='1rem'
+                      />
+                    </Td>
+                  </Tr>
                 ))}
               </>
             )}
+            </Tbody>
           </Table>
         </TableContainer>
       </ModalBody>
