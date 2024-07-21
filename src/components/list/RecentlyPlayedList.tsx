@@ -8,7 +8,7 @@ import {
   Td,
   TableContainer,
   Image,
-  Link
+  Link,
 } from '@chakra-ui/react';
 
 interface RecentlyPlayedListProps {
@@ -20,7 +20,7 @@ export const RecentlyPlayedList: React.FC<RecentlyPlayedListProps> = ({ recently
   return (
     <>
       <TableContainer whiteSpace='wrap' height='100vh' overflowY='auto'>
-        <Table variant='striped' colorScheme='alternatePurple'>
+        <Table variant='striped'>
           <Thead>
             <Tr>
               <Th fontSize={{base: '16', md: '18'}}>Time</Th>

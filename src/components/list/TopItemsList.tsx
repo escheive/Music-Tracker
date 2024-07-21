@@ -10,7 +10,7 @@ import {
   TableCaption,
   TableContainer,
   Image,
-  Link
+  Link,
 } from '@chakra-ui/react';
 
 interface TopItemsProps {
@@ -42,7 +42,7 @@ export const TopItemsList = ({ itemType, items }: TopItemsProps) => {
   return (
     <>
       <TableContainer whiteSpace='wrap' height='100vh' overflowY='auto'>
-        <Table variant='striped' colorScheme='alternatePurple'>
+        <Table variant='striped'>
           <TableCaption placement='top'>Top {itemType}</TableCaption>
           <Thead>
             <Tr>

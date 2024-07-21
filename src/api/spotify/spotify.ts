@@ -17,7 +17,12 @@ export const useRecentlyPlayedSongs = () => {
   const trackIdsString = trackIds?.join(',');
 
   const { data: audioFeatures, isLoading: audioFeaturesLoading, error: audioFeaturesError } = useSWR(() => trackIdsString ? `${API_URL}/audio-features?ids=$` + trackIdsString : [],
-    fetchWithToken
+    fetchWithToken,
+    {
+      revalidateOnFocus: false, // Disable revalidation on focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnection
+      refreshInterval: 360000, // Revalidate automatically every hour
+    }
   )
 
   if (!recentlyPlayedSongsLoading && !audioFeaturesLoading) {
@@ -38,6 +43,11 @@ export const useSpotifyUser = () => {
   const { data, mutate, error } = useSWR(
     `${API_URL}/me`,
     fetchWithToken,
+    {
+      revalidateOnFocus: false, // Disable revalidation on focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnection
+      refreshInterval: 360000, // Revalidate automatically every hour
+    }
   )
 
   return { 
@@ -51,6 +61,11 @@ export const useSpotifyUsersPlaylists = () => {
   const { data, isLoading, mutate, error } = useSWR(
     `${API_URL}/me/playlists?limit=50`,
     fetchWithToken,
+    {
+      revalidateOnFocus: false, // Disable revalidation on focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnection
+      refreshInterval: 360000, // Revalidate automatically every hour
+    }
   )
 
   return { 
@@ -65,6 +80,11 @@ export const useSpotifyPlaylistsTracks = (playlistId: string, offset: number = 0
   const { data, isLoading, mutate, error } = useSWR(
     playlistId ? `${API_URL}/playlists/${playlistId}/tracks?offset=${offset}` : null,
     fetchWithToken,
+    {
+      revalidateOnFocus: false, // Disable revalidation on focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnection
+      refreshInterval: 360000, // Revalidate automatically every hour
+    }
   )
 
   return { 
@@ -78,11 +98,21 @@ export const useSpotifyPlaylistsTracks = (playlistId: string, offset: number = 0
 export const useUsersTopItems = () => {
   const { data: artists, isLoading: topArtistsLoading, error: topArtistsError } = useSWR(
     `${API_URL}/me/top/artists?limit=50`,
-    fetchWithToken
+    fetchWithToken,
+    {
+      revalidateOnFocus: false, // Disable revalidation on focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnection
+      refreshInterval: 360000, // Revalidate automatically every hour
+    }
   )
   const { data: tracks, isLoading: topTracksLoading, error: topTracksError } = useSWR(
     `${API_URL}/me/top/tracks?limit=50`,
-    fetchWithToken
+    fetchWithToken,
+    {
+      revalidateOnFocus: false, // Disable revalidation on focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnection
+      refreshInterval: 360000, // Revalidate automatically every hour
+    }
   )
 
   return { 
@@ -99,6 +129,11 @@ export const useSpotifyAudioFeatures = (trackIds: string[]) => {
   const { data, mutate, isLoading, error } = useSWR(
     trackIds.length ? `${API_URL}/audio-features?ids=${trackIdsString}` : null,
     fetchWithToken,
+    {
+      revalidateOnFocus: false, // Disable revalidation on focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnection
+      refreshInterval: 360000, // Revalidate automatically every hour
+    }
   )
 
   return { 
@@ -108,3 +143,23 @@ export const useSpotifyAudioFeatures = (trackIds: string[]) => {
     audioFeaturesError: error
   };
 }
+
+export const useSpotifySearch = (query: Record<string, any>) => {
+  const { term, type } = query;
+  const { data, error, isLoading, mutate } = useSWR(
+    term ? `${API_URL}/search?q=${encodeURIComponent(term)}&type=${type}` : null,
+    fetchWithToken,
+    {
+      revalidateOnFocus: false, // Disable revalidation on focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnection
+      refreshInterval: 0, // Disable revalidation
+    }
+  );
+
+  return {
+    data,
+    error,
+    isLoading,
+    mutate
+  };
+};

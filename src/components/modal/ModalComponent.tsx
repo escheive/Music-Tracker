@@ -29,24 +29,22 @@ export const ModalComponent = () => {
       onClose={handleClose} 
       isCentered 
       scrollBehavior='inside' 
-      size='2xl'
+      size='3xl'
     >
       <ModalOverlay 
-        bg='none'
-        backdropFilter='auto'
         backdropInvert='80%'
         backdropBlur='2px'
-        />
-      <ModalContent bg='alternatePurple.100'>
+      />
+      <ModalContent>
 
         {selectedTrack ? (
           <TrackModal selectedTrack={selectedTrack} />
         ) : (
-          <PlaylistTracksModal setSelectedTrack={setSelectedTrack} playlist={selectedPlaylist} />
+          <PlaylistTracksModal playlist={selectedPlaylist} />
         )}
 
         <ModalFooter>
-          <Button colorScheme='gray' mr={3} onClick={handleClose}>
+          <Button mr={3} onClick={handleClose}>
             Close
           </Button>
         </ModalFooter>

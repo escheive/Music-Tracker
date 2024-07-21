@@ -7,6 +7,7 @@ import { useSpotifyUser } from "@api/spotify/spotify";
 
 export const createRouter = () => {
   const { session } = useAuthContext();
+  const { user } = useSpotifyUser();
 
   return createBrowserRouter([
     {
@@ -16,7 +17,7 @@ export const createRouter = () => {
         {
           path: '/',
           lazy: async () => {
-            if (session) {
+            if (session && user) {
               const { DashboardRoute } = await import('./dashboard');
               return { Component: DashboardRoute };
             } else {
@@ -48,6 +49,13 @@ export const createRouter = () => {
           ),
           children: [
             {
+              path: 'create-profile',
+              lazy: async () => {
+                const { CreateProfileRoute } = await import('./app/auth/createProfile');
+                return { Component: CreateProfileRoute };
+              },
+            },
+            {
               path: 'profile',
               lazy: async () => {
                 const { ProfileRoute } = await import('./app/profile');
@@ -66,6 +74,20 @@ export const createRouter = () => {
               lazy: async () => {
                 const { ProfileMusicRoute } = await import('./app/profile/music');
                 return { Component: ProfileMusicRoute };
+              },
+            },
+            {
+              path: 'find-music',
+              lazy: async () => {
+                const { FindMusicRoute } = await import('./app/find/music');
+                return { Component: FindMusicRoute };
+              },
+            },
+            {
+              path: 'settings',
+              lazy: async () => {
+                const { SettingsRoute } = await import('./app/settings');
+                return { Component: SettingsRoute };
               },
             },
           ]
