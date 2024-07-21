@@ -14,7 +14,8 @@ import {
   AlertIcon,
   Alert,
   SimpleGrid,
-  useBreakpointValue
+  useBreakpointValue,
+  Collapse
 } from '@chakra-ui/react';
 import { useSpotifySearch } from '@api/spotify/spotify';
 
@@ -33,6 +34,9 @@ export const FindMusicRoute = () => {
     term: '',
     type: 'album,artist,track'
   });
+  const [expandAlbums, setExpandAlbums] = useState(false);
+  const [expandArtists, setExpandArtists] = useState(false);
+  const [expandTracks, setExpandTracks] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -189,7 +193,7 @@ export const FindMusicRoute = () => {
             </Select>
           </FormControl>
         </Stack>
-        <Button mt={4} type="submit" colorScheme="teal">Search</Button>
+        <Button mt={4} type="submit">Search</Button>
       </form>
 
       {isLoading && <Spinner size="xl" mt={4} />}
@@ -201,7 +205,60 @@ export const FindMusicRoute = () => {
         </Alert>
       )}
 
-      {data && (
+{data && (
+        <Box mt={4}>
+          {type.includes('album') && data.albums?.items.length > 0 && (
+            <>
+              <Heading size="md" mb={2}>Albums</Heading>
+              <Button onClick={() => setExpandAlbums(!expandAlbums)} mb={4}>
+                {expandAlbums ? 'Minimize Albums' : 'Expand Albums'}
+              </Button>
+              <Collapse in={expandAlbums}>
+                <SimpleGrid columns={breakpointColumns} spacing={4} mb={4}>
+                  {renderItems(data.albums.items, 'album')}
+                </SimpleGrid>
+              </Collapse>
+              {expandAlbums && <Button onClick={() => setExpandAlbums(!expandAlbums)} mb={4}>
+                {expandAlbums ? 'Minimize Albums' : 'Expand Albums'}
+              </Button>}
+            </>
+          )}
+          {type.includes('artist') && data.artists?.items.length > 0 && (
+            <>
+              <Heading size="md" mb={2}>Artists</Heading>
+              <Button onClick={() => setExpandArtists(!expandArtists)} mb={4}>
+                {expandArtists ? 'Minimize Artists' : 'Expand Artists'}
+              </Button>
+              <Collapse in={expandArtists}>
+                <SimpleGrid columns={breakpointColumns} spacing={4} mb={4}>
+                  {renderItems(data.artists.items, 'artist')}
+                </SimpleGrid>
+              </Collapse>
+              {expandArtists && <Button onClick={() => setExpandArtists(!expandArtists)} mb={4}>
+                {expandArtists ? 'Minimize Artists' : 'Expand Artists'}
+              </Button>}
+            </>
+          )}
+          {type.includes('track') && data.tracks?.items.length > 0 && (
+            <>
+              <Heading size="md" mb={2}>Tracks</Heading>
+              <Button onClick={() => setExpandTracks(!expandTracks)} mb={4}>
+                {expandTracks ? 'Minimize Tracks' : 'Expand Tracks'}
+              </Button>
+              <Collapse in={expandTracks}>
+                <SimpleGrid columns={breakpointColumns} spacing={4} mb={4}>
+                  {renderItems(data.tracks.items, 'track')}
+                </SimpleGrid>
+              </Collapse>
+              {expandTracks && <Button onClick={() => setExpandTracks(!expandTracks)} mb={4}>
+                {expandTracks ? 'Minimize Tracks' : 'Expand Tracks'}
+              </Button>}
+            </>
+          )}
+        </Box>
+      )}
+
+      {/* {data && (
         <Box mt={4}>
           {type.includes('album') && data.albums?.items.length > 0 && (
             <>
@@ -228,7 +285,7 @@ export const FindMusicRoute = () => {
             </>
           )}
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };
