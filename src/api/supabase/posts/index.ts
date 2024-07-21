@@ -10,7 +10,7 @@ const GENERAL_DAILY_LIMIT = 20;
 
 
 // Hook for fetching, updating posts
-export const useSupabasePostsInfinite = (userId) => {
+export const useSupabasePostsInfinite = (userId: string) => {
   const { data, mutate, size, setSize, error, isValidating } = useSWRInfinite((index) => getKey(index, userId), (key) => fetcher(key, userId), {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
@@ -103,7 +103,7 @@ export const useSupabasePostsInfinite = (userId) => {
   }
 
   // Handle user liking post
-  const likePost = async (userId, postId) => {
+  const likePost = async (userId: string, postId: string) => {
     // Insert like to db
     await supabase
       .from('Likes')
@@ -115,7 +115,7 @@ export const useSupabasePostsInfinite = (userId) => {
     // Update the local cache
     mutate((currentData) => {
       // Create a new array with updated liked post
-      const newData = currentData.map((page) =>
+      const newData = currentData?.map((page) =>
         page.map((post) =>
           post.id === postId
             ? {
@@ -132,7 +132,7 @@ export const useSupabasePostsInfinite = (userId) => {
   };
 
   // Handle user unliking a post
-  const unlikePost = async (userId, postId) => {
+  const unlikePost = async (userId: string, postId: string) => {
     // Remove like from db
     await supabase
       .from('Likes')
@@ -143,7 +143,7 @@ export const useSupabasePostsInfinite = (userId) => {
     // Update the local cache
     mutate((currentData) => {
       // Create a new array with post like data updated
-      const newData = currentData.map((page) =>
+      const newData = currentData?.map((page) =>
         page.map((post) =>
           post.id === postId
             ? {

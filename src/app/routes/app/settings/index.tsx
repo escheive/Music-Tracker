@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Heading, Link, Flex, Image, Text, Select, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useSpotifyUser } from "@api/spotify/spotify";
@@ -19,16 +19,15 @@ export const SettingsRoute = () => {
   const navigate = useNavigate();
   const { user, userMutate, loggedOut } = useSpotifyUser();
   const { session } = useAuthContext();
-  const { data: profile, updateProfile, error: profileError } = useSupabaseProfile(session?.user.id)
+  const { data: profile, updateProfile } = useSupabaseProfile(session?.user.id)
   const [currentProfileTheme, setCurrentProfileTheme] = useState('');
 
-  const handleChange = (e) => {
-    setCurrentProfileTheme(event?.target.value)
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCurrentProfileTheme(e.target.value)
   }
 
   const handleSubmit = async () => {
     const newProfileData = {...profile, theme: currentProfileTheme}
-    // await updateSupabaseProfile(profile.id, currentProfileTheme);
     await updateProfile(newProfileData)
   }
 
@@ -75,7 +74,7 @@ export const SettingsRoute = () => {
               placeholder='Select a color scheme for the site' 
               bg={currentProfileTheme}
               value={currentProfileTheme}
-              onChange={handleChange}
+              onChange={(e) => handleChange(e)}
             >
               {colorOptions.map(color => (
                 <option key={color} value={color}>{color.charAt(0).toUpperCase() + color.slice(1)}</option>

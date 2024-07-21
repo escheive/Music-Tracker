@@ -4,7 +4,6 @@ import {
   ModalContent,
   ModalFooter,
   Button,
-  useTheme
 } from '@chakra-ui/react';
 import { useModalContext } from '@/context/ModalProvider';
 import { TrackModal } from './TrackModal';
@@ -33,8 +32,6 @@ export const ModalComponent = () => {
       size='3xl'
     >
       <ModalOverlay 
-        // bg='none'
-        // backdropFilter='auto'
         backdropInvert='80%'
         backdropBlur='2px'
       />
@@ -43,7 +40,7 @@ export const ModalComponent = () => {
         {selectedTrack ? (
           <TrackModal selectedTrack={selectedTrack} />
         ) : (
-          <PlaylistTracksModal setSelectedTrack={setSelectedTrack} playlist={selectedPlaylist} />
+          <PlaylistTracksModal playlist={selectedPlaylist} />
         )}
 
         <ModalFooter>

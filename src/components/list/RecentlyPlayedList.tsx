@@ -9,9 +9,7 @@ import {
   TableContainer,
   Image,
   Link,
-  useTheme
 } from '@chakra-ui/react';
-import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
 interface RecentlyPlayedListProps {
   recentlyPlayedSongs: Record<string, any>[]
