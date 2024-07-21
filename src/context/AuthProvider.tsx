@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import supabase from '@api/supabase/supabase';
 import { Session } from '@supabase/supabase-js';
+import { getAccessToken, createAccessToken } from '@api/spotify/auth';
 
 type AuthContextType = {
   session: Session | null;
@@ -45,7 +46,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const contextValue = {
     session,
-    setSession
+    setSession,
   }
 
   return (

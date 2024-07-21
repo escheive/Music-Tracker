@@ -78,6 +78,13 @@ export const createRouter = () => {
               },
             },
             {
+              path: 'find-music',
+              lazy: async () => {
+                const { FindMusicRoute } = await import('./app/find/music');
+                return { Component: FindMusicRoute };
+              },
+            },
+            {
               path: 'settings',
               lazy: async () => {
                 const { SettingsRoute } = await import('./app/settings');
