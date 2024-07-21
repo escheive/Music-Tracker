@@ -1,6 +1,5 @@
 import useSWR from 'swr';
 import { fetchWithToken } from '@/api/spotify/auth';
-import { useAuthContext } from "@context/AuthProvider";
 
 const API_URL = 'https://api.spotify.com/v1'
 
@@ -145,7 +144,7 @@ export const useSpotifyAudioFeatures = (trackIds: string[]) => {
   };
 }
 
-export const useSpotifySearch = (query) => {
+export const useSpotifySearch = (query: Record<string, any>) => {
   const { term, type } = query;
   const { data, error, isLoading, mutate } = useSWR(
     term ? `${API_URL}/search?q=${encodeURIComponent(term)}&type=${type}` : null,

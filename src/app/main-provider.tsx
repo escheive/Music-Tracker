@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { ChakraProvider, Spinner, extendTheme, theme as defaultTheme } from '@chakra-ui/react';
-import { AuthProvider, useAuthContext } from '@/context/AuthProvider';
+import React from 'react';
+import { Spinner } from '@chakra-ui/react';
+import { AuthProvider } from '@/context/AuthProvider';
 import { ModalProvider } from '@/context/ModalProvider';
 import { ModalComponent } from '@/components/modal/ModalComponent';
-import { Button, Text } from '@components/chakra-ui';
-import { useSupabaseProfile } from '@api/supabase/fetch/fetch';
 import { CustomChakraProvider } from '@context/CustomChakraProvider';
 import { SWRConfig } from 'swr';
 

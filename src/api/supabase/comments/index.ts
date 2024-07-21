@@ -4,7 +4,7 @@ import useSWRInfinite from 'swr/infinite'
 const PAGE_SIZE = 10; // Limit fetching to 10 at a time
 
 // Fetcher to fetch comments for a specific post 10 at a time
-const fetchComments = async (key, postId) => {
+const fetchComments = async (key: string, postId: string) => {
   // Grab page index from given key
   const pageIndex = parseInt(key.split('=')[1], 10);
 
@@ -22,8 +22,8 @@ const fetchComments = async (key, postId) => {
 };
 
 // Hook for fetching comments based on a page and post
-export const useSupabaseCommentsInfinite = (postId) => {
-  const getKey = (pageIndex) => `comments=${pageIndex}&postId=${postId}`;
+export const useSupabaseCommentsInfinite = (postId: string) => {
+  const getKey = (pageIndex: number) => `comments=${pageIndex}&postId=${postId}`;
 
   const { data, mutate, size, setSize, error } = useSWRInfinite(
     (index) => getKey(index),
@@ -37,7 +37,12 @@ export const useSupabaseCommentsInfinite = (postId) => {
   );
 
   // Function to add comment to db
-  const addComment = async (userId, username, postId, content) => {
+  const addComment = async (
+    userId: string, 
+    username: string, 
+    postId: string, 
+    content: string
+  ) => {
     const newComment = { 
       user_id: userId, 
       post_id: postId, 

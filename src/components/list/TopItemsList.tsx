@@ -11,7 +11,6 @@ import {
   TableContainer,
   Image,
   Link,
-  useTheme
 } from '@chakra-ui/react';
 
 interface TopItemsProps {
@@ -39,7 +38,6 @@ interface TopItemsProps {
 }
 
 export const TopItemsList = ({ itemType, items }: TopItemsProps) => {
-  const { colorScheme } = useTheme();
 
   return (
     <>

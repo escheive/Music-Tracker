@@ -3,7 +3,7 @@ import supabase from '@api/supabase/supabase';
 const PAGE_SIZE = 10; // Limit 10 posts at a time
 
 // Function to handle post fetching
-export const fetcher = async (key, userId) => {
+export const fetcher = async (key: string, userId: string) => {
   const pageIndex = parseInt(key.split('=')[2], 10);
   
   // Fetch posts with like counts and comment counts

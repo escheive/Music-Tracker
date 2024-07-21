@@ -22,7 +22,6 @@ import { parseISO, format } from 'date-fns';
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
 interface PlaylistTracksProps {
-  setSelectedTrack: (track: Record<string, any> | null) => void;
   playlist: Record<string, any> | null;
 }
 
@@ -34,7 +33,7 @@ interface PlaylistTracksProps {
     return `${minutes}m ${seconds}s`;
   };
 
-export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, setSelectedTrack }) => {
+export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist }) => {
   if (!playlist) return
 
   const [offset, setOffset] = useState(0);
@@ -49,10 +48,6 @@ export const PlaylistTracksModal: React.FC<PlaylistTracksProps> = ({ playlist, s
       }
     }
   }
-
-  // const handleTrackClick = (track: Record<string, any>) => {
-  //   setSelectedTrack(track)
-  // }
 
   useEffect(() => {
     if (playlist?.id) {

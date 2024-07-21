@@ -25,7 +25,7 @@ export const useSupabaseProfile = (userId: any) => {
   });
 
   // Function to update profile
-  const updateProfile = async (newProfile) => {
+  const updateProfile = async (newProfile: Record<string, any>) => {
     // Update profile in db
     await supabase
       .from('Profiles')
@@ -37,7 +37,7 @@ export const useSupabaseProfile = (userId: any) => {
   };
 
   // Creates a new user profile based on auth id
-  const createProfile = async (userId, profile) => {
+  const createProfile = async (userId: string, profile: Record<string, any>) => {
     // Insert to db
     const { data, error } = await supabase
       .from('Profiles')

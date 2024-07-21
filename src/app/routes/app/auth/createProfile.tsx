@@ -1,11 +1,8 @@
-// src/features/auth/components/RegisterForm.js
 import { useState } from 'react';
-// import useAuth from '../hooks/useAuth';
-import { Box, Button, Input, FormControl, FormLabel, Text, Flex, Link as ChakraLink, Select } from '@chakra-ui/react';
-import { useSpotifyUser } from '@api/spotify/spotify';
-import { useNavigate, Link as ReactRouterLink } from 'react-router-dom';
+import { Box, Button, Input, FormControl, FormLabel, Flex, Select } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@context/AuthProvider';
-import { createProfile } from '@api/supabase/insert';
+import { useSupabaseProfile } from '@api/supabase/profile';
 
 const colorOptions = [
   'gray', 'red', 'orange', 'yellow', 'green', 'teal', 
@@ -16,15 +13,15 @@ const shades = [50, 100, 200, 300, 400, 500, 600, 700, 800];
 
 export const CreateProfileRoute = () => {
   const navigate = useNavigate();
-  const { user } = useSpotifyUser();
   const { session } = useAuthContext();
+  const { createProfile } = useSupabaseProfile(session?.user.id);
   const [profile, setProfile] = useState({
     username: '',
     theme: 'alternatePurple'
   })
   console.log(session)
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     if (session?.user) {
       e.preventDefault();
       await createProfile(session?.user.id, profile);
@@ -34,7 +31,7 @@ export const CreateProfileRoute = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setProfile((prevValues) => ({
       ...prevValues,
