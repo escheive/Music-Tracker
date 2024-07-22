@@ -15,9 +15,11 @@ import {
   Alert,
   SimpleGrid,
   useBreakpointValue,
-  Collapse
+  Collapse,
+  Link
 } from '@chakra-ui/react';
 import { useSpotifySearch } from '@api/spotify/spotify';
+import { Carousel } from '@components/carousel';
 
 export const FindMusicRoute = () => {
   const [query, setQuery] = useState('');
@@ -37,6 +39,11 @@ export const FindMusicRoute = () => {
   const [expandAlbums, setExpandAlbums] = useState(false);
   const [expandArtists, setExpandArtists] = useState(false);
   const [expandTracks, setExpandTracks] = useState(false);
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
+
+  const toggleExpand = (id: string) => {
+    setExpandedItem(expandedItem === id ? null : id);
+  };
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,38 +65,83 @@ export const FindMusicRoute = () => {
 
   const breakpointColumns = useBreakpointValue({ base: 1, md: 2, lg: 3 });
 
-  const renderItems = (items: Record<string, any>[], type: string) => {
+  const renderItems = (items, type) => {
+    
     return items.map(item => (
       <Box key={item.id} p={4} borderWidth={1} borderRadius="md" boxShadow="md">
-        {type === 'album' && (
-          <Box>
-            <Image src={item.images[0]?.url} alt={item.name} boxSize="150px" objectFit="cover" />
-            <Text mt={2} fontWeight="bold">{item.name}</Text>
-            <Text>{item.artists.map((artist: Record<string, any>) => artist.name).join(', ')}</Text>
-            <Text>Release Date: {item.release_date}</Text>
-            <Text>Genre: {item.genres?.join(', ')}</Text>
-          </Box>
-        )}
-        {type === 'artist' && (
-          <Box>
-            <Image src={item.images[0]?.url} alt={item.name} boxSize="150px" objectFit="cover" />
-            <Text mt={2} fontWeight="bold">{item.name}</Text>
-            <Text>Genres: {item.genres.join(', ')}</Text>
-            <Text>Followers: {item.followers.total}</Text>
-          </Box>
-        )}
-        {type === 'track' && (
-          <Box>
-            <Image src={item.album.images[0]?.url} alt={item.name} boxSize="150px" objectFit="cover" />
-            <Text mt={2} fontWeight="bold">{item.name}</Text>
-            <Text>Artist: {item.artists.map((artist: Record<string, any>) => artist.name).join(', ')}</Text>
-            <Text>Album: {item.album.name}</Text>
-            <Text>Duration: {Math.floor(item.duration_ms / 60000)}:{Math.floor((item.duration_ms % 60000) / 1000).toString().padStart(2, '0')}</Text>
-          </Box>
-        )}
+        <Box onClick={() => toggleExpand(item.id)} cursor="pointer">
+          <Image src={type !== 'track' ? item.images[0]?.url : item.album?.images[0]?.url} alt={item.name} boxSize="150px" objectFit="cover" />
+          <Text mt={2} fontWeight="bold">{item.name}</Text>
+          {type === 'album' && <Text>{item.artists.map(artist => artist.name).join(', ')}</Text>}
+          {type === 'artist' && <Text>Genres: {item.genres.join(', ')}</Text>}
+          {type === 'artist' && <Text>Followers: {item.followers.total}</Text>}
+          {type === 'track' && <Text>Artist: {item.artists.map(artist => artist.name).join(', ')}</Text>}
+          {type === 'track' && <Text>Album: {item.album.name}</Text>}
+        </Box>
+        <Collapse in={expandedItem === item.id}>
+          {type === 'album' && (
+            <>
+              <Text>Release Date: {item.release_date}</Text>
+              <Text>Genre: {item.genres?.join(', ')}</Text>
+              <Text>Album Type {item.album_type}</Text>
+              <Text>Album Type {item.album_type}</Text>
+              <Text>Tracks: {item.total_tracks}</Text>
+              <Link href={item.external_urls.spotify} target='_blank'>Check out on Spotify</Link>
+            </>
+          )}
+          {type === 'artist' && (
+            <>
+              <Text>Popularity: {item.popularity}</Text>
+              <Text>Followers: {item.followers.total}</Text>
+              <Text>Genres: {item.genres.join(', ')}</Text>
+              <Link href={item.external_urls.spotify} target='_blank'>Check out on Spotify</Link>
+            </>
+          )}
+          {type === 'track' && (
+            <>
+              <Text>Duration: {Math.floor(item.duration_ms / 60000)}:{Math.floor((item.duration_ms % 60000) / 1000).toString().padStart(2, '0')}</Text>
+              <Text>Popularity: {item.popularity}</Text>
+              <Text>Album: {item.album.name}</Text>
+              <Link href={item.external_urls.spotify} target='_blank'>Check out on Spotify</Link>
+            </>
+          )}
+        </Collapse>
       </Box>
     ));
   };
+
+  // const renderItems = (items: Record<string, any>[], type: string) => {
+  //   return items.map(item => (
+  //     <Box key={item.id} p={4} borderWidth={1} borderRadius="md" boxShadow="md">
+  //       {type === 'album' && (
+  //         <Box>
+  //           <Image src={item.images[0]?.url} alt={item.name} boxSize="150px" objectFit="cover" />
+  //           <Text mt={2} fontWeight="bold">{item.name}</Text>
+  //           <Text>{item.artists.map((artist: Record<string, any>) => artist.name).join(', ')}</Text>
+  //           <Text>Release Date: {item.release_date}</Text>
+  //           <Text>Genre: {item.genres?.join(', ')}</Text>
+  //         </Box>
+  //       )}
+  //       {type === 'artist' && (
+  //         <Box>
+  //           <Image src={item.images[0]?.url} alt={item.name} boxSize="150px" objectFit="cover" />
+  //           <Text mt={2} fontWeight="bold">{item.name}</Text>
+  //           <Text>Genres: {item.genres.join(', ')}</Text>
+  //           <Text>Followers: {item.followers.total}</Text>
+  //         </Box>
+  //       )}
+  //       {type === 'track' && (
+  //         <Box>
+  //           <Image src={item.album.images[0]?.url} alt={item.name} boxSize="150px" objectFit="cover" />
+  //           <Text mt={2} fontWeight="bold">{item.name}</Text>
+  //           <Text>Artist: {item.artists.map((artist: Record<string, any>) => artist.name).join(', ')}</Text>
+  //           <Text>Album: {item.album.name}</Text>
+  //           <Text>Duration: {Math.floor(item.duration_ms / 60000)}:{Math.floor((item.duration_ms % 60000) / 1000).toString().padStart(2, '0')}</Text>
+  //         </Box>
+  //       )}
+  //     </Box>
+  //   ));
+  // };
 
   const { data, error, isLoading } = useSpotifySearch(search);
   console.log(data)
@@ -205,7 +257,7 @@ export const FindMusicRoute = () => {
         </Alert>
       )}
 
-{data && (
+      {data && (
         <Box mt={4}>
           {type.includes('album') && data.albums?.items.length > 0 && (
             <>
