@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box } from '@chakra-ui/react';
 import { useSupabaseProfile } from '@api/supabase/profile';
 import { useSupabaseCommentsInfinite } from '@api/supabase/comments';
@@ -7,15 +7,21 @@ import { Post } from './Post';
 import { CommentForm } from './CommentForm';
 import { CommentList } from './CommentList';
 
+interface PostModalProps {
+  post: Record<string, any>;
+  setSelectedPost: Dispatch<SetStateAction<Record<string, any> | null>>;
+  onClose: () => void;
+}
+
 // Post Modal Component
-export const PostModal = ({ post, setSelectedPost, onClose }) => {
+export const PostModal: React.FC<PostModalProps> = ({ post, setSelectedPost, onClose }) => {
   const { session } = useAuthContext();
   const { addComment } = useSupabaseCommentsInfinite(post.id);
   const { data: profile } = useSupabaseProfile(session?.user.id);
   const [newComment, setNewComment] = useState('');
 
   // Submit users comment to db, update cache
-  const handleCommentSubmit = async (e) => {
+  const handleCommentSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     const userId = profile?.id;

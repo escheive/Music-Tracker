@@ -7,20 +7,20 @@ const generateRandomString = (length: number) => {
   return values.reduce((acc, x) => acc + possible[x % possible.length], "");
 }
 
-const sha256 = async (plain: any) => {
+const sha256 = async (plain: string): Promise<ArrayBuffer> => {
   const encoder = new TextEncoder()
   const data = encoder.encode(plain)
   return window.crypto.subtle.digest('SHA-256', data)
 }
 
-const base64encode = (input: any) => {
+const base64encode = (input: ArrayBufferLike): string => {
   return btoa(String.fromCharCode(...new Uint8Array(input)))
     .replace(/=/g, '')
     .replace(/\+/g, '-')
     .replace(/\//g, '_');
 }
 
-async function fetchJSON(input: any, init: any) {
+async function fetchJSON(input: RequestInfo, init: RequestInit): Promise<any> {
   const response = await fetch(input, init)
   const body = await response.json()
   if (!response.ok) {
@@ -30,9 +30,9 @@ async function fetchJSON(input: any, init: any) {
 }
 
 class ErrorResponse extends Error {
-  status: any;
-  body: any;
-  constructor(response: any, body: any) {
+  status: number;
+  body: unknown;
+  constructor(response: Response, body: unknown) {
     super(response.statusText)
     this.status = response.status
     this.body = body
@@ -68,7 +68,7 @@ export async function completeLogin() {
   const codeVerifier = localStorage.getItem('code_verifier');
 
   const params = new URLSearchParams(location.search);
-  let code = params.get('code');
+  const code = params.get('code');
   const errorParam = params.get('error');
 
 
@@ -125,7 +125,7 @@ const createAccessToken = async (params: any) => {
 }
 
 const getAccessToken = async () => {
-  let tokenSetString = localStorage.getItem('tokenSet');
+  const tokenSetString = localStorage.getItem('tokenSet');
   let tokenSet;
 
   if (tokenSetString !== null) {

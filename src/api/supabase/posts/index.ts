@@ -9,8 +9,88 @@ const METADATA_DAILY_LIMIT = 1;
 const GENERAL_DAILY_LIMIT = 20;
 
 
+interface Song {
+  id: string;
+  name: string;
+  artists: [
+    {
+      name: string
+    }
+  ];
+  album: {
+    images: {
+      url: string
+    }[]
+  };
+  external_urls: {
+    spotify: string
+  }
+}
+
+interface TopItem {
+  artists: {
+    items: {
+      id: string;
+      name: string;
+      images: {
+        url: string
+      }[];
+      external_urls: {
+        spotify: string
+      };
+    }[];
+  };
+  tracks: {
+    items: {
+      id: string;
+      name: string;
+      album: {
+        images: {
+          url: string
+        }[];
+      };
+      external_urls: {
+        spotify: string
+      };
+    }[];
+  }
+}
+
+interface Post {
+  user_id: string | number;
+  type: 'general' | 'recentlyPlayed' | 'topItems';
+  content: string;
+  metadata: TopItem | Song[];
+}
+
+// Type guard for Song array
+const isSongArray = (data: any): data is Song[] => {
+  return Array.isArray(data) && data.every(
+    item => typeof item.id === 'string' &&
+            typeof item.name === 'string' &&
+            Array.isArray(item.artists) &&
+            typeof item.album === 'object' &&
+            typeof item.external_urls === 'object'
+  );
+};
+
+// Type guard for TopItem
+const isTopItem = (data: any): data is TopItem => {
+  return typeof data === 'object' &&
+         data !== null &&
+         Array.isArray(data.artists) &&
+         Array.isArray(data.tracks);
+};
+
 // Hook for fetching, updating posts
-export const useSupabasePostsInfinite = (userId: string) => {
+export const useSupabasePostsInfinite = (userId: string | null) => {
+
+  // Check if userId is defined before making the API call
+  if (!userId) {
+    // Handle the case where userId is undefined (e.g., return empty data or show error)
+    return { data: null, setSize: null, size: null, error: 'User ID is undefined', isValidating: false };
+  }
+
   const { data, mutate, size, setSize, error, isValidating } = useSWRInfinite((index) => getKey(index, userId), (key) => fetcher(key, userId), {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
@@ -19,7 +99,7 @@ export const useSupabasePostsInfinite = (userId: string) => {
   });
 
   // Function to create new post
-  const createPost = async (post: any, username: any) => {
+  const createPost = async (post: Post, username: string) => {
     let { user_id, type, content, metadata } = post; // Destructure new post
 
     // Check if the user has already posted this type today
@@ -48,9 +128,9 @@ export const useSupabasePostsInfinite = (userId: string) => {
 
     // Simplify any metadata user wants to post to reduce size
     let simplifiedMetadata;
-    if (type === 'recentlyPlayed') {
+    if (type === 'recentlyPlayed' && isSongArray(metadata)) {
       simplifiedMetadata = simplifySongData(metadata);
-    } else if (type === 'topItems') {
+    } else if (type === 'topItems' && isTopItem(metadata)) {
       simplifiedMetadata = simplifyTopItems(metadata);
     }
 

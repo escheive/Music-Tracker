@@ -1,6 +1,13 @@
+import React from 'react';
 import { Box, Textarea, Button } from "@chakra-ui/react";
 
-export const CommentForm = ({ newComment, setNewComment, handleCommentSubmit }) => {
+interface CommentFormProps {
+  newComment: string;
+  setNewComment: (comment: string) => void;
+  handleCommentSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+}
+
+export const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, handleCommentSubmit }) => {
 
   return (
     <Box mt={4}>

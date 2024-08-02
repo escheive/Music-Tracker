@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 
-export const PostHeader = ({ post }) => {
+export const PostHeader = ({ post }: Record<string, any>) => {
   const postedAt = new Date(post.created_at).toLocaleString();
 
   return (
