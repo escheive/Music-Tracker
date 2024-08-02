@@ -5,19 +5,29 @@ import { useAuthContext } from "@context/AuthProvider";
 import { PostMetadata } from './PostMetadata';
 import { PostActions } from './PostActions';
 import { PostHeader } from './PostHeader';
+import { Dispatch, SetStateAction } from 'react';
 
-export const Post = ({ post, setSelectedPost }) => {
+interface PostProps {
+  post: Record<string, any>;
+  setSelectedPost: Dispatch<SetStateAction<Record<string, any> | null>>;
+}
+
+export const Post: React.FC<PostProps> = ({ post, setSelectedPost }) => {
   const { session }  = useAuthContext();
   const { data: profile } = useSupabaseProfile(session?.user.id);
   const { likePost, unlikePost } = useSupabasePostsInfinite(profile?.id);
 
-  const handleLike = async (e, postId, userLiked) => {
-    console.log(e)
+  const handleLike = async (e: { stopPropagation: () => void; }, postId: string, userLiked: boolean) => {
     e.stopPropagation();
-    if (!userLiked) {
-      await likePost(profile?.id, postId)
+    
+    if (likePost && unlikePost) {
+      if (!userLiked) {
+        await likePost(profile?.id, postId)
+      } else {
+        await unlikePost(profile?.id, postId)
+      }
     } else {
-      await unlikePost(profile?.id, postId)
+      console.error('cannot create post, function error');
     }
   }
 

@@ -1,13 +1,8 @@
-import { Key, useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
-  Input,
   Button,
-  Select,
-  FormControl,
-  FormLabel,
   Heading,
-  Stack,
   Spinner,
   Image as ChakraImage,
   Text,
@@ -20,48 +15,46 @@ import {
 } from '@chakra-ui/react';
 import { useSpotifySearch } from '@api/spotify/spotify';
 import spotifyIcon from '@assets/spotify/icons/Spotify_Icon_RGB_White.png';
+import { GeneralSearchForm } from '@features/find/components/GeneralSearchForm';
+import { FeatureSearchForm } from '@features/find/components/FeatureSearchForm';
 
 export const FindMusicRoute = () => {
   const [query, setQuery] = useState('');
   const [type, setType] = useState('album,artist,track');
-  const [artist, setArtist] = useState('');
-  const [album, setAlbum] = useState('');
-  const [track, setTrack] = useState('');
-  const [year, setYear] = useState('');
-  const [genre, setGenre] = useState('');
-  const [tag, setTag] = useState('');
-  const [isrc, setIsrc] = useState('');
-  const [upc, setUpc] = useState('');
   const [search, setSearch] = useState({
     term: '',
     type: 'album,artist,track'
   });
+  const [searchType, setSearchType] = useState('general');
   const [expandedCategories, setExpandedCategories] = useState({
     album: true,
     artist: true,
     track: true
   });
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  // const [searchType, setSearchType] = useState('general');
 
   const toggleExpand = (id: string) => {
     setExpandedItem(expandedItem === id ? null : id);
   };
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSearch = (searchParams: Record<string, any>) => {
     const queryParts = ['limit:50'];
-    if (query) queryParts.push(query);
-    if (artist) queryParts.push(`artist:${artist}`);
-    if (album) queryParts.push(`album:${album}`);
-    if (track) queryParts.push(`track:${track}`);
-    if (year) queryParts.push(`year:${year}`);
-    if (genre) queryParts.push(`genre:${genre}`);
-    if (isrc) queryParts.push(`isrc:${isrc}`);
-    if (upc) queryParts.push(`upc:${upc}`);
-    if (tag) queryParts.push(`tag:${tag}`);
+    if (searchParams.query) queryParts.push(searchParams.query);
+    if (searchParams.artist) queryParts.push(`artist:${searchParams.artist}`);
+    if (searchParams.album) queryParts.push(`album:${searchParams.album}`);
+    if (searchParams.track) queryParts.push(`track:${searchParams.track}`);
+    if (searchParams.year) queryParts.push(`year:${searchParams.year}`);
+    if (searchParams.genre) queryParts.push(`genre:${searchParams.genre}`);
+    if (searchParams.isrc) queryParts.push(`isrc:${searchParams.isrc}`);
+    if (searchParams.upc) queryParts.push(`upc:${searchParams.upc}`);
+    if (searchParams.tag) queryParts.push(`tag:${searchParams.tag}`);
+    if (searchParams.valence) queryParts.push(`valence:${searchParams.valence}`);
+    if (searchParams.tempo) queryParts.push(`tempo:${searchParams.tempo}`);
+    
     setSearch({
       term: queryParts.join(' '),
-      type: type
+      type: searchParams.type || type
     });
   };
 
@@ -102,10 +95,10 @@ export const FindMusicRoute = () => {
           />
           <Box ml={4}>
             <Text fontSize='xl' fontWeight='bold'>{item.name}</Text>
-            {type === 'album' && <Text fontSize='md'>{item.artists.map(artist => artist.name).join(', ')}</Text>}
+            {type === 'album' && <Text fontSize='md'>{item.artists.map((artist: Record<string, any>) => artist.name).join(', ')}</Text>}
             {type === 'artist' && <Text fontSize='md'>Genres: {item.genres.join(', ')}</Text>}
             {type === 'artist' && <Text fontSize='md'>Followers: {item.followers.total}</Text>}
-            {type === 'track' && <Text fontSize='md'>Artist: {item.artists.map(artist => artist.name).join(', ')}</Text>}
+            {type === 'track' && <Text fontSize='md'>Artist: {item.artists.map((artist: Record<string, any>) => artist.name).join(', ')}</Text>}
             {type === 'track' && <Text fontSize='md'>Album: {item.album.name}</Text>}
           </Box>
         </Box>
@@ -155,104 +148,31 @@ export const FindMusicRoute = () => {
   return (
     <Box width='100%' mx='auto' mt={4} p={4}>
       <Heading mb={4}>Find Music</Heading>
-      <form onSubmit={handleSearch}>
-        <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
-          <FormControl id='query'>
-            <FormLabel>Search Query</FormLabel>
-            <Input 
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder='General search query'
-            />
-          </FormControl>
-          <FormControl id='type'>
-            <FormLabel>Type</FormLabel>
-            <Select 
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-            >
-              <option value='album,artist,track'>All</option>
-              <option value='album'>Album</option>
-              <option value='artist'>Artist</option>
-              <option value='track'>Track</option>
-            </Select>
-          </FormControl>
-        </Stack>
-        <Stack direction={{ base: 'column', md: 'row' }} spacing={4} mt={4}>
-          <FormControl id='artist'>
-            <FormLabel>Artist</FormLabel>
-            <Input 
-              value={artist}
-              onChange={(e) => setArtist(e.target.value)}
-              placeholder='Artist name'
-            />
-          </FormControl>
-          <FormControl id='album'>
-            <FormLabel>Album</FormLabel>
-            <Input 
-              value={album}
-              onChange={(e) => setAlbum(e.target.value)}
-              placeholder='Album name'
-            />
-          </FormControl>
-          <FormControl id='track'>
-            <FormLabel>Track</FormLabel>
-            <Input 
-              value={track}
-              onChange={(e) => setTrack(e.target.value)}
-              placeholder='Track name'
-            />
-          </FormControl>
-        </Stack>
-        <Stack direction={{ base: 'column', md: 'row' }} spacing={4} mt={4}>
-          <FormControl id='year'>
-            <FormLabel>Year</FormLabel>
-            <Input 
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-              placeholder='Year or range (e.g., 1955-1960)'
-            />
-          </FormControl>
-          <FormControl id='genre'>
-            <FormLabel>Genre</FormLabel>
-            <Input 
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              placeholder='Genre'
-            />
-          </FormControl>
-          <FormControl id='isrc'>
-            <FormLabel>ISRC</FormLabel>
-            <Input 
-              value={isrc}
-              onChange={(e) => setIsrc(e.target.value)}
-              placeholder='ISRC code'
-            />
-          </FormControl>
-          <FormControl id='upc'>
-            <FormLabel>UPC</FormLabel>
-            <Input 
-              value={upc}
-              onChange={(e) => setUpc(e.target.value)}
-              placeholder='UPC code'
-            />
-          </FormControl>
-        </Stack>
-        <Stack direction={{ base: 'column', md: 'row' }} spacing={4} mt={4}>
-          <FormControl id='tag'>
-            <FormLabel>Tag</FormLabel>
-            <Select 
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-            >
-              <option value=''>None</option>
-              <option value='hipster'>Hipster</option>
-              <option value='new'>New</option>
-            </Select>
-          </FormControl>
-        </Stack>
-        <Button mt={4} type='submit'>Search</Button>
-      </form>
+      <Box mb={4}>
+        <Button
+          onClick={() => setSearchType('general')}
+          mr={2}
+          colorScheme={searchType === 'general' ? 'teal' : 'gray'}
+        >
+          General Search
+        </Button>
+        <Button
+          onClick={() => setSearchType('features')}
+          colorScheme={searchType === 'features' ? 'teal' : 'gray'}
+        >
+          Search by Features
+        </Button>
+      </Box>
+      {searchType === 'general' ? (
+        <GeneralSearchForm 
+          query={query}
+          type={type}
+          setQuery={setQuery}
+          setType={setType}
+        />
+      ) : (
+        <FeatureSearchForm onSearch={handleSearch} />
+      )}
 
       {isLoading && <Spinner size='xl' mt={4} />}
 

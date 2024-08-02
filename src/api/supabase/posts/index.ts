@@ -10,7 +10,14 @@ const GENERAL_DAILY_LIMIT = 20;
 
 
 // Hook for fetching, updating posts
-export const useSupabasePostsInfinite = (userId: string) => {
+export const useSupabasePostsInfinite = (userId: string | null) => {
+
+  // Check if userId is defined before making the API call
+  if (!userId) {
+    // Handle the case where userId is undefined (e.g., return empty data or show error)
+    return { data: null, setSize: null, size: null, error: 'User ID is undefined', isValidating: false };
+  }
+
   const { data, mutate, size, setSize, error, isValidating } = useSWRInfinite((index) => getKey(index, userId), (key) => fetcher(key, userId), {
     revalidateOnFocus: false, // Disable revalidation on focus
     revalidateOnReconnect: false, // Disable revalidation on reconnection
@@ -19,7 +26,7 @@ export const useSupabasePostsInfinite = (userId: string) => {
   });
 
   // Function to create new post
-  const createPost = async (post: any, username: any) => {
+  const createPost = async (post: Record<string, any>, username: string) => {
     let { user_id, type, content, metadata } = post; // Destructure new post
 
     // Check if the user has already posted this type today

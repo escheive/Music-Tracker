@@ -26,7 +26,10 @@ export const PostForm = () => {
     content: '',
     metadata: null
   });
-  const { createPost } = useSupabasePostsInfinite(session?.user.id);
+
+  const userId = session?.user.id;
+
+  const { createPost } = useSupabasePostsInfinite(userId || null);
 
   // Track changes to the create post form
   const handlePostChange = (e: any) => {
@@ -48,7 +51,7 @@ export const PostForm = () => {
   };
 
   // Submit user post to db, update cache, reset post form
-  const handlePostSubmit = async (e) => {
+  const handlePostSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     const postWithMetadata = draftedPost;
 
@@ -58,19 +61,23 @@ export const PostForm = () => {
       postWithMetadata.metadata = topItems;
     }
 
-    // Update db and cache
-    await createPost(
-      draftedPost,
-      profile?.username
-    )
+    if (createPost) {
+      // Update db and cache
+      await createPost(
+        draftedPost,
+        profile?.username
+      )
 
-    // Reset text area after submission
-    setDraftedPost({
-      user_id: session?.user.id,
-      type: 'general',
-      content: '',
-      metadata: null
-    });
+      // Reset text area after submission
+      setDraftedPost({
+        user_id: session?.user.id,
+        type: 'general',
+        content: '',
+        metadata: null
+      });
+    } else {
+      console.error('cannot create post, function error');
+    }
   };
 
   return (
