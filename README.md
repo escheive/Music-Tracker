@@ -13,16 +13,17 @@
 - **Social Media**: Share your thoughts and music with the world, and comment to interact with others about their music tastes
 
 ## Screenshots
+<img width="1028" alt="Screenshot 2024-08-02 at 3 20 20 PM" src="https://github.com/user-attachments/assets/a64043be-dea2-445c-9cbe-505d6e12d52c">
+<img width="1020" alt="Screenshot 2024-08-02 at 3 21 11 PM" src="https://github.com/user-attachments/assets/c07f29d0-da68-471f-ad63-6eacf903be35">
+<img width="1009" alt="Screenshot 2024-08-02 at 3 21 22 PM" src="https://github.com/user-attachments/assets/fdc3fea6-3d32-4a20-bb1f-e3599449238c">
+<img width="1031" alt="Screenshot 2024-08-02 at 3 21 39 PM" src="https://github.com/user-attachments/assets/04015a48-01d5-4e79-a33e-9f2e1d93ecb4">
+<img width="1018" alt="Screenshot 2024-08-02 at 3 21 49 PM" src="https://github.com/user-attachments/assets/a38dafba-88cf-4af8-ad00-2be803fc12b7">
+<img width="1022" alt="Screenshot 2024-08-02 at 3 22 05 PM" src="https://github.com/user-attachments/assets/78648dfe-52ac-43af-b9c5-366338e80c66">
+<img width="1009" alt="Screenshot 2024-08-02 at 3 22 23 PM" src="https://github.com/user-attachments/assets/80033fd2-6584-4c47-a7d0-e55ca3902e62">
+<img width="1034" alt="Screenshot 2024-08-02 at 3 23 23 PM" src="https://github.com/user-attachments/assets/86597adf-c331-46cd-b957-49e790b945fe">
+<img width="1028" alt="Screenshot 2024-08-02 at 3 23 38 PM" src="https://github.com/user-attachments/assets/2152e857-1735-4b4f-a520-fb3017bba35a">
 
-![alt text](<Screenshot 2024-08-02 at 3.20.20 PM.png>)
-![alt text](<Screenshot 2024-08-02 at 3.21.11 PM.png>)
-![alt text](<Screenshot 2024-08-02 at 3.21.22 PM.png>)
-![alt text](<Screenshot 2024-08-02 at 3.21.39 PM.png>)
-![alt text](<Screenshot 2024-08-02 at 3.21.49 PM.png>)
-![alt text](<Screenshot 2024-08-02 at 3.22.05 PM.png>)
-![alt text](<Screenshot 2024-08-02 at 3.22.23 PM.png>)
-![alt text](<Screenshot 2024-08-02 at 3.23.23 PM.png>)
-![alt text](<Screenshot 2024-08-02 at 3.23.38 PM.png>)
+
 
 ## Live Demo
 
