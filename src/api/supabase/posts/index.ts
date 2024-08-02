@@ -9,6 +9,79 @@ const METADATA_DAILY_LIMIT = 1;
 const GENERAL_DAILY_LIMIT = 20;
 
 
+interface Song {
+  id: string;
+  name: string;
+  artists: [
+    {
+      name: string
+    }
+  ];
+  album: {
+    images: {
+      url: string
+    }[]
+  };
+  external_urls: {
+    spotify: string
+  }
+}
+
+interface TopItem {
+  artists: {
+    items: {
+      id: string;
+      name: string;
+      images: {
+        url: string
+      }[];
+      external_urls: {
+        spotify: string
+      };
+    }[];
+  };
+  tracks: {
+    items: {
+      id: string;
+      name: string;
+      album: {
+        images: {
+          url: string
+        }[];
+      };
+      external_urls: {
+        spotify: string
+      };
+    }[];
+  }
+}
+
+interface Post {
+  user_id: string | number;
+  type: 'general' | 'recentlyPlayed' | 'topItems';
+  content: string;
+  metadata: TopItem | Song[];
+}
+
+// Type guard for Song array
+const isSongArray = (data: any): data is Song[] => {
+  return Array.isArray(data) && data.every(
+    item => typeof item.id === 'string' &&
+            typeof item.name === 'string' &&
+            Array.isArray(item.artists) &&
+            typeof item.album === 'object' &&
+            typeof item.external_urls === 'object'
+  );
+};
+
+// Type guard for TopItem
+const isTopItem = (data: any): data is TopItem => {
+  return typeof data === 'object' &&
+         data !== null &&
+         Array.isArray(data.artists) &&
+         Array.isArray(data.tracks);
+};
+
 // Hook for fetching, updating posts
 export const useSupabasePostsInfinite = (userId: string | null) => {
 
@@ -26,7 +99,7 @@ export const useSupabasePostsInfinite = (userId: string | null) => {
   });
 
   // Function to create new post
-  const createPost = async (post: Record<string, any>, username: string) => {
+  const createPost = async (post: Post, username: string) => {
     let { user_id, type, content, metadata } = post; // Destructure new post
 
     // Check if the user has already posted this type today
@@ -55,9 +128,9 @@ export const useSupabasePostsInfinite = (userId: string | null) => {
 
     // Simplify any metadata user wants to post to reduce size
     let simplifiedMetadata;
-    if (type === 'recentlyPlayed') {
+    if (type === 'recentlyPlayed' && isSongArray(metadata)) {
       simplifiedMetadata = simplifySongData(metadata);
-    } else if (type === 'topItems') {
+    } else if (type === 'topItems' && isTopItem(metadata)) {
       simplifiedMetadata = simplifyTopItems(metadata);
     }
 

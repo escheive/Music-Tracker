@@ -14,14 +14,21 @@ import { useState } from 'react';
 import { useSupabasePostsInfinite } from '@api/supabase/posts';
 import { useSupabaseProfile } from '@api/supabase/profile';
 
+interface Post {
+  user_id: string | number;
+  type: 'general' | 'recentlyPlayed' | 'topItems';
+  content: string;
+  metadata: any;
+}
+
 
 export const PostForm = () => {
   const { session } = useAuthContext();
   const { data: recentlyPlayedSongs } = useRecentlyPlayedSongs();
   const { data: topItems } = useUsersTopItems();
   const { data: profile } = useSupabaseProfile(session?.user.id);
-  const [draftedPost, setDraftedPost] = useState<Record<string, any>>({
-    user_id: session?.user.id,
+  const [draftedPost, setDraftedPost] = useState<Post>({
+    user_id: session?.user.id || '',
     type: 'general',
     content: '',
     metadata: null
@@ -70,7 +77,7 @@ export const PostForm = () => {
 
       // Reset text area after submission
       setDraftedPost({
-        user_id: session?.user.id,
+        user_id: session?.user.id || '',
         type: 'general',
         content: '',
         metadata: null
