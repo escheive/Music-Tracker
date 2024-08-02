@@ -38,8 +38,8 @@ export const FindMusicRoute = () => {
     setExpandedItem(expandedItem === id ? null : id);
   };
 
-  const handleSearch = (searchParams: Record<string, any>) => {
-    const queryParts = ['limit:50'];
+  const handleSearch = (searchParams: any) => {
+    const queryParts = [];
     if (searchParams.query) queryParts.push(searchParams.query);
     if (searchParams.artist) queryParts.push(`artist:${searchParams.artist}`);
     if (searchParams.album) queryParts.push(`album:${searchParams.album}`);
@@ -167,6 +167,7 @@ export const FindMusicRoute = () => {
         <GeneralSearchForm 
           query={query}
           type={type}
+          onSearch={handleSearch}
           setQuery={setQuery}
           setType={setType}
         />

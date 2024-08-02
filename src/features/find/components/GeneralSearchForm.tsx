@@ -13,11 +13,12 @@ import {
 interface GeneralSearchFormProps {
   query: string;
   type: string;
+  onSearch: (searchParams: Record<string, string>) => void;
   setQuery: Dispatch<SetStateAction<string>>
   setType: Dispatch<SetStateAction<string>>
 }
 
-export const GeneralSearchForm: React.FC<GeneralSearchFormProps> = ({ query, type, setQuery, setType }) => {
+export const GeneralSearchForm: React.FC<GeneralSearchFormProps> = ({ query, type, onSearch, setQuery, setType }) => {
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
   const [track, setTrack] = useState('');
@@ -26,26 +27,20 @@ export const GeneralSearchForm: React.FC<GeneralSearchFormProps> = ({ query, typ
   const [tag, setTag] = useState('');
   const [isrc, setIsrc] = useState('');
   const [upc, setUpc] = useState('');
-  const [, setSearch] = useState({
-    term: '',
-    type: 'album,artist,track'
-  });
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const queryParts = ['limit:50'];
-    if (query) queryParts.push(query);
-    if (artist) queryParts.push(`artist:${artist}`);
-    if (album) queryParts.push(`album:${album}`);
-    if (track) queryParts.push(`track:${track}`);
-    if (year) queryParts.push(`year:${year}`);
-    if (genre) queryParts.push(`genre:${genre}`);
-    if (isrc) queryParts.push(`isrc:${isrc}`);
-    if (upc) queryParts.push(`upc:${upc}`);
-    if (tag) queryParts.push(`tag:${tag}`);
-    setSearch({
-      term: queryParts.join(' '),
-      type: type
+
+    onSearch({
+      query,
+      artist,
+      album,
+      track,
+      year,
+      genre,
+      tag,
+      isrc,
+      upc,
     });
   };
 
