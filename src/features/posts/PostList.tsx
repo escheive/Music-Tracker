@@ -9,8 +9,11 @@ import { PostModal } from './PostModal';
 // Post List Component
 export const PostList = () => {
   const { session } = useAuthContext();
-  const [selectedPost, setSelectedPost] = useState(null);
-  const { data: posts, setSize, size, error: postsError, isValidating: postsValidating } = useSupabasePostsInfinite(session?.user.id);
+  const [selectedPost, setSelectedPost] = useState<Record<string, any> | null>(null);
+
+  const userId = session?.user.id;
+
+  const { data: posts, setSize, size, error: postsError, isValidating: postsValidating } = useSupabasePostsInfinite(userId || null);
   const { ref, inView } = useInView();
   const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded
   

@@ -3,7 +3,11 @@ import { Box, Flex, Text, Avatar } from '@chakra-ui/react';
 import { useInView } from 'react-intersection-observer';
 import { useSupabaseCommentsInfinite } from '@api/supabase/comments';
 
-export const CommentList = ({ post }) => {
+interface CommentListProps {
+  post: Record<string, any>;
+}
+
+export const CommentList: React.FC<CommentListProps> = ({ post }) => {
   const { data, size, setSize, error: commentsError } = useSupabaseCommentsInfinite(post.id);
   const { ref, inView } = useInView();
   const [hasMore, setHasMore] = useState(true); // Flag to track if all posts are loaded

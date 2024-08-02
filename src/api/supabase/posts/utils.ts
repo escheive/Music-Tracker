@@ -1,7 +1,54 @@
 
+interface Song {
+  id: string;
+  name: string;
+  artists: [
+    {
+      name: string
+    }
+  ];
+  album: {
+    images: {
+      url: string
+    }[]
+  };
+  external_urls: {
+    spotify: string
+  }
+}
+
+interface TopItem {
+  artists: {
+    items: {
+      id: string;
+      name: string;
+      images: {
+        url: string
+      }[];
+      external_urls: {
+        spotify: string
+      };
+    }[];
+  };
+  tracks: {
+    items: {
+      id: string;
+      name: string;
+      album: {
+        images: {
+          url: string
+        }[];
+      };
+      external_urls: {
+        spotify: string
+      };
+    }[];
+  }
+}
+
 // Functions for simplifying song data before storing in db
-export const simplifySongData = (songs: any[]) => {
-  console.log(songs)
+export const simplifySongData = (songs: Song[]) => {
+
   // Reduce number of songs allowed to be stored, keep only few values
   return songs.slice(0, 10).map((song) => ({
     id: song.id,
@@ -13,7 +60,8 @@ export const simplifySongData = (songs: any[]) => {
 };
 
 // Function for simplifying top items before storing in db
-export const simplifyTopItems = (topItems: { artists: { items: [] }, tracks: { items: []}}) => {
+export const simplifyTopItems = (topItems: TopItem) => {
+
   // Reduce top artists to 5, keep only few values
   const simplifiedArtists = topItems.artists.items.slice(0, 5).map((artist: any) => ({
     id: artist.id,

@@ -1,7 +1,34 @@
 import { Container, Flex, Box, Text, Image, Link } from '@chakra-ui/react';
 import spotifyLogo from '@assets/spotify/logos/Spotify_Logo_RGB_Black.png';
 
-const RecentlyPlayed = ({ metadata }) => (
+interface Song {
+  id: string;
+  name: string;
+  imageUrl: string;
+  spotifyUrl: string;
+}
+
+interface Artist {
+  id: string;
+  name: string;
+  imageUrl: string;
+  spotifyUrl: string;
+}
+
+interface TopItemsMetadata {
+  artists: Artist[];
+  tracks: Song[];
+}
+
+interface RecentlyPlayedProps {
+  metadata: Song[];
+}
+
+interface TopItemsProps {
+  metadata: TopItemsMetadata;
+}
+
+const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({ metadata }) => (
   <>
     <Text fontSize='md' fontWeight='semibold'>Recently Played Songs:</Text>
     {metadata.slice(0, 3).map((song, index) => (
@@ -21,7 +48,7 @@ const RecentlyPlayed = ({ metadata }) => (
   </>
 );
 
-const TopItems = ({ metadata }) => (
+const TopItems: React.FC<TopItemsProps> = ({ metadata }) => (
   <Flex>
     <Box flex='1' mr={4}>
       <Text fontSize='lg' fontWeight='semibold' mb={2}>My Top Artists</Text>
@@ -40,6 +67,7 @@ const TopItems = ({ metadata }) => (
         </Flex>
       ))}
     </Box>
+
     <Box flex='1'>
       <Text fontSize='lg' fontWeight='semibold' mb={2}>My Top Tracks</Text>
       {metadata.tracks.map((track, index) => (
@@ -60,7 +88,7 @@ const TopItems = ({ metadata }) => (
   </Flex>
 );
 
-export const PostMetadata = ({ post }) => (
+export const PostMetadata = ({ post }: Record<string, any>) => (
   <Container boxShadow='sm' borderRadius='md' variant='post'>
     {post.type === 'recentlyPlayed' && <RecentlyPlayed metadata={post.metadata} />}
     {post.type === 'topItems' && <TopItems metadata={post.metadata} />}

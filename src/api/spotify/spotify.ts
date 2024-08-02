@@ -5,14 +5,14 @@ const API_URL = 'https://api.spotify.com/v1'
 
 
 export const useRecentlyPlayedSongs = () => {
-  let combinedSongs: Record<string, any>[] = [];
+  let combinedSongs: Record<string, unknown>[] = [];
 
   const { data: recentlyPlayedSongs, isLoading: recentlyPlayedSongsLoading, error: recentlyPlayedSongsError } = useSWR(
     `${API_URL}/me/player/recently-played?limit=50`,
     fetchWithToken
   )
 
-  const trackIds = recentlyPlayedSongs?.items.map((track: Record<string, any>) => track.track.id);
+  const trackIds = recentlyPlayedSongs?.items.map((track: Record<string, Record<string, unknown>>) => track.track.id);
   // Map the track IDs to form a comma-separated string
   const trackIdsString = trackIds?.join(',');
 
@@ -26,8 +26,8 @@ export const useRecentlyPlayedSongs = () => {
   )
 
   if (!recentlyPlayedSongsLoading && !audioFeaturesLoading) {
-    combinedSongs = recentlyPlayedSongs?.items.map((track: Record<string, any>) => {
-      const features = audioFeatures?.audio_features.find((feature: Record<string, any>) => feature?.id === track.track.id);
+    combinedSongs = recentlyPlayedSongs?.items.map((track: Record<string, Record<string, unknown>>) => {
+      const features = audioFeatures?.audio_features.find((feature: Record<string, unknown>) => feature?.id === track.track.id);
       return { played_at: track.played_at, ...track.track, ...features };
     });
   }
@@ -144,7 +144,7 @@ export const useSpotifyAudioFeatures = (trackIds: string[]) => {
   };
 }
 
-export const useSpotifySearch = (query: Record<string, any>) => {
+export const useSpotifySearch = (query: Record<string, string | number | boolean>) => {
   const { term, type } = query;
   const { data, error, isLoading, mutate } = useSWR(
     term ? `${API_URL}/search?q=${encodeURIComponent(term)}&type=${type}` : null,
