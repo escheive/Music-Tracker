@@ -147,7 +147,7 @@ export const useSpotifyAudioFeatures = (trackIds: string[]) => {
 export const useSpotifySearch = (query: Record<string, string | number | boolean>) => {
   const { term, type } = query;
   const { data, error, isLoading, mutate } = useSWR(
-    term ? `${API_URL}/search?q=${encodeURIComponent(term)}&type=${type}` : null,
+    term ? `${API_URL}/search?q=${encodeURIComponent(term)}&type=${type}&limit=50` : null,
     fetchWithToken,
     {
       revalidateOnFocus: false, // Disable revalidation on focus
